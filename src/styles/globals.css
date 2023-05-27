@@ -1,3 +1,89 @@
 @tailwind base;
 @tailwind components;
+
+.theme-light-1 {
+  --primary: 29, 13, 7;
+  --secondary: 250, 239, 235;
+  --primbuttn: 104, 187, 217;
+  --secbuttn: 244, 219, 210;
+  --accent: 44, 140, 175;
+}
+
+.theme-light-2 {
+  /* --static: rgba(225, 225, 225, 0.5);
+  --static4: rgba(225, 225, 225, 0.2);
+  --static3: #ffffff;
+  --static2: #0f0f0f;
+  --static5: rgb(24, 172, 122); */
+  --primary: 36, 34, 27;
+  --secondary: 228, 220, 201;
+  --primbuttn: 36, 34, 27;
+  --secbuttn: 228, 220, 201;
+  --accent: 36, 34, 27;
+}
+.theme-light-3 {
+  --primaryRGB: 0, 0, 0;
+  --secondary: 237, 248, 243;
+  --primbuttn: 29, 70, 73;
+  --secbuttn: 215, 225, 239;
+  --accent: 29, 47, 73;
+}
+.theme-dark-1 {
+  --primary: 244, 246, 245;
+  --secondary: 4, 6, 5;
+  --primbuttn: 141, 165, 163;
+  --secbuttn: 16, 18, 20;
+  --accent: 90, 104, 114;
+}
+
+.theme-dark-2 {
+  --primary: 217, 242, 240;
+  --secondary: 0, 0, 0;
+  --primbuttn: 198, 88, 97;
+  --secbuttn: 9, 27, 25;
+  --accent: 198, 88, 97;
+}
+.theme-dark-3 {
+  --primary: 251, 251, 249;
+  --secondary: 9, 10, 6;
+  --primbuttn: 150, 186, 135;
+  --secbuttn: 19, 32, 22;
+  --accent: 80, 139, 93;
+}
+
 @tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  @font-face {
+    font-family: "Iransans";
+    src: local("Iransans"),
+      url("/fonts/IRANSansWeb(FaNum)_Medium.woff") format("woff");
+    font-weight: 400;
+    font-display: swap;
+    font-style: normal;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+p,
+a,
+li {
+  font-family: "Iransans";
+}
+
+.rtl {
+  direction: rtl;
+}
+
+.ltr {
+  direction: ltr;
+}
