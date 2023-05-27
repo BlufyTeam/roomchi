@@ -33,6 +33,8 @@ export default function ThemePage() {
                 className="bg-primbuttn p-5 text-secondary"
                 onClick={() => {
                   document.querySelector("body").className = theme;
+
+                  localStorage.setItem("theme", theme);
                 }}
               >
                 {theme}

@@ -31,6 +31,18 @@ function MyApp({
   const canUseDOM = typeof window !== "undefined";
   const useIsomorphicLayoutEffect = canUseDOM ? useLayoutEffect : useEffect;
   useIsomorphicLayoutEffect(() => {
+    //top progress bar
+    router.events.on("routeChangeStart", progress.start);
+    router.events.on("routeChangeComplete", progress.finish);
+    router.events.on("routeChangeError", progress.finish);
+
+    // check for theme
+    const theme = localStorage.getItem("theme");
+    if (theme?.startsWith("theme")) {
+      document.querySelector("body").className = theme;
+      return;
+    }
+
     const matchPrefersLight = window.matchMedia("(prefers-color-scheme:light)");
     if (matchPrefersLight.matches) {
       document.querySelector("body").className = "theme-light-1";
@@ -40,10 +52,6 @@ function MyApp({
       const theme = event.matches ? "theme-light-2" : "theme-dark-3";
       document.querySelector("body").className = theme;
     });
-
-    router.events.on("routeChangeStart", progress.start);
-    router.events.on("routeChangeComplete", progress.finish);
-    router.events.on("routeChangeError", progress.finish);
 
     return () => {
       router.events.off("routeChangeStart", progress.start);

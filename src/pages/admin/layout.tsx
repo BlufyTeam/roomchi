@@ -36,14 +36,17 @@ export default function AdminMainLayout({ children }: any): any {
   const session = useSession();
   if (session.status === "loading") return "loading";
 
+  const currentMenuItem = menuList.find(
+    (a) => a.link == getPathName(router.asPath)
+  );
   return (
     <div className="flex h-screen w-full flex-col items-center gap-10 bg-secondary ">
       <div className="flex w-full items-center justify-center border-b border-b-primary/20 ">
         <Container className="flex flex-col gap-5 ">
           <div className="py-8" dir="rtl">
             <span className="text-accent">
-              {session.data.user.name} /{" "}
-              {menuList.find((a) => a.link == getPathName(router.asPath)).value}
+              {session.data.user.name}
+              {currentMenuItem && " / " + currentMenuItem.value}
             </span>
           </div>
 
