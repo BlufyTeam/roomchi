@@ -40,6 +40,16 @@ model Account {
     @@unique([provider, providerAccountId])
 }
 
+model Resource {
+    id          String  @id @default(cuid())
+    name        String
+    is_active   Boolean
+    number      Int
+    description String
+    room        Room    @relation(fields: [roomId], references: [id])
+    roomId      String
+}
+
 model Plan {
     id             String   @id @default(cuid())
     user           User     @relation(fields: [userId], references: [id])
@@ -52,14 +62,15 @@ model Plan {
 }
 
 model Room {
-    id          String  @id @default(cuid())
-    company     Company @relation(fields: [companyId], references: [id])
+    id          String     @id @default(cuid())
+    company     Company    @relation(fields: [companyId], references: [id])
     companyId   String
     logo_rule   String
     description String
     price       Int
     capacity    Int
     Plan        Plan[]
+    Resource    Resource[]
 }
 
 model Company {
@@ -75,23 +86,22 @@ model Company {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    username      String
-    password      String
-    description   String
-    is_active     Boolean
-    emailVerified DateTime?
-    image         String?
-    company       Company   @relation(fields: [companyId], references: [id])
-    companyId     String
-    sessions      Session[]
-
-    created_at DateTime  @default(now())
-    updated_at DateTime  @updatedAt()
-    Account    Account[]
-    Plan       Plan[]
+    id          String    @id @default(cuid())
+    name        String?
+    email       String?   @unique
+    username    String    @unique
+    password    String
+    description String?
+    is_active   Boolean   @default(true)
+    image_url   String?
+    company     Company?  @relation(fields: [companyId], references: [id])
+    companyId   String?
+    sessions    Session[]
+    role        String    @default("USER")
+    created_at  DateTime  @default(now())
+    updated_at  DateTime? @updatedAt()
+    Account     Account[]
+    Plan        Plan[]
 }
 
 model Session {
