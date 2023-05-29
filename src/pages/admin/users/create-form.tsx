@@ -140,9 +140,11 @@ export function CreateUserForm() {
               return (
                 <>
                   <Button
-                    className={`${
+                    className={`
+                    rounded-full px-5
+                    ${
                       isSelected
-                        ? "bg-accent text-primbuttn"
+                        ? "bg-accent text-secbuttn"
                         : "bg-secbuttn text-primbuttn"
                     }  `}
                   >
