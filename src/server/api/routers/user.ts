@@ -4,22 +4,14 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { createUserSchema } from "~/server/validations/user.validation";
 
 export const userRouter = createTRPCRouter({
   getUser: protectedProcedure.query(({ ctx }) => {
     return ctx.session.user;
   }),
   createUser: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        email: z.string().email(),
-        username: z.string().min(3, "یوزرنیم نمیتواند کمتر از 3 حرف باشد"),
-        password: z.string().min(6, "پسورد نمیتواند کمتر از 6 حرف باشد."),
-        description: z.string(),
-        role: z.enum(["ADMIN", "USER"]),
-      })
-    )
+    .input(createUserSchema)
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.user.create({
         data: {

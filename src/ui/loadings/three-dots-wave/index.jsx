@@ -39,7 +39,8 @@ const DotVariants = {
 
 const DotTransition = {
   duration: 0.5,
-  yoyo: Infinity,
+  repeat: Infinity,
+  repeatType: "reverse",
   ease: "easeInOut",
 };
 
@@ -61,19 +62,19 @@ export default function ThreeDotsWave() {
         animate="animate"
       >
         <motion.span
-          className="bg-atysa-main"
+          className="bg-accent"
           style={LoadingDot}
           variants={DotVariants}
           transition={DotTransition}
         />
         <motion.span
-          className="bg-atysa-main"
+          className="bg-accent"
           style={LoadingDot}
           variants={DotVariants}
           transition={DotTransition}
         />
         <motion.span
-          className="bg-atysa-main"
+          className="bg-accent"
           style={LoadingDot}
           variants={DotVariants}
           transition={DotTransition}

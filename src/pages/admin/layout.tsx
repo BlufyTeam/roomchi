@@ -7,6 +7,7 @@ import { LayoutGroup, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { getPathName } from "~/utils/util";
+import { Container, ContainerBottomBorder } from "~/ui/containers";
 
 const menuList = [
   {
@@ -20,6 +21,8 @@ const menuList = [
   {
     value: "کاربر ها",
     link: "users",
+    description: `در این بخش می توانید کاربر های مد نظر خود را بسازید، ویرایش کنید و
+    یا حذف کنید و تنظیمات مربوط به آن ها را تغییر دهید`,
   },
   {
     value: "نظارت",
@@ -39,33 +42,45 @@ export default function AdminMainLayout({ children }: any): any {
   const currentMenuItem = menuList.find(
     (a) => a.link == getPathName(router.asPath)
   );
+
   return (
-    <div className="flex h-screen w-full flex-col items-center gap-10 bg-secondary ">
-      <div className="flex w-full items-center justify-center border-b border-b-primary/20 ">
+    <div className="flex h-full w-full flex-col items-center bg-secondary ">
+      <ContainerBottomBorder>
         <Container className="flex flex-col gap-5 ">
           <div className="py-8" dir="rtl">
-            <span className="text-accent">
+            <Link href={"/admin"} className="text-accent">
               {session.data.user.name}
+            </Link>
+            <span className="text-accent/80">
               {currentMenuItem && " / " + currentMenuItem.value}
             </span>
           </div>
 
           <Menu list={menuList} />
         </Container>
-      </div>
+      </ContainerBottomBorder>
+      {currentMenuItem && (
+        <LayoutSubContainer currentMenuItem={currentMenuItem} />
+      )}
 
       {children}
     </div>
   );
 }
-function Container({ children, className = "", rtl = false }) {
+function LayoutSubContainer({ currentMenuItem }) {
   return (
-    <div className={twMerge("w-11/12", className)} dir={rtl ? "rtl" : ""}>
-      {children}
-    </div>
+    <ContainerBottomBorder>
+      <Container className="flex flex-col gap-5 px-5 py-10 ">
+        <h1 className=" text-primary">{currentMenuItem.value}</h1>
+        {currentMenuItem.description && (
+          <p className="text-sm text-primbuttn">
+            {currentMenuItem.description}
+          </p>
+        )}
+      </Container>
+    </ContainerBottomBorder>
   );
 }
-
 function Menu({ list = [] }) {
   const [activeIndex, setActiveIndex] = useState(-1);
   const router = useRouter();
@@ -73,7 +88,7 @@ function Menu({ list = [] }) {
 
   return (
     <motion.div
-      className="relative flex w-fit cursor-pointer items-end justify-center gap-3 "
+      className="group relative flex w-fit cursor-pointer items-end justify-center gap-3"
       onHoverEnd={() => {
         setActiveIndex(-1);
       }}
@@ -116,15 +131,19 @@ function MenuItem({
       >
         {isHovered && (
           <motion.div
-            transition={{ duration: 0.15 }}
+            transition={{
+              duration: 0.15,
+            }}
             layoutId="bg-follower"
-            initial={false}
-            className="absolute inset-0 -z-10 h-[80%] rounded-md bg-primbuttn/30"
+            className="absolute inset-0 -z-10 h-[80%] rounded-md bg-primbuttn/30 opacity-0 transition-opacity duration-1000 group-hover:opacity-100 "
           />
         )}
 
         {isActive && (
-          <div className="absolute -bottom-[2px] left-0 -z-10 h-[3px]  w-full  rounded-full bg-primbuttn " />
+          <motion.div
+            layoutId="underline"
+            className="absolute -bottom-[2px] left-0 -z-10 h-[3px]  w-full  rounded-full bg-primbuttn"
+          />
         )}
 
         <span className=" duration-100 ">{text}</span>

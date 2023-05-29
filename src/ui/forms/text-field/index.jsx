@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 export default function TextField({
-  children,
+  children = <></> || "",
   extraClass = "rounded-t-lg",
   bg = "bg-secondary",
   className = ` placeholder:opacity-0
@@ -13,17 +13,17 @@ export default function TextField({
     text-sm 
     text-primary font-bold 
   
-    border-b-2 border-gray-300 appearance-none 
+    border-b-2 border-primary appearance-none 
    focus:border-accent focus:outline-none focus:ring-0  peer`,
   value = "",
   placeholder = " ",
   isRtl = true,
   min = 0,
   max = 1000,
-  onChange = () => {},
+  onChange = (value) => {},
   focused = false,
   onFocus = () => {},
-  onBlur = () => {},
+
   ...rest
 }) {
   function parse(value) {
@@ -63,9 +63,11 @@ export default function TextField({
         }}
         onBlur={() => {
           placeholderRef.current.style.opacity = 0;
-          onBlur();
         }}
-        onChange={(e) => onChange(parse(e.target.value))}
+        onChange={(e) => {
+          // onChange(parse(e.target.value));
+          onChange(e);
+        }}
         {...rest}
       />
 

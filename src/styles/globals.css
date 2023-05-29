@@ -10,11 +10,6 @@
 }
 
 .theme-light-2 {
-  /* --static: rgba(225, 225, 225, 0.5);
-  --static4: rgba(225, 225, 225, 0.2);
-  --static3: #ffffff;
-  --static2: #0f0f0f;
-  --static5: rgb(24, 172, 122); */
   --primary: 36, 34, 27;
   --secondary: 228, 220, 201;
   --primbuttn: 36, 34, 27;
@@ -22,7 +17,7 @@
   --accent: 36, 34, 27;
 }
 .theme-light-3 {
-  --primaryRGB: 0, 0, 0;
+  --primary: 0, 0, 0;
   --secondary: 237, 248, 243;
   --primbuttn: 29, 70, 73;
   --secbuttn: 215, 225, 239;
@@ -76,7 +71,11 @@ h6,
 span,
 p,
 a,
-li {
+label,
+input,
+button,
+li,
+div {
   font-family: "Iransans";
 }
 
@@ -86,4 +85,56 @@ li {
 
 .ltr {
   direction: ltr;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: #ffffff;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+#__next {
+  @apply min-h-screen;
+  @apply flex;
+  @apply flex-col;
+  @apply justify-start;
+  @apply items-center;
+  @apply bg-secondary;
+  @apply -z-50;
+}
+
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #bababaac transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 9px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #bababaac;
+  border-radius: 10px;
+  border: 3px solid transparent;
+  transition: opacity 0.5s 0.5s ease-out;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #000000;
 }

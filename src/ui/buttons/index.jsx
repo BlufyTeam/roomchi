@@ -2,10 +2,11 @@ import React from "react";
 //import Circle  from "ui/icons/loadings/circle";
 import ThreeDotsWave from "~/ui/loadings/three-dots-wave";
 import { motion } from "framer-motion";
+import { twMerge } from "tailwind-merge";
 
 export default function Button({
   children,
-  type = "button" || "reset" || "submit",
+  type = "button",
   disabled = false,
   isLoading = false,
   className = "",
@@ -14,7 +15,7 @@ export default function Button({
   ...rest
 }) {
   const enabldedClass = `${className}   hover:bg-opacity-95 cursor-pointer`;
-  const busyClass = `bg-gray-200 text-gray-500 cursor-not-allowed`;
+  const busyClass = `bg-gray-200 text-gray-500 cursor-not-allowed w-full`;
   return (
     <motion.button
       whileTap={{
@@ -25,12 +26,14 @@ export default function Button({
       }}
       disabled={disabled}
       dir="rtl"
+      //@ts-ignore
       type={type}
       onClick={onClick}
-      className={`
-       duration-400 relative flex select-none items-center justify-center rounded-lg p-2 transition-all
-      ${extraClass}
-      ${!disabled ? enabldedClass : busyClass}`}
+      className={twMerge(
+        "duration-400 relative flex select-none items-center justify-center rounded-lg p-2 transition-all",
+        extraClass,
+        !disabled ? enabldedClass : busyClass
+      )}
       {...rest}
     >
       {children}

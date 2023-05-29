@@ -9,9 +9,7 @@ export default function SettingsPage() {
   return (
     <AdminMainLayout>
       <span className="text-primary">Settings</span>
-      <div className="relative">
-        <TextFieldWithLable label="نام" />
-      </div>
+      <div className="relative">{/* <TextFieldWithLable label="نام" /> */}</div>
     </AdminMainLayout>
   );
 }

@@ -3,13 +3,22 @@ import { useEffect, useRef } from "react";
 export default function TextAreaField({
   children,
   extraClass = "",
-  bg = "bg-gray-50",
-  className = " placeholder:opacity-0 focus:placeholder:opacity-100 selection:text-white selection:bg-atysa-900 block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900  dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:border-atysa-main focus:outline-none focus:ring-0 focus:border-atysa-second peer",
+  bg = "bg-secondary",
+  className = ` placeholder:opacity-0
+   focus:placeholder:opacity-100 
+   selection:text-white selection:bg-primary
+    block px-2.5 pb-2.5 pt-5 
+    w-full 
+    text-sm 
+    text-primary font-bold 
+  
+    border-b-2 border-primary appearance-none 
+   focus:border-accent focus:outline-none focus:ring-0  peer`,
   value = "",
   placeholder = " ",
   isRtl = true,
-  rows = {},
-  cols = {},
+  rows,
+  cols,
   onChange = (value) => {},
   focused = false,
   onFocus = () => {},
@@ -41,7 +50,6 @@ export default function TextAreaField({
         rows={rows}
         cols={cols}
         ref={ref}
-        type="text"
         className={`${direction} ${className} ${bg} ${extraClass}`}
         placeholder={" "}
         value={value}
@@ -52,32 +60,31 @@ export default function TextAreaField({
         }}
         onBlur={() => {
           placeholderRef.current.style.opacity = 0;
-          onBlur();
         }}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange(e)}
         {...rest}
       />
 
       <label
         ref={placeholderRef}
         onClick={() => ref.current.focus()}
-        className="placeholder absolute
-       text-sm
-    text-gray-500
-    dark:text-gray-400
-       duration-300
+        className="placeholder mobileMax:peer-focus:opacity-100
+       absolute
+    right-2.5
+    top-9
+       origin-top-right
+        -translate-y-4
+       scale-75 
         transform
-       -translate-y-4 
-        scale-75
-        top-9 
-        origin-top-right 
-        right-2.5
-       peer-focus:text-blue-400
-       peer-focus:dark:text-blue-200
-        peer-placeholder-shown:scale-100  
-         
+        text-sm 
+        text-gray-500 
         opacity-0
-        mobileMax:peer-focus:opacity-100"
+       duration-300
+       peer-placeholder-shown:scale-100
+        peer-focus:text-blue-400  
+         
+        dark:text-gray-400
+        peer-focus:dark:text-blue-200"
       >
         {placeholder}
       </label>
