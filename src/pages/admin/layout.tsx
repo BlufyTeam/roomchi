@@ -72,32 +72,30 @@ function Menu({ list = [] }) {
   const pathName = getPathName(router.asPath);
 
   return (
-    <LayoutGroup id="a">
-      <motion.div
-        className="relative flex w-fit cursor-pointer items-end justify-center gap-3 "
-        onHoverEnd={() => {
-          setActiveIndex(-1);
-        }}
-      >
-        {list.map((item, i) => {
-          return (
-            <motion.span
-              key={i}
-              onHoverStart={() => {
-                setActiveIndex(i);
-              }}
-            >
-              <MenuItem
-                text={item.value}
-                link={item.link}
-                isHovered={activeIndex === i}
-                isActive={pathName === item.link}
-              />
-            </motion.span>
-          );
-        })}
-      </motion.div>
-    </LayoutGroup>
+    <motion.div
+      className="relative flex w-fit cursor-pointer items-end justify-center gap-3 "
+      onHoverEnd={() => {
+        setActiveIndex(-1);
+      }}
+    >
+      {list.map((item, i) => {
+        return (
+          <motion.span
+            key={i}
+            onHoverStart={() => {
+              setActiveIndex(i);
+            }}
+          >
+            <MenuItem
+              text={item.value}
+              link={item.link}
+              isHovered={activeIndex === i}
+              isActive={pathName === item.link}
+            />
+          </motion.span>
+        );
+      })}
+    </motion.div>
   );
 }
 
@@ -106,7 +104,6 @@ function MenuItem({
   link,
   isHovered = false,
   isActive = false,
-  inital = false,
   onHover = () => {},
 }) {
   const activeClass = "text-primary";
@@ -122,15 +119,15 @@ function MenuItem({
             transition={{ duration: 0.15 }}
             layoutId="bg-follower"
             initial={false}
-            className="absolute inset-0 -z-10 h-[80%] rounded-md bg-primbuttn/30 "
-          ></motion.div>
+            className="absolute inset-0 -z-10 h-[80%] rounded-md bg-primbuttn/30"
+          />
         )}
 
         {isActive && (
-          <div className="absolute bottom-0 left-0 -z-10 h-[2px]  w-full  rounded-full bg-primbuttn " />
+          <div className="absolute -bottom-[2px] left-0 -z-10 h-[3px]  w-full  rounded-full bg-primbuttn " />
         )}
 
-        <motion.span className=" duration-100 ">{text}</motion.span>
+        <span className=" duration-100 ">{text}</span>
       </div>
     </Link>
   );
