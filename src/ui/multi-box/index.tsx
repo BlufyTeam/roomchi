@@ -10,7 +10,7 @@ export default function MultiBox({
   onClick = (value) => {},
   onContextMenu = (value) => {},
   onChange = (result) => {},
-  renderItem = (value, isSelected = (item) => false) => value,
+  renderItem = (value, isSelected) => value,
 }) {
   const listWithKey = useMemo(
     () =>

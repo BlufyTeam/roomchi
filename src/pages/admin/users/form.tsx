@@ -12,51 +12,69 @@ import PasswordField from "~/ui/forms/password-field";
 import MultiBox from "~/ui/multi-box";
 import { api } from "~/utils/api";
 import InputError from "~/ui/forms/input-error";
+import { ROLES } from "~/server/constants";
+import { User } from "~/types";
 
 const TextFieldWithLable = withLabel(TextField);
 // const TextAreaWithLable = withLabel(TextAreaField);
 
-const ROLES = [
-  {
-    id: 0,
-    value: {
-      key: "USER",
-      name: "کاربر",
-    },
-  },
-  {
-    id: 1,
-    value: {
-      key: "ADMIN",
-      name: "ادمین",
-    },
-  },
-];
-
-export function CreateUserForm() {
+export function UserForm({
+  user,
+  onClearUser = () => {},
+}: {
+  user?: User | undefined;
+  onClearUser?: () => any;
+}) {
   const createUser = api.user.createUser.useMutation();
+  const updateUser = api.user.updateUser.useMutation();
+
   const formik = useFormik({
     initialValues: {
-      name: "",
-      email: "ali@gmail.com",
-      username: "",
-      password: "",
-      description: "",
-      role: "USER",
+      name: user?.name || "",
+      email: user?.email || "",
+      username: user?.username || "",
+      password: user?.password || "",
+      description: user?.description || "",
+      role: user?.role || "USER",
     },
+
     validationSchema: toFormikValidationSchema(createUserSchema),
     validateOnBlur: true,
     onSubmit: (values: typeof createUserSchema._type) => {
-      createUser.mutate({
+      if (!user)
+        return createUser.mutate({
+          name: values.name,
+          username: values.username,
+          password: values.password,
+          email: values.email,
+          description: values.description,
+          role: values.role || "USER",
+        });
+
+      return updateUser.mutate({
+        id: user.id,
         name: values.name,
         username: values.username,
         password: values.password,
         email: values.email,
         description: values.description,
-        role: values.role ?? "USER",
+        role: values.role || "USER",
       });
     },
   });
+
+  useEffect(() => {
+    formik.setValues((a) => {
+      return {
+        name: user?.name || "",
+        email: user?.email || "",
+        username: user?.username || "",
+        password: user?.password || "",
+        description: user?.description || "",
+        role: user?.role || "USER",
+      };
+    });
+  }, [user]);
 
   return (
     <>
@@ -66,7 +84,14 @@ export function CreateUserForm() {
         }}
         className="flex flex-col items-center justify-center gap-8"
       >
-        <h3 className="w-full pb-2 text-accent">ساخت کاربر</h3>
+        {user && (
+          <Button onClick={onClearUser} className="bg-accent text-secbuttn">
+            ساخت کاربر +
+          </Button>
+        )}
+        <h3 className="w-full pb-2 text-accent">
+          {user ? "ویرایش کاربر" : "ساخت کاربر"}
+        </h3>
         <div className="w-full ">
           <TextFieldWithLable
             label={"نام"}
@@ -121,7 +146,46 @@ export function CreateUserForm() {
 
         <div className="flex w-full flex-col items-start justify-start gap-5">
           <label className="text-primary">نقش کاربر</label>
-          <MultiBox
+          <select
+            name="role"
+            id="role"
+            className="w-full rounded-full bg-accent p-2 text-primary "
+            {...formik.getFieldProps("role")}
+          >
+            {ROLES.map((role) => {
+              return (
+                <>
+                  <option
+                    selected={role.value.key === formik.values.role}
+                    key={role.id}
+                    value={role.value.key}
+                  >
+                    {role.value.name}
+                  </option>
+                </>
+              );
+            })}
+          </select>
+          {/* <MultiSelectBox
+            values={ROLES.filter(
+              (role) => role.value.key === formik.values.role
+            ).map((a) => a.value.key)}
+            list={ROLES.map((item) => {
+              return {
+                key: item.value.key,
+                value: item.value.name,
+              };
+            })}
+            onChange={(values) =>
+              formik.setValues((values) => {
+                return {
+                  ...values,
+                  role: values[0],
+                };
+              })
+            }
+          /> */}
+          {/* <MultiBox
             min={1}
             onChange={(result) => {
               formik.setValues((values) => {
@@ -133,9 +197,11 @@ export function CreateUserForm() {
             }}
             className="flex items-center justify-center gap-3"
             list={ROLES}
-            initialKeys={[
-              ROLES.find((a) => a.value.key === formik.values.role)?.id || 0,
-            ]}
+            initialKeys={ROLES.filter(
+              (role) =>
+                role.id ===
+                ROLES.find((a) => a.value.key === formik.values.role).id
+            )}
             renderItem={(role, isSelected) => {
               return (
                 <>
@@ -148,23 +214,63 @@ export function CreateUserForm() {
                         : "bg-secbuttn text-primbuttn"
                     }  `}
                   >
+                    {isSelected + ""}
                     {role.value.name}
                   </Button>
                 </>
               );
             }}
-          />
+          /> */}
         </div>
 
         <Button
           disabled={createUser.isLoading || !formik.isValid}
-          isLoading={createUser.isLoading}
+          isLoading={createUser.isLoading || updateUser.isLoading}
           type="submit"
           className="w-full rounded-xl bg-primbuttn text-secondary"
         >
-          ثبت
+          {user ? "ویرایش" : "ثبت"}
         </Button>
       </form>
+    </>
+  );
+}
+
+export default function MultiSelectBox({
+  className = "bg-green-700 text-white shadow-2xl shadow-green-700",
+  values = [],
+  list = [],
+  onChange = (value) => {},
+}) {
+  const [selectedKeys, setSelectedKeys] = useState(values);
+  const isSelected = (key) => selectedKeys.includes(key);
+
+  useEffect(() => {
+    onChange(selectedKeys);
+  }, [selectedKeys]);
+  return (
+    <>
+      <div className="flex gap-2">
+        {list.map((item) => {
+          return (
+            <span
+              className={`${
+                isSelected(item.key) ? className : "ring-1 ring-gray-300"
+              } w-auto cursor-pointer select-none rounded-full  px-3 py-2 text-primary hover:shadow-md`}
+              key={item.key}
+              onClick={() => {
+                setSelectedKeys((prev) => {
+                  return prev.includes(item.key)
+                    ? [...prev.filter((i) => i !== item.key)]
+                    : [...prev, item.key];
+                });
+              }}
+            >
+              {item.value}
+            </span>
+          );
+        })}
+      </div>
     </>
   );
 }

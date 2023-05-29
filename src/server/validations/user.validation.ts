@@ -14,3 +14,5 @@ export const createUserSchema = z.object({
   description: z.string().optional(),
   role: z.enum(["ADMIN", "USER"]),
 });
+
+export const updateUserSchema = createUserSchema.extend({ id: z.string() });

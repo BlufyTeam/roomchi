@@ -4,7 +4,10 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { createUserSchema } from "~/server/validations/user.validation";
+import {
+  createUserSchema,
+  updateUserSchema,
+} from "~/server/validations/user.validation";
 
 export const userRouter = createTRPCRouter({
   getUser: protectedProcedure.query(({ ctx }) => {
@@ -25,12 +28,28 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+  updateUser: protectedProcedure
+    .input(updateUserSchema)
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.user.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          email: input.email,
+          username: input.username,
+          password: input.password,
+          description: input.description,
+          role: input.role,
+        },
+      });
+    }),
   getUsers: publicProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.string().nullish(),
-        role: z.enum(["USER", "ADMIN"]),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -40,9 +59,7 @@ export const userRouter = createTRPCRouter({
         (await ctx.prisma.user.findMany({
           take: limit + 1, // get an extra item at the end which we'll use as next cursor
           cursor: cursor ? { id: cursor } : undefined,
-          where: {
-            role: input.role,
-          },
+
           orderBy: {
             created_at: "asc",
           },
