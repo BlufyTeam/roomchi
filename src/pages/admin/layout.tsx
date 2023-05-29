@@ -44,7 +44,7 @@ export default function AdminMainLayout({ children }: any): any {
   );
 
   return (
-    <div className="flex h-full w-full flex-col items-center bg-secondary ">
+    <div className="flex min-h-screen w-full flex-col items-center bg-secondary ">
       <ContainerBottomBorder>
         <Container className="flex flex-col gap-5 ">
           <div className="py-8" dir="rtl">
