@@ -58,20 +58,14 @@ export const authOptions: NextAuthOptions = {
           },
         });
         if (user)
-          if ((user?.password, credentials.password))
-            // Any object returned will be saved in `user` property of the JWT
-            return user;
-        // If you return null then an error will be displayed advising the user to check their details.
-        const news = await prisma.user.create({
-          data: {
-            username: credentials.username,
-            password: credentials.password,
-          },
-        });
-        console.log({ news });
-        return news;
+          if ((user?.password, credentials.password)){  return user;}else{
+            return {message:'user not found'}
+          }
+          
+          
+      
 
-        // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+      
       },
     }),
   ],
