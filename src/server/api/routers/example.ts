@@ -8,14 +8,20 @@ import {
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
+    .query(({ input ,ctx}) => {
+    
       return {
         greeting: `Hello ${input.text}`,
       };
     }),
 
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
+  getAll: publicProcedure.input(z.object({ id: z.string() })).query(({ input,ctx }) => {
+
+    return ctx.prisma.user.findUnique({
+      where: {
+        id:input.id,
+      },
+    })
   }),
 
   getSecretMessage: protectedProcedure.query(() => {
