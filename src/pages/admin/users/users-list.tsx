@@ -97,7 +97,6 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
         {...{
           columns: flatUsers.length > 0 ? columns : [],
           data: flatUsers,
-          title: "جزئیات سفارش",
         }}
         onClick={(cell) => {
           const user: User = cell.row.original;
