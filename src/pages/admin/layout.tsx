@@ -88,7 +88,7 @@ function Menu({ list = [] }) {
 
   return (
     <motion.div
-      className="group relative flex w-fit cursor-pointer items-end justify-center gap-3"
+      className="group relative flex w-full cursor-pointer items-end justify-center gap-3 overflow-hidden overflow-x-auto scrollbar-none md:w-fit"
       onHoverEnd={() => {
         setActiveIndex(-1);
       }}
@@ -96,6 +96,7 @@ function Menu({ list = [] }) {
       {list.map((item, i) => {
         return (
           <motion.span
+            className="flex min-w-fit"
             key={i}
             onHoverStart={() => {
               setActiveIndex(i);
