@@ -124,6 +124,8 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
                 <ButtonWithConfirmation
                   isLoading={deleteUser.isLoading}
                   onClick={async () => {
+                    if (navigator && !navigator.onLine)
+                      return alert("شما آفلاین هستید");
                     await deleteUser.mutateAsync({ id: user.id });
                     router.replace(`/admin/users/`, `/admin/users/`);
                   }}

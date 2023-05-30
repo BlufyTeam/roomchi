@@ -129,9 +129,9 @@ export default function Modal({
   useIsomorphicLayoutEffect(() => {
     setMounted(true);
 
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    }
+    // if (isOpen) {
+    //   document.body.style.overflow = "hidden";
+    // }
     //  setY(modal.current.y);
   }, [isOpen]);
 
