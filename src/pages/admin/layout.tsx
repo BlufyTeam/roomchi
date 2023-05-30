@@ -143,7 +143,7 @@ function MenuItem({
         {isActive && (
           <motion.div
             layoutId="underline"
-            className="absolute -bottom-[2px] left-0 -z-10 h-[3px]  w-full  rounded-full bg-primbuttn"
+            className="z- absolute -bottom-[2px] left-0 h-[3px]  w-full rounded-full bg-primbuttn"
           />
         )}
 

@@ -85,7 +85,10 @@ export function UserForm({
         className="flex flex-col items-center justify-center gap-8"
       >
         {user && (
-          <Button onClick={onClearUser} className="bg-accent text-secbuttn">
+          <Button
+            onClick={onClearUser}
+            className="border border-accent/50 bg-secondary text-primbuttn hover:bg-primary hover:text-secbuttn"
+          >
             ساخت کاربر +
           </Button>
         )}
