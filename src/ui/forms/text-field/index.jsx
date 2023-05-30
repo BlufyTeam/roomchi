@@ -3,18 +3,17 @@ import { twMerge } from "tailwind-merge";
 
 export default function TextField({
   children = <></> || "",
-  extraClass = "rounded-t-lg",
-  bg = "bg-secondary",
-  className = ` placeholder:opacity-0
+
+  className = `bg-transparent placeholder:opacity-0
    focus:placeholder:opacity-100 
-   selection:text-white selection:bg-primary
+   selection:text-secondry selection:bg-primary
     block px-2.5 pb-2.5 pt-5 
     w-full 
     text-sm 
     text-primary font-bold 
   
     border-b-2 border-primary appearance-none 
-   focus:border-accent focus:outline-none focus:ring-0  peer`,
+   focus:border-accent focus:outline-none focus:ring-0  peer rounded-t-lg`,
   value = "",
   placeholder = " ",
   isRtl = true,
@@ -53,7 +52,7 @@ export default function TextField({
         dir={isRtl ? "rtl" : "ltr"}
         ref={ref}
         type="text"
-        className={twMerge(direction, className, bg, extraClass)}
+        className={twMerge(direction, className)}
         placeholder={" "}
         value={value}
         autoComplete="off"
@@ -74,20 +73,20 @@ export default function TextField({
       <label
         ref={placeholderRef}
         onClick={() => ref.current.focus()}
-        className="placeholder mobileMax:peer-focus:opacity-100
-       absolute
-    right-2.5
+        className="placeholder absolute
+       right-2.5
     top-9
-       origin-top-right
-        -translate-y-4
-       scale-75 
-        transform
-        text-sm 
-        text-secondary
+    origin-top-right
+       -translate-y-4
+        scale-75
+       transform 
+        text-sm
+        text-secondary 
         opacity-0
-       duration-300
-         peer-placeholder-shown:scale-100
-        peer-focus:text-secondary 
+        duration-300
+       peer-placeholder-shown:scale-100
+         peer-focus:text-secondary
+        mobileMax:peer-focus:opacity-100 
        "
       >
         {placeholder}

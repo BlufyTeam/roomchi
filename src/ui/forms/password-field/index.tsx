@@ -9,7 +9,7 @@ const TextAreaWithLable = withLabel(TextField);
 export default function PasswordField({ ...rest }) {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex  items-center justify-center">
+    <div className="flex  items-center justify-center gap-2">
       <TextFieldWithLable {...rest} type={isOpen ? "text" : "password"} />
       <Button
         className="rounded-full bg-primbuttn fill-secbuttn p-1 "

@@ -1,7 +1,9 @@
 import { type NextPage } from "next";
+import { getServerSession } from "next-auth";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import { authOptions } from "~/server/auth";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
@@ -68,9 +70,7 @@ const AuthShowcase: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
-        {sessionData && (
-          <span>Logged in as {sessionData.user?.username}</span>
-        )}
+        {sessionData && <span>Logged in as {sessionData.user?.username}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
       <button
@@ -82,3 +82,20 @@ const AuthShowcase: React.FC = () => {
     </div>
   );
 };
+
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: `/${session.user.role.toLocaleLowerCase()}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

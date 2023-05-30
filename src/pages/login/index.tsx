@@ -1,10 +1,25 @@
 import { getServerSession } from "next-auth";
-import React from "react";
+import React, { useState } from "react";
 import { authOptions } from "~/server/auth";
+import TextField from "~/ui/forms/text-field";
+import TextAreaField from "~/ui/forms/textarea-field";
+import withLabel from "~/ui/forms/with-label";
+import Button from "~/ui/buttons";
+import PasswordField from "~/ui/forms/password-field";
+import MultiBox from "~/ui/multi-box";
+import { api } from "~/utils/api";
+import InputError from "~/ui/forms/input-error";
+import { ROLES } from "~/server/constants";
+import { User } from "~/types";
+import { toFormikValidationSchema } from "zod-formik-adapter";
+import { userLoginSchema } from "~/server/validations/user.validation";
+import { useFormik } from "formik";
+import { signIn } from "next-auth/react";
 
+const TextFieldWithLable = withLabel(TextField);
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen w-full flex-col items-center bg-secondary ">
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-secondary ">
       <div
         className="pointer-events-none absolute inset-x-0 transform-gpu overflow-hidden blur-3xl sm:-top-80"
         aria-hidden="true"
@@ -17,6 +32,88 @@ export default function LoginPage() {
           }}
         />
       </div>
+
+      <LoginForm />
     </div>
   );
+}
+
+export function LoginForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+
+    validationSchema: toFormikValidationSchema(userLoginSchema),
+    validateOnBlur: true,
+    onSubmit: async (values: typeof userLoginSchema._type) => {
+      setIsLoading(true);
+      const result = await signIn("credentials", {
+        username: formik.values.username,
+        password: formik.values.password,
+        callbackUrl: `${window.location.origin}/`,
+        redirect: true,
+      });
+      setIsLoading(false);
+    },
+  });
+
+  return (
+    <>
+      <form
+        className="flex flex-col items-center justify-center gap-5 rounded-3xl bg-accent/5 p-5 backdrop-blur-xl"
+        onSubmit={formik.handleSubmit}
+      >
+        <h1 className="text-primary">ورود</h1>
+        <div className="w-full ">
+          <TextFieldWithLable
+            label={"نام کاربری"}
+            name="username"
+            id="username"
+            {...formik.getFieldProps("username")}
+          />
+          <InputError message={formik.errors.username} />
+        </div>
+        <div className="relative w-full">
+          <PasswordField
+            label={"رمز عبور"}
+            name="password"
+            id="password"
+            type="password"
+            {...formik.getFieldProps("password")}
+          />
+
+          <InputError message={formik.errors.password} />
+        </div>
+
+        <Button
+          disabled={isLoading}
+          isLoading={isLoading}
+          type="submit"
+          className="w-full rounded-xl bg-primbuttn text-secondary"
+        >
+          ورود
+        </Button>
+      </form>
+    </>
+  );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: `/${session.user.role.toLocaleLowerCase()}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 }

@@ -58,14 +58,11 @@ export const authOptions: NextAuthOptions = {
           },
         });
         if (user)
-          if ((user?.password, credentials.password)){  return user;}else{
-            return {message:'user not found'}
+          if ((user?.password, credentials.password)) {
+            return user;
+          } else {
+            return { message: "user not found" };
           }
-          
-          
-      
-
-      
       },
     }),
   ],
@@ -88,6 +85,9 @@ export const authOptions: NextAuthOptions = {
       delete token.user.password;
       return token;
     },
+  },
+  pages: {
+    signIn: "/login", // this will allow us to use our own login page
   },
 };
 
