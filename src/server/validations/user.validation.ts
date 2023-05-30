@@ -16,3 +16,5 @@ export const createUserSchema = z.object({
 });
 
 export const updateUserSchema = createUserSchema.extend({ id: z.string() });
+
+export const userIdSchema = z.object({id:z.string({ required_error: "این فیلد اجباری است" })})

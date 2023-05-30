@@ -7,6 +7,7 @@ import {
 import {
   createUserSchema,
   updateUserSchema,
+  userIdSchema
 } from "~/server/validations/user.validation";
 
 export const userRouter = createTRPCRouter({
@@ -73,5 +74,14 @@ export const userRouter = createTRPCRouter({
         items,
         nextCursor,
       };
+    }),
+    deleteUser: protectedProcedure
+    .input(userIdSchema)
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.user.delete({
+        where: {
+          id: input.id,
+        },
+      });
     }),
 });
