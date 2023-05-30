@@ -74,7 +74,11 @@ export default function Table({
                   const { key, ...restRowProps } = row.getRowProps();
                   return (
                     // Apply the row props
-                    <tr key={key} {...restRowProps}>
+                    <tr
+                      key={key}
+                      {...restRowProps}
+                      className="hover:bg-primary/5"
+                    >
                       {
                         // Loop over the rows cells
                         row.cells.map((cell) => {
@@ -85,7 +89,7 @@ export default function Table({
                               onClick={() => onClick(cell)}
                               key={key}
                               {...restCellProps}
-                              className="whitespace-no-wrap cursor-pointer px-6 py-4 text-sm font-medium leading-5 text-primary"
+                              className="whitespace-no-wrap cursor-pointer px-6 py-4 text-sm font-medium leading-5 text-primary "
                             >
                               {
                                 // Render the cell contents

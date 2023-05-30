@@ -130,7 +130,7 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
                     router.replace(`/admin/users/`, `/admin/users/`);
                   }}
                   title="حذف کاربر"
-                  className="w-full cursor-pointer rounded-full bg-primary px-2 py-2 text-secbuttn  "
+                  className="w-full cursor-pointer rounded-full bg-primary px-2 py-2 text-secbuttn"
                 >
                   حذف
                 </ButtonWithConfirmation>
