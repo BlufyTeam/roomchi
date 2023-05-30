@@ -1,5 +1,6 @@
 import { User } from "@prisma/client";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 import Table from "~/features/table";
 import { ROLES } from "~/server/constants";
@@ -11,6 +12,8 @@ import { api } from "~/utils/api";
 const ButtonWithConfirmation = withConfirmation(Button);
 
 export default function UsersList({ onRowClick = (user: User) => {} }) {
+  const deleteUser = api.user.deleteUser.useMutation();
+  const router = useRouter();
   const users = api.user.getUsers.useInfiniteQuery(
     {
       limit: 10,
@@ -91,7 +94,11 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
                   ورود
                 </Button>
                 <ButtonWithConfirmation
-                  onClick={async () => {}}
+                  isLoading={deleteUser.isLoading}
+                  onClick={async () => {
+                    await deleteUser.mutateAsync({ id: user.id });
+                    router.replace(`/admin/users/`, `/admin/users/`);
+                  }}
                   title="حذف کاربر"
                   className="w-full cursor-pointer rounded-full bg-primary px-2 py-2 text-secbuttn  "
                 >
