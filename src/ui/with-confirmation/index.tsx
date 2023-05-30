@@ -26,7 +26,7 @@ export default function withConfirmation(Component) {
                   setIsOpen(false);
                 }}
               >
-                <div className="flex w-full items-center justify-center pb-5">
+                <div className="flex h-full w-full items-center justify-center pb-5">
                   <Content
                     onConfirm={(e) => {
                       setIsOpen(false);
