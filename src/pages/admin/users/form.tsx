@@ -89,7 +89,7 @@ export function UserForm({
             onClick={onClearUser}
             className="border border-accent/50 bg-secondary text-primbuttn hover:bg-primary hover:text-secbuttn"
           >
-            ساخت کاربر +
+            ساخت کاربر جدید +
           </Button>
         )}
         <h3 className="w-full pb-2 text-accent">
