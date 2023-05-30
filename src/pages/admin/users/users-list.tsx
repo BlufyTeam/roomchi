@@ -12,7 +12,7 @@ import { api } from "~/utils/api";
 const ButtonWithConfirmation = withConfirmation(Button);
 
 export default function UsersList({ onRowClick = (user: User) => {} }) {
-  const deleteUser = api.user.deleteUser.useMutation();
+  const deleteUser = api.user.deleteUser.useMutation({});
   const router = useRouter();
   const users = api.user.getUsers.useInfiniteQuery(
     {

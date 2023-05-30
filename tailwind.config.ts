@@ -64,6 +64,14 @@ export default {
         accent: withOpacity("--accent"),
         ...colors,
       },
+      ringColor: {
+        primary: withOpacity("--primary"),
+        secondary: withOpacity("--secondary"),
+        primbuttn: withOpacity("--primbuttn"),
+        secbuttn: withOpacity("--secbuttn"),
+        accent: withOpacity("--accent"),
+        ...colors,
+      },
       screens: {
         mobileMax: { max: "500px" },
         // => @media (min-width: 640px) { ... }

@@ -67,7 +67,7 @@ function Content({ onConfirm = (e) => {}, onReject = (e) => {} }) {
       <div className="flex w-fit">
         <Button
           onClick={(e) => onReject(e)}
-          className="rounded-lg bg-primary px-7 text-secondary"
+          className="rounded-lg bg-primary px-7 text-secondary  hover:bg-primary/60"
         >
           لغو
         </Button>
@@ -77,7 +77,7 @@ function Content({ onConfirm = (e) => {}, onReject = (e) => {} }) {
           onClick={(e) => {
             onConfirm(e);
           }}
-          className=" rounded-lg  bg-secondary px-6 text-primary ring-1 ring-inset"
+          className=" rounded-lg bg-secondary px-6 text-primary ring-1 ring-inset ring-accent hover:bg-secbuttn  hover:text-primbuttn"
         >
           تایید
         </Button>
