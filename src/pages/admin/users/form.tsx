@@ -149,7 +149,7 @@ export function UserForm({
           <select
             name="role"
             id="role"
-            className="w-full rounded-full bg-accent p-2 text-primary "
+            className="w-full rounded-full bg-secondary p-2 text-primary "
             {...formik.getFieldProps("role")}
           >
             {ROLES.map((role) => {

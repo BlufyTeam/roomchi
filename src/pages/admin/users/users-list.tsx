@@ -5,7 +5,10 @@ import Table from "~/features/table";
 import { ROLES } from "~/server/constants";
 
 import Button from "~/ui/buttons";
+import withConfirmation from "~/ui/with-confirmation";
 import { api } from "~/utils/api";
+
+const ButtonWithConfirmation = withConfirmation(Button);
 
 export default function UsersList({ onRowClick = (user: User) => {} }) {
   const users = api.user.getUsers.useInfiniteQuery(
@@ -68,19 +71,33 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
           Cell: ({ row }) => {
             const user: User = row.original;
             return (
-              <Button
-                onClick={async () => {
-                  await signIn("credentials", {
-                    username: user.username,
-                    password: user.password,
-                    callbackUrl: `${window.location.origin}/`,
-                    redirect: true,
-                  });
+              <div
+                className="flex items-center justify-center gap-5"
+                onClick={(e) => {
+                  e.stopPropagation();
                 }}
-                className="w-full cursor-pointer rounded-full bg-secbuttn px-2 py-2 text-primbuttn  "
               >
-                ورود
-              </Button>
+                <Button
+                  onClick={async () => {
+                    await signIn("credentials", {
+                      username: user.username,
+                      password: user.password,
+                      callbackUrl: `${window.location.origin}/`,
+                      redirect: true,
+                    });
+                  }}
+                  className="w-full cursor-pointer rounded-full bg-secbuttn px-2 py-2 text-primbuttn  "
+                >
+                  ورود
+                </Button>
+                <ButtonWithConfirmation
+                  onClick={async () => {}}
+                  title="حذف کاربر"
+                  className="w-full cursor-pointer rounded-full bg-primary px-2 py-2 text-secbuttn  "
+                >
+                  حذف
+                </ButtonWithConfirmation>
+              </div>
             );
           },
         },

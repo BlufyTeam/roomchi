@@ -1,5 +1,6 @@
 import { type Config } from "tailwindcss";
 const colors = require("tailwindcss/colors");
+
 function withOpacity(variableName) {
   return ({ opacityValue }) => {
     if (opacityValue !== undefined) {
@@ -54,6 +55,35 @@ export default {
         secbuttn: withOpacity("--secbuttn"),
         accent: withOpacity("--accent"),
         ...colors,
+      },
+      stroke: {
+        primary: withOpacity("--primary"),
+        secondary: withOpacity("--secondary"),
+        primbuttn: withOpacity("--primbuttn"),
+        secbuttn: withOpacity("--secbuttn"),
+        accent: withOpacity("--accent"),
+        ...colors,
+      },
+      screens: {
+        mobileMax: { max: "500px" },
+        // => @media (min-width: 640px) { ... }
+
+        laptopMax: { max: "1279px" },
+        // => @media (min-width: 1024px) { ... }
+
+        desktopMax: { max: "1280px" },
+        // => @media (min-width: 1280px) { ... }
+
+        // --------------------Min--------------------------
+
+        mobileMin: { min: "500px" },
+        // => @media (min-width: 640px) { ... }
+
+        laptopMin: { min: "1279px" },
+        // => @media (min-width: 1024px) { ... }
+
+        desktopMin: { min: "1280px" },
+        // => @media (min-width: 1280px) { ... }
       },
     },
   },

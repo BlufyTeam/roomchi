@@ -11,7 +11,7 @@ export default function Button({
   isLoading = false,
   className = "",
   extraClass = "",
-  onClick = () => {},
+  onClick = (e) => {},
   ...rest
 }) {
   const enabldedClass = `${className}   hover:bg-opacity-95 cursor-pointer`;
