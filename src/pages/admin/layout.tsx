@@ -3,11 +3,12 @@ import { twMerge } from "tailwind-merge";
 import Button from "~/ui/buttons";
 import Link from "next/link";
 
-import { LayoutGroup, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { getPathName } from "~/utils/util";
 import { Container, ContainerBottomBorder } from "~/ui/containers";
+import NotificationIcon from "~/ui/icons/notification";
 
 const menuList = [
   {
@@ -45,17 +46,30 @@ export default function AdminMainLayout({ children }: any): any {
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center bg-secondary ">
-      <ContainerBottomBorder>
-        <Container className="flex flex-col gap-5 ">
-          <div className="py-8" dir="rtl">
-            <Link href={"/admin"} className="text-accent">
-              {session.data.user.name}
-            </Link>
-            <span className="text-accent/80">
-              {currentMenuItem && " / " + currentMenuItem.value}
-            </span>
+      <Container className="flex w-full items-center justify-center ">
+        <Container className="flex  flex-col ">
+          <div
+            className="flex items-center justify-between  gap-5 py-8"
+            dir="rtl"
+          >
+            <div>
+              <Link href={"/admin"} className="text-accent">
+                {session.data.user.name}
+              </Link>
+              <span className="text-accent/80">
+                {currentMenuItem && " / " + currentMenuItem.value}
+              </span>
+            </div>
+            <div className="flex">
+              <span className="cursor-pointer rounded-full stroke-accent p-1.5  ring-1 ring-accent hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50">
+                <NotificationIcon className="h-4 w-4  " />
+              </span>
+            </div>
           </div>
-
+        </Container>
+      </Container>
+      <ContainerBottomBorder className=" sticky top-0 z-50 flex pt-2 backdrop-blur-lg">
+        <Container className=" max2xl:w-full">
           <Menu list={menuList} />
         </Container>
       </ContainerBottomBorder>
@@ -88,7 +102,7 @@ function Menu({ list = [] }) {
 
   return (
     <motion.div
-      className="group relative flex w-full cursor-pointer items-end justify-center gap-3 overflow-hidden overflow-x-auto scrollbar-none md:w-fit"
+      className="group  flex w-full cursor-pointer items-end  gap-3 overflow-hidden overflow-x-auto scrollbar-none md:w-fit"
       onHoverEnd={() => {
         setActiveIndex(-1);
       }}
@@ -143,7 +157,7 @@ function MenuItem({
         {isActive && (
           <motion.div
             layoutId="underline"
-            className="z- absolute -bottom-[2px] left-0 h-[3px]  w-full rounded-full bg-primbuttn"
+            className="absolute -bottom-[2px] left-0 -z-10 h-[3px]  w-full  rounded-full bg-primbuttn"
           />
         )}
 

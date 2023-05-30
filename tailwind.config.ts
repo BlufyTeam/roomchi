@@ -100,6 +100,8 @@ export default {
 
         desktopMin: { min: "1280px" },
         // => @media (min-width: 1280px) { ... }
+
+        max2xl: { max: "1536px" },
       },
     },
   },

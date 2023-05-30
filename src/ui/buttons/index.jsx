@@ -13,7 +13,7 @@ export default function Button({
   onClick = (e) => {},
   ...rest
 }) {
-  const enabldedClass = `${className} hover:bg-opacity-95 cursor-pointer`;
+  const enabldedClass = `hover:bg-opacity-95 cursor-pointer`;
   const busyClass = `bg-gray-200 text-gray-500 cursor-not-allowed `;
   return (
     <motion.button
