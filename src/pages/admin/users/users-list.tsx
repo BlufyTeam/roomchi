@@ -12,8 +12,8 @@ import { api } from "~/utils/api";
 const ButtonWithConfirmation = withConfirmation(Button);
 
 export default function UsersList({ onRowClick = (user: User) => {} }) {
-  const deleteUser = api.user.deleteUser.useMutation({});
   const router = useRouter();
+
   const users = api.user.getUsers.useInfiniteQuery(
     {
       limit: 10,
@@ -23,10 +23,38 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
     }
   );
 
+  const utils = api.useContext();
   const flatUsers = useMemo(
     () => users.data?.pages.map((page) => page.items).flat(1) || [],
     [users]
   );
+  const deleteUser = api.user.deleteUser.useMutation({
+    async onMutate(deletedUser: User) {
+      // Cancel outgoing fetches (so they don't overwrite our optimistic update)
+      await utils.user.getUsers.cancel();
+
+      // Get the data from the queryCache
+      const prevData = utils.user.getUsers.getData();
+      const newItems = flatUsers?.filter((item) => item.id !== deletedUser.id);
+
+      // Optimistically update the data with our new comment
+      utils.user.getUsers.setData(
+        {},
+        { items: [...newItems], nextCursor: undefined }
+      );
+
+      // Return the previous data so we can revert if something goes wrong
+      return { prevData };
+    },
+    onError(err, newPost, ctx) {
+      // If the mutation fails, use the context-value from onMutate
+      utils.user.getUsers.setData({}, ctx?.prevData);
+    },
+    onSettled() {
+      // Sync with server once mutation has settled
+      users.refetch();
+    },
+  });
 
   const columns =
     useMemo(
