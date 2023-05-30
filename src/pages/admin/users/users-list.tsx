@@ -16,7 +16,7 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
 
   const users = api.user.getUsers.useInfiniteQuery(
     {
-      limit: 10,
+      limit: 8,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -59,6 +59,17 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
   const columns =
     useMemo(
       () => [
+        {
+          Header: "#",
+          accessor: "number",
+          Cell: ({ row }) => {
+            return (
+              <div className="w-full cursor-pointer rounded-full  px-2 py-2 text-primary  ">
+                {row.index + 1}
+              </div>
+            );
+          },
+        },
         {
           Header: "نام",
           accessor: "name",
@@ -142,11 +153,13 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
       []
     ) || [];
 
-  const isUsersLoading = users.isFetchingNextPage || users.isLoading;
+  const isUsersLoading = users.isLoading;
   if (isUsersLoading) return <UsersSkeleton />;
 
   return (
     <>
+      <span className="text-primary">{flatUsers.length}</span>
+
       <Table
         {...{
           columns: flatUsers.length > 0 ? columns : [],
@@ -157,6 +170,18 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
           onRowClick(user);
         }}
       />
+      <div className="flex items-center justify-center gap-5 py-5">
+        <Button
+          disabled={isUsersLoading || !users.hasNextPage}
+          isLoading={isUsersLoading}
+          onClick={() => {
+            users.fetchNextPage();
+          }}
+          className="w-fit cursor-pointer rounded-full bg-secbuttn px-4 py-2 text-primbuttn  "
+        >
+          {users.hasNextPage ? "بیشتر" : "تمام"}
+        </Button>
+      </div>
     </>
   );
 }

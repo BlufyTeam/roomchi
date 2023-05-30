@@ -10,12 +10,11 @@ export default function Button({
   disabled = false,
   isLoading = false,
   className = "",
-  extraClass = "",
   onClick = (e) => {},
   ...rest
 }) {
-  const enabldedClass = `${className}   hover:bg-opacity-95 cursor-pointer`;
-  const busyClass = `bg-gray-200 text-gray-500 cursor-not-allowed w-full`;
+  const enabldedClass = `${className} hover:bg-opacity-95 cursor-pointer`;
+  const busyClass = `bg-gray-200 text-gray-500 cursor-not-allowed `;
   return (
     <motion.button
       whileTap={{
@@ -30,8 +29,8 @@ export default function Button({
       type={type}
       onClick={onClick}
       className={twMerge(
-        "duration-400 relative flex select-none items-center justify-center rounded-lg p-2 transition-all",
-        extraClass,
+        "duration-400 relative flex  select-none items-center justify-center rounded-lg p-2 transition-all",
+        className,
         !disabled ? enabldedClass : busyClass
       )}
       {...rest}

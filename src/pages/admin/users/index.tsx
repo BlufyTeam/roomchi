@@ -21,7 +21,7 @@ export default function RoomsPage() {
               onClearUser={() => setSelectedRowUser(undefined)}
             />
           </div>
-          <div className="h-full max-h-[77%] overflow-hidden rounded-lg  border border-accent/30 bg-secondary p-5 2xl:w-9/12">
+          <div className=" h-fit max-h-[42rem] overflow-hidden overflow-y-auto rounded-lg  border border-accent/30 bg-secondary p-5 2xl:w-9/12">
             <UsersList
               onRowClick={(user: User) => {
                 setSelectedRowUser(user);
