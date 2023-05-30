@@ -48,7 +48,6 @@ function MyApp({
       document.querySelector("body").className = "theme-light-1";
     }
     matchPrefersLight.addEventListener("change", (event) => {
-      alert("changed");
       const theme = event.matches ? "theme-light-2" : "theme-dark-3";
       document.querySelector("body").className = theme;
     });

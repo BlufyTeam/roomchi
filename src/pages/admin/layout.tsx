@@ -4,11 +4,12 @@ import Button from "~/ui/buttons";
 import Link from "next/link";
 
 import { motion } from "framer-motion";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { getPathName } from "~/utils/util";
 import { Container, ContainerBottomBorder } from "~/ui/containers";
 import NotificationIcon from "~/ui/icons/notification";
+import ExitIcon from "~/ui/icons/exits";
 
 const menuList = [
   {
@@ -73,10 +74,17 @@ export default function AdminMainLayout({ children }: any): any {
                 {currentMenuItem && " / " + currentMenuItem.value}
               </span>
             </div>
-            <div className="flex">
-              <span className="cursor-pointer rounded-full stroke-accent p-1.5  ring-1 ring-accent hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50">
+            <div className="flex items-center justify-center gap-5">
+              <button className="cursor-pointer rounded-full stroke-accent p-1.5  ring-1 ring-accent hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50">
                 <NotificationIcon className="h-4 w-4  " />
-              </span>
+              </button>
+              <button
+                onClick={() => signOut()}
+                className="flex cursor-pointer items-center justify-center gap-2 rounded-full stroke-white p-1.5 text-primary   hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50"
+              >
+                <ExitIcon className="h-4 w-4  " />
+                <span className="text-sm">خروج</span>
+              </button>
             </div>
           </div>
         </Container>

@@ -194,7 +194,7 @@ function UsersSkeleton() {
           <>
             <span
               key={i}
-              className="inline-block h-12 w-full animate-pulse rounded-xl bg-accent"
+              className="inline-block h-12 w-full animate-pulse rounded-xl bg-accent opacity-30"
               style={{
                 animationDelay: `${i * 5}`,
                 animationDuration: "1s",
