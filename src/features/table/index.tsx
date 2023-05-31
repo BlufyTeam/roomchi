@@ -3,6 +3,7 @@ import { useTable, useSortBy } from "react-table";
 export default function Table({
   columns = [],
   data = [],
+  clickedRowIndex = "",
   onClick = (cell) => {},
 }) {
   const tableInstance = useTable({ columns, data }, useSortBy);
@@ -77,7 +78,11 @@ export default function Table({
                     <tr
                       key={key}
                       {...restRowProps}
-                      className="hover:bg-primary/5"
+                      className={` ${
+                        row.original.id === clickedRowIndex
+                          ? "bg-primary/20 hover:bg-primary/25"
+                          : "hover:bg-primary/5"
+                      } `}
                     >
                       {
                         // Loop over the rows cells

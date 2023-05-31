@@ -15,6 +15,7 @@ const ButtonWithConfirmation = withConfirmation(Button);
 export default function UsersList() {
   const {
     setSelectedRowUser,
+    selectedRowUser,
     flatUsers,
     refetchUsers,
     hasNextPage,
@@ -130,7 +131,7 @@ export default function UsersList() {
                   ورود
                 </Button>
                 <ButtonWithConfirmation
-                  isLoading={deleteUser.isLoading}
+                  isLoading={deleteUser.isLoading || !user.id}
                   onClick={async () => {
                     if (navigator && !navigator.onLine)
                       return alert("شما آفلاین هستید");
@@ -161,6 +162,7 @@ export default function UsersList() {
           columns: flatUsers.length > 0 ? columns : [],
           data: flatUsers,
         }}
+        clickedRowIndex={selectedRowUser?.id}
         onClick={(cell) => {
           const user = cell.row.original;
           setSelectedRowUser(user);
