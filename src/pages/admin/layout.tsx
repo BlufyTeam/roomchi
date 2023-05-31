@@ -10,6 +10,7 @@ import { getPathName } from "~/utils/util";
 import { Container, ContainerBottomBorder } from "~/ui/containers";
 import NotificationIcon from "~/ui/icons/notification";
 import ExitIcon from "~/ui/icons/exits";
+import Image from "next/image";
 
 const menuList = [
   {
@@ -68,7 +69,7 @@ export default function AdminMainLayout({ children }: any): any {
           >
             <div>
               <Link href={"/admin"} className="text-accent">
-                {session.data.user.companyId}
+                {session.data.user.name}
               </Link>
               <span className="text-accent/80">
                 {currentMenuItem && " / " + currentMenuItem.value}
@@ -87,6 +88,19 @@ export default function AdminMainLayout({ children }: any): any {
                   خروج
                 </span>
               </Button>
+              <span className="text-primary">|</span>
+              <div className="flex items-center justify-center gap-5 text-primary">
+                <span className="text-sm">
+                  {session.data.user.company.name}
+                </span>
+                <Image
+                  src={session.data.user.company.logo_base64}
+                  alt="logo"
+                  className="rounded-full object-fill ring-2 ring-primary"
+                  width={45}
+                  height={45}
+                />
+              </div>
             </div>
           </div>
         </Container>

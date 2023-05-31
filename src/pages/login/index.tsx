@@ -48,6 +48,7 @@ export function LoginForm() {
     validateOnBlur: true,
     onSubmit: async (values: typeof userLoginSchema._type) => {
       setIsLoading(true);
+
       const result = await signIn("credentials", {
         username: formik.values.username,
         password: formik.values.password,

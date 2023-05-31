@@ -10,7 +10,7 @@ import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import type { User } from "@prisma/client";
+import type { Company, User } from "@prisma/client";
 import { createHash } from "crypto";
 import { PassThrough } from "stream";
 /**
@@ -21,7 +21,9 @@ import { PassThrough } from "stream";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: User & DefaultSession["user"];
+    user: User & {
+      company: Company;
+    };
   }
 
   // interface User {
@@ -57,10 +59,8 @@ export const authOptions: NextAuthOptions = {
           where: {
             username: credentials.username,
           },
-          include: {
-            company: true,
-          },
         });
+
         if (user)
           if ((user?.password, credentials.password)) {
             return user;
@@ -75,12 +75,14 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     session: async ({ session, token }: { session: any; token: any }) => {
-      const user: User = await prisma.user.findUnique({
+      const user = await prisma.user.findUnique({
         where: { username: token.user.username },
-        include: { company: true },
+        include: {
+          company: true,
+        },
       });
-
-      if (!user) return undefined;
+      session.user = user;
+      return session;
     },
     jwt: async ({ token, user }: any) => {
       user && (token.user = user);
