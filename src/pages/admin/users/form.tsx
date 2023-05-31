@@ -64,7 +64,12 @@ export function UserForm({
     },
   });
 
-  const updateUser = api.user.updateUser.useMutation();
+  const updateUser = api.user.updateUser.useMutation({
+    onSuccess: async (data) => {
+      console.log({ data });
+      await utils.user.getUsers.invalidate();
+    },
+  });
 
   const formik = useFormik({
     initialValues: {

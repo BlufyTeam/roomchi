@@ -75,6 +75,15 @@ export const userRouter = createTRPCRouter({
         nextCursor,
       };
     }),
+  getUserById: protectedProcedure
+    .input(userIdSchema)
+    .query(async ({ input, ctx }) => {
+      return await ctx.prisma.user.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
   deleteUser: protectedProcedure
     .input(userIdSchema)
     .mutation(async ({ input, ctx }) => {
