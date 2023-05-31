@@ -125,14 +125,14 @@ export function UserForm({
         onSubmit={(e) => {
           formik.handleSubmit(e);
         }}
-        className="flex flex-col items-center justify-center gap-8"
+        className="relative flex flex-col items-center justify-center gap-8"
       >
         {user && (
           <Button
             onClick={() => {
               setSelectedRowUser(undefined);
             }}
-            className="border border-accent/50 bg-secondary text-primbuttn hover:bg-primary hover:text-secbuttn"
+            className="absolute -top-10  border border-accent/10 bg-secondary text-primbuttn hover:bg-accent hover:text-secbuttn"
           >
             ساخت کاربر جدید +
           </Button>
