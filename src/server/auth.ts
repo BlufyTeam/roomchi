@@ -49,12 +49,16 @@ export const authOptions: NextAuthOptions = {
         username: { label: "Username", type: "text", placeholder: "jsmith" },
         password: { label: "Password", type: "password" },
       },
+      //@ts-ignore
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
 
         const user = await prisma.user.findFirst({
           where: {
             username: credentials.username,
+          },
+          include: {
+            company: true,
           },
         });
         if (user)
@@ -71,13 +75,12 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     session: async ({ session, token }: { session: any; token: any }) => {
-      const user: any = await prisma.user.findUnique({
+      const user: User = await prisma.user.findUnique({
         where: { username: token.user.username },
+        include: { company: true },
       });
-      if (!user) return undefined;
 
-      session.user = user;
-      return session;
+      if (!user) return undefined;
     },
     jwt: async ({ token, user }: any) => {
       user && (token.user = user);

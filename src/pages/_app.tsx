@@ -65,7 +65,6 @@ function MyApp({
   return Component.PageLayout ? (
     <>
       <SessionProvider session={session}>
-        //@ts-ignore
         <Component.PageLayout {...pageProps} />
       </SessionProvider>
     </>

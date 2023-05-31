@@ -40,7 +40,6 @@ const DotVariants = {
 const DotTransition = {
   duration: 0.5,
   repeat: Infinity,
-  repeatType: "reverse",
   ease: "easeInOut",
 };
 

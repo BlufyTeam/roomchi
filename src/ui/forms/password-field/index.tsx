@@ -5,7 +5,7 @@ import Button from "~/ui/buttons";
 import { ClosedEyeIcon, OpenEyeIcon } from "~/ui/icons/eyes";
 
 const TextFieldWithLable = withLabel(TextField);
-const TextAreaWithLable = withLabel(TextField);
+
 export default function PasswordField({ ...rest }) {
   const [isOpen, setIsOpen] = useState(false);
   return (

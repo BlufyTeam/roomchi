@@ -22,23 +22,23 @@ model Example {
 }
 
 // Necessary for Next auth
-model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? // @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+// model Account {
+//     id                String  @id @default(cuid())
+//     userId            String
+//     type              String
+//     provider          String
+//     providerAccountId String
+//     refresh_token     String? // @db.Text
+//     access_token      String? // @db.Text
+//     expires_at        Int?
+//     token_type        String?
+//     scope             String?
+//     id_token          String? // @db.Text
+//     session_state     String?
+//     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([provider, providerAccountId])
-}
+//     @@unique([provider, providerAccountId])
+// }
 
 model Resource {
     id          String  @id @default(cuid())
@@ -48,6 +48,8 @@ model Resource {
     description String
     room        Room    @relation(fields: [roomId], references: [id])
     roomId      String
+
+    @@map("resources")
 }
 
 model Plan {
@@ -59,6 +61,8 @@ model Plan {
     start_datetime DateTime
     end_datetime   DateTime
     description    String
+
+    @@map("plans")
 }
 
 model Room {
@@ -69,20 +73,23 @@ model Room {
     description String
     price       Int
     capacity    Int
-    Plan        Plan[]
-    Resource    Resource[]
+    plans       Plan[]
+    resources   Resource[]
+
+    @@map("rooms")
 }
 
 model Company {
-    id          String @id @default(cuid())
+    id          String   @id @default(cuid())
     name        String
-    logo_url    String
+    logo_base64 String
     description String
-    User        User[]
+    users       User[]
+    created_at  DateTime @default(now())
+    updated_at  DateTime @updatedAt()
+    rooms       Room[]
 
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt()
-    Room       Room[]
+    @@map("companies")
 }
 
 model User {
@@ -100,8 +107,9 @@ model User {
     role        String    @default("USER")
     created_at  DateTime  @default(now())
     updated_at  DateTime? @updatedAt()
-    Account     Account[]
-    Plan        Plan[]
+    plans       Plan[]
+
+    @@map("users")
 }
 
 model Session {

@@ -68,7 +68,7 @@ export default function AdminMainLayout({ children }: any): any {
           >
             <div>
               <Link href={"/admin"} className="text-accent">
-                {session.data.user.name}
+                {session.data.user.companyId}
               </Link>
               <span className="text-accent/80">
                 {currentMenuItem && " / " + currentMenuItem.value}

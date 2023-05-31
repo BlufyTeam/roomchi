@@ -3,8 +3,8 @@ import { useState } from "react";
 export default function withLabel(Component) {
   return function WrappedComponent({
     children = <></> || "",
-    value,
-    label,
+    value = "",
+    label = "",
 
     onChange = (value = "") => {},
     ...rest
