@@ -5,27 +5,65 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { createUserSchema } from "~/server/validations/user.validation";
 
 import TextField from "~/ui/forms/text-field";
-import TextAreaField from "~/ui/forms/textarea-field";
+
 import withLabel from "~/ui/forms/with-label";
 import Button from "~/ui/buttons";
 import PasswordField from "~/ui/forms/password-field";
-import MultiBox from "~/ui/multi-box";
+
 import { api } from "~/utils/api";
 import InputError from "~/ui/forms/input-error";
 import { ROLES } from "~/server/constants";
 import { User } from "~/types";
+import { useUser } from "~/context/user.context";
 
 const TextFieldWithLable = withLabel(TextField);
 // const TextAreaWithLable = withLabel(TextAreaField);
 
 export function UserForm({
-  user,
+  onCreateSuccess = (user: User) => {},
   onClearUser = () => {},
 }: {
   user?: User | undefined;
+  onCreateSuccess?: (user: User) => any;
   onClearUser?: () => any;
 }) {
-  const createUser = api.user.createUser.useMutation();
+  const {
+    selectedRowUser: user,
+    setSelectedRowUser,
+    flatUsers,
+    refetchUsers,
+  } = useUser();
+  const utils = api.useContext();
+
+  const createUser = api.user.createUser.useMutation({
+    async onSuccess(addedUser: User) {
+      await utils.user.getUsers.invalidate();
+      // Cancel outgoing fetches (so they don't overwrite our optimistic update)
+      // await utils.user.getUsers.cancel();
+      // utils.user.getUsers.setInfiniteData({ limit: 10 }, (data) => {
+      //   console.log({ data });
+      //   if (!data) {
+      //     return {
+      //       pages: [],
+      //       pageParams: [],
+      //     };
+      //   }
+      //   return {
+      //     ...data,
+      //     pages: data.pages.map((page) => ({
+      //       ...page,
+      //       items: [...page.items, addedUser],
+      //     })),
+      //   };
+      // });
+    },
+
+    onSettled() {
+      // Sync with server once mutation has settled
+      // refetchUsers();
+    },
+  });
+
   const updateUser = api.user.updateUser.useMutation();
 
   const formik = useFormik({
@@ -86,7 +124,9 @@ export function UserForm({
       >
         {user && (
           <Button
-            onClick={onClearUser}
+            onClick={() => {
+              setSelectedRowUser(undefined);
+            }}
             className="border border-accent/50 bg-secondary text-primbuttn hover:bg-primary hover:text-secbuttn"
           >
             ساخت کاربر جدید +

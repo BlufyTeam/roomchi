@@ -49,7 +49,7 @@ export const userRouter = createTRPCRouter({
   getUsers: publicProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).nullish(),
+        limit: z.number().min(1).max(100).nullish().default(10),
         cursor: z.string().nullish(),
       })
     )
@@ -62,7 +62,7 @@ export const userRouter = createTRPCRouter({
           cursor: cursor ? { id: cursor } : undefined,
 
           orderBy: {
-            created_at: "asc",
+            created_at: "desc",
           },
         })) || [];
       let nextCursor: typeof cursor | undefined = undefined;

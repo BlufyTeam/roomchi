@@ -6,7 +6,7 @@ export default function TextField({
 
   className = `bg-transparent placeholder:opacity-0
    focus:placeholder:opacity-100 
-   selection:text-secondry selection:bg-primary
+   selection:text-secondry
     block px-2.5 pb-2.5 pt-5 
     w-full 
     text-sm 

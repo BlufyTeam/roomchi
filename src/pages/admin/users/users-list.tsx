@@ -1,7 +1,8 @@
-import { User } from "@prisma/client";
+import { User } from "~/types";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useMemo } from "react";
+import { useUser } from "~/context/user.context";
 import Table from "~/features/table";
 import { ROLES } from "~/server/constants";
 
@@ -11,23 +12,19 @@ import { api } from "~/utils/api";
 
 const ButtonWithConfirmation = withConfirmation(Button);
 
-export default function UsersList({ onRowClick = (user: User) => {} }) {
+export default function UsersList() {
+  const {
+    setSelectedRowUser,
+    flatUsers,
+    refetchUsers,
+    hasNextPage,
+    fetchNextPage,
+    isUsersLoading,
+  } = useUser();
+
   const router = useRouter();
 
-  const users = api.user.getUsers.useInfiniteQuery(
-    {
-      limit: 8,
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }
-  );
-
   const utils = api.useContext();
-  const flatUsers = useMemo(
-    () => users.data?.pages.map((page) => page.items).flat(1) || [],
-    [users]
-  );
   const deleteUser = api.user.deleteUser.useMutation({
     async onMutate(deletedUser: User) {
       // Cancel outgoing fetches (so they don't overwrite our optimistic update)
@@ -52,7 +49,7 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
     },
     onSettled() {
       // Sync with server once mutation has settled
-      users.refetch();
+      refetchUsers();
     },
   });
 
@@ -153,7 +150,6 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
       []
     ) || [];
 
-  const isUsersLoading = users.isLoading;
   if (isUsersLoading) return <UsersSkeleton />;
 
   return (
@@ -166,20 +162,20 @@ export default function UsersList({ onRowClick = (user: User) => {} }) {
           data: flatUsers,
         }}
         onClick={(cell) => {
-          const user: User = cell.row.original;
-          onRowClick(user);
+          const user = cell.row.original;
+          setSelectedRowUser(user);
         }}
       />
       <div className="flex items-center justify-center gap-5 py-5">
         <Button
-          disabled={isUsersLoading || !users.hasNextPage}
+          disabled={isUsersLoading || !hasNextPage}
           isLoading={isUsersLoading}
           onClick={() => {
-            users.fetchNextPage();
+            fetchNextPage();
           }}
           className="w-fit cursor-pointer rounded-full bg-secbuttn px-4 py-2 text-primbuttn  "
         >
-          {users.hasNextPage ? "بیشتر" : "تمام"}
+          {hasNextPage ? "بیشتر" : "تمام"}
         </Button>
       </div>
     </>

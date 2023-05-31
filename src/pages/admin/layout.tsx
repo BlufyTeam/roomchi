@@ -63,7 +63,7 @@ export default function AdminMainLayout({ children }: any): any {
 
         <Container className="flex  flex-col ">
           <div
-            className="flex items-center justify-between  gap-5 py-8"
+            className="flex flex-col items-center justify-between gap-5  py-8 md:flex-row"
             dir="rtl"
           >
             <div>
@@ -74,17 +74,19 @@ export default function AdminMainLayout({ children }: any): any {
                 {currentMenuItem && " / " + currentMenuItem.value}
               </span>
             </div>
-            <div className="flex items-center justify-center gap-5">
-              <button className="cursor-pointer rounded-full stroke-accent p-1.5  ring-1 ring-accent hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50">
+            <div className="flex items-center justify-center gap-5 ">
+              <Button className="cursor-pointer rounded-full stroke-accent p-1.5  ring-1 ring-accent hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50">
                 <NotificationIcon className="h-4 w-4  " />
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => signOut()}
-                className="flex cursor-pointer items-center justify-center gap-2 rounded-full stroke-white p-1.5 text-primary   hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50"
+                className="flex cursor-pointer items-center justify-center gap-2 rounded-full stroke-white p-1.5 text-primary  hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50"
               >
-                <ExitIcon className="h-4 w-4  " />
-                <span className="text-sm">خروج</span>
-              </button>
+                <ExitIcon className="h-4 w-4" />
+                <span className="hidden text-sm text-primary md:flex">
+                  خروج
+                </span>
+              </Button>
             </div>
           </div>
         </Container>
