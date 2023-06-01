@@ -15,6 +15,8 @@ import InputError from "~/ui/forms/input-error";
 import { ROLES } from "~/server/constants";
 import { User } from "~/types";
 import { useUser } from "~/context/user.context";
+import { Command } from "~/components/ui/command";
+import { ComboBox } from "~/features/shadui/ComboBox";
 
 const TextFieldWithLable = withLabel(TextField);
 // const TextAreaWithLable = withLabel(TextAreaField);
@@ -193,112 +195,42 @@ export function UserForm({
           />
           <InputError message={formik.errors.description} />
         </div>
+        <div className="z-30  flex w-full flex-col items-start justify-start gap-5">
+          {getCompany.data && (
+            <ComboBox
+              values={getCompany.data.map((company) => {
+                return { label: company.name, value: company.id };
+              })}
+              value={formik.values.companyId}
+              onChange={(value) => {
+                formik.setValues(() => {
+                  return {
+                    ...formik.values,
+                    companyId: value,
+                  };
+                });
+              }}
+              placeHolder="جستجو شرکت ها"
+            />
+          )}
+        </div>
 
-        <div className="flex w-full flex-col items-start justify-start gap-5">
-          <label className="text-primary">نقش کاربر</label>
-          <select
-            name="role"
-            id="role"
-            className="w-full rounded-full bg-secondary p-2 text-primary "
-            {...formik.getFieldProps("role")}
-          >
-            {ROLES.map((role) => {
-              return (
-                <>
-                  <option
-                    selected={role.value.key === formik.values.role}
-                    key={role.id}
-                    value={role.value.key}
-                  >
-                    {role.value.name}
-                  </option>
-                </>
-              );
+        <div className="z-30  flex w-full flex-col items-start justify-start gap-5">
+          <ComboBox
+            values={ROLES.map((role) => {
+              return { label: role.value.name, value: role.value.key };
             })}
-          </select>
-          {/* <MultiSelectBox
-            values={ROLES.filter(
-              (role) => role.value.key === formik.values.role
-            ).map((a) => a.value.key)}
-            list={ROLES.map((item) => {
-              return {
-                key: item.value.key,
-                value: item.value.name,
-              };
-            })}
-            onChange={(values) =>
-              formik.setValues((values) => {
+            value={formik.values.role}
+            onChange={(value) => {
+              formik.setValues(() => {
                 return {
-                  ...values,
-                  role: values[0],
-                };
-              })
-            }
-          /> */}
-          {/* <MultiBox
-            min={1}
-            onChange={(result) => {
-              formik.setValues((values) => {
-                return {
-                  ...values,
-                  role: result[0]?.value.key,
+                  ...formik.values,
+                  role: value,
                 };
               });
             }}
-            className="flex items-center justify-center gap-3"
-            list={ROLES}
-            initialKeys={ROLES.filter(
-              (role) =>
-                role.id ===
-                ROLES.find((a) => a.value.key === formik.values.role).id
-            )}
-            renderItem={(role, isSelected) => {
-              return (
-                <>
-                  <Button
-                    className={`
-                    rounded-full px-5
-                    ${
-                      isSelected
-                        ? "bg-accent text-secbuttn"
-                        : "bg-secbuttn text-primbuttn"
-                    }  `}
-                  >
-                    {isSelected + ""}
-                    {role.value.name}
-                  </Button>
-                </>
-              );
-            }}
-          /> */}
-        </div>
-
-        <div className="flex w-full flex-col items-start justify-start gap-5">
-          <label className="text-primary">شرکت</label>
-          {getCompany.data ? (
-            <select
-              name="companyId"
-              id="companyId"
-              className="w-full rounded-full bg-secondary p-2 text-primary "
-              {...formik.getFieldProps("companyId")}
-            >
-              {getCompany.data.map((company) => {
-                return (
-                  <>
-                    <option
-                      selected={company.id === formik.values.companyId}
-                      key={company.id}
-                      value={company.id}
-                    >
-                      {company.name}
-                    </option>
-                  </>
-                );
-              })}
-            </select>
-          ) : (
-            <div className="h-4 w-full animate-pulse bg-gray-100"></div>
-          )}
+            placeHolder="جستجو نقش ها"
+          />
         </div>
 
         <Button

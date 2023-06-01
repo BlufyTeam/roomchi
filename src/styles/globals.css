@@ -1,5 +1,6 @@
 @tailwind base;
 @tailwind components;
+@tailwind utilities;
 
 .theme-light-1 {
   --primary: 29, 13, 7;
