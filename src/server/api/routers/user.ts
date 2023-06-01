@@ -43,6 +43,7 @@ export const userRouter = createTRPCRouter({
           password: input.password,
           description: input.description,
           role: input.role,
+          companyId: input.companyId,
         },
       });
     }),

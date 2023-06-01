@@ -22,7 +22,12 @@ const progress = new ProgressBar({
   className: "bar-of-progress",
   delay: 100,
 });
-
+function matchColorSchemeToTheme(theme) {
+  if (theme.search("light"))
+    document.querySelector("html").style.colorScheme = "light";
+  if (theme.search("dark"))
+    document.querySelector("html").style.colorScheme = "dark";
+}
 function MyApp({
   Component,
   pageProps: { session, ...pageProps },
@@ -40,16 +45,23 @@ function MyApp({
     const theme = localStorage.getItem("theme");
     if (theme?.startsWith("theme")) {
       document.querySelector("body").className = theme;
+      matchColorSchemeToTheme(theme);
       return;
     }
 
     const matchPrefersLight = window.matchMedia("(prefers-color-scheme:light)");
     if (matchPrefersLight.matches) {
-      document.querySelector("body").className = "theme-light-1";
+      document.querySelector("body").className = "theme-light-2";
+      matchColorSchemeToTheme("light");
+    } else {
+      document.querySelector("body").className = "theme-dark-1";
+      matchColorSchemeToTheme("dark");
     }
     matchPrefersLight.addEventListener("change", (event) => {
       const theme = event.matches ? "theme-light-2" : "theme-dark-3";
+
       document.querySelector("body").className = theme;
+      matchColorSchemeToTheme(theme);
     });
 
     return () => {

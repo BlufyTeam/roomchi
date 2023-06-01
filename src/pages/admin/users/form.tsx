@@ -22,14 +22,18 @@ const TextFieldWithLable = withLabel(TextField);
 export function UserForm({
   onCreateSuccess = (user: User) => {},
   onClearUser = () => {},
+  sessionUser,
 }: {
-  user?: User | undefined;
+  sessionUser?: User | undefined;
+
   onCreateSuccess?: (user: User) => any;
   onClearUser?: () => any;
 }) {
-  const { selectedRowUser: user, setSelectedRowUser } = useUser();
+  const getCompany = api.company.getAll.useQuery();
+  const { selectedRowUser, setSelectedRowUser } = useUser();
   const utils = api.useContext();
-
+  const user = sessionUser ?? selectedRowUser ?? undefined;
+  console.log({ user });
   const createUser = api.user.createUser.useMutation({
     async onSuccess(addedUser: User) {
       await utils.user.getUsers.invalidate();
@@ -73,6 +77,7 @@ export function UserForm({
       password: user?.password || "",
       description: user?.description || "",
       role: user?.role || "USER",
+      companyId: user?.companyId,
     },
 
     validationSchema: toFormikValidationSchema(createUserSchema),
@@ -86,6 +91,7 @@ export function UserForm({
           email: values.email,
           description: values.description,
           role: values.role || "USER",
+          companyId: values.companyId,
         });
 
       return updateUser.mutate({
@@ -96,6 +102,7 @@ export function UserForm({
         email: values.email,
         description: values.description,
         role: values.role || "USER",
+        companyId: values.companyId,
       });
     },
   });
@@ -109,9 +116,10 @@ export function UserForm({
         password: user?.password || "",
         description: user?.description || "",
         role: user?.role || "USER",
+        companyId: user?.companyId,
       };
     });
-  }, [user]);
+  }, [user, selectedRowUser]);
 
   return (
     <>
@@ -121,7 +129,7 @@ export function UserForm({
         }}
         className="relative flex flex-col items-center justify-center gap-8"
       >
-        {user && (
+        {user && !sessionUser && (
           <Button
             onClick={() => {
               setSelectedRowUser(undefined);
@@ -263,6 +271,34 @@ export function UserForm({
               );
             }}
           /> */}
+        </div>
+
+        <div className="flex w-full flex-col items-start justify-start gap-5">
+          <label className="text-primary">شرکت</label>
+          {getCompany.data ? (
+            <select
+              name="companyId"
+              id="companyId"
+              className="w-full rounded-full bg-secondary p-2 text-primary "
+              {...formik.getFieldProps("companyId")}
+            >
+              {getCompany.data.map((company) => {
+                return (
+                  <>
+                    <option
+                      selected={company.id === formik.values.companyId}
+                      key={company.id}
+                      value={company.id}
+                    >
+                      {company.name}
+                    </option>
+                  </>
+                );
+              })}
+            </select>
+          ) : (
+            <div className="h-4 w-full animate-pulse bg-gray-100"></div>
+          )}
         </div>
 
         <Button

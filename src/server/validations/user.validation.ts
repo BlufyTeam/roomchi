@@ -13,6 +13,7 @@ export const createUserSchema = z.object({
     .min(6, "پسورد نمیتواند کمتر از 6 حرف باشد."),
   description: z.string().optional(),
   role: z.enum(["ADMIN", "USER"]),
+  companyId: z.string().optional(),
 });
 
 export const updateUserSchema = createUserSchema.extend({ id: z.string() });

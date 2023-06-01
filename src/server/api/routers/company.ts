@@ -15,6 +15,10 @@ import {
 } from "~/server/validations/company.validation";
 
 export const companyRouter = createTRPCRouter({
+  getAll: protectedProcedure.query(({ ctx, input }) => {
+    return ctx.prisma.company.findMany({});
+  }),
+
   getCompanyById: protectedProcedure
     .input(companyIdSchema)
     .query(({ ctx, input }) => {
