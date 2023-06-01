@@ -8,18 +8,6 @@ type TUserContext = {
 
   selectedRowUser: User | undefined;
   setSelectedRowUser: (user: User) => unknown;
-
-  flatUsers: User[];
-
-  refetchUsers: () => unknown;
-
-  fetchNextPage: () => unknown;
-
-  hasNextPage: boolean;
-
-  isUsersLoading: boolean;
-
-  utils: any;
 };
 
 type UserProviderProps = {
@@ -37,30 +25,7 @@ export function UserProvider({ children }: UserProviderProps) {
   const [selectedRowUser, setSelectedRowUser] = useState<User | undefined>(
     undefined
   );
-  console.log("rerendered");
-  const utils = api.useContext();
-  const users = api.user.getUsers.useInfiniteQuery(
-    {
-      limit: 8,
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }
-  );
 
-  const flatUsers: any = useMemo(() => {
-    return users.data?.pages.map((page) => page.items).flat(1) || [];
-  }, [users]);
-  function refetchUsers() {
-    users.refetch();
-  }
-
-  function fetchNextPage() {
-    users.fetchNextPage();
-  }
-
-  const isUsersLoading = users.isLoading;
-  const hasNextPage = users.hasNextPage;
   return (
     <UserContext.Provider
       value={{
@@ -68,12 +33,6 @@ export function UserProvider({ children }: UserProviderProps) {
         setUser,
         selectedRowUser,
         setSelectedRowUser,
-        flatUsers,
-        refetchUsers,
-        fetchNextPage,
-        hasNextPage,
-        isUsersLoading,
-        utils,
       }}
     >
       {children}

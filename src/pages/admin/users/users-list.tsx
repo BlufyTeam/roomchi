@@ -13,15 +13,20 @@ import { api } from "~/utils/api";
 const ButtonWithConfirmation = withConfirmation(Button);
 
 export default function UsersList() {
-  const {
-    setSelectedRowUser,
-    selectedRowUser,
-    flatUsers,
-    refetchUsers,
-    hasNextPage,
-    fetchNextPage,
-    isUsersLoading,
-  } = useUser();
+  const { setSelectedRowUser, selectedRowUser } = useUser();
+
+  const users = api.user.getUsers.useInfiniteQuery(
+    {
+      limit: 8,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
+
+  const flatUsers: any = useMemo(() => {
+    return users.data?.pages.map((page) => page.items).flat(1) || [];
+  }, [users]);
 
   const router = useRouter();
 
@@ -32,9 +37,9 @@ export default function UsersList() {
       await utils.user.getUsers.cancel();
 
       // Get the data from the queryCache
-      const prevData = utils.user.getUsers.getData();
+      const prevData = utils.user.getUsers.getInfiniteData();
       const newItems = flatUsers?.filter((item) => item.id !== deletedUser.id);
-
+      console.log({ prevData });
       // Optimistically update the data with our new comment
       utils.user.getUsers.setData(
         {},
@@ -46,11 +51,14 @@ export default function UsersList() {
     },
     onError(err, newPost, ctx) {
       // If the mutation fails, use the context-value from onMutate
-      utils.user.getUsers.setData({}, ctx?.prevData);
+      //utils.user.getUsers.setData({}, ctx?.prevData);
     },
     onSettled() {
       // Sync with server once mutation has settled
-      refetchUsers();
+      // utils.user.getUserById.invalidate({id:ctx.});
+    },
+    onSuccess: () => {
+      setSelectedRowUser(undefined);
     },
   });
 
@@ -151,7 +159,7 @@ export default function UsersList() {
       []
     ) || [];
 
-  if (isUsersLoading) return <UsersSkeleton />;
+  if (users.isLoading) return <UsersSkeleton />;
 
   return (
     <>
@@ -170,14 +178,14 @@ export default function UsersList() {
       />
       <div className="flex items-center justify-center gap-5 py-5">
         <Button
-          disabled={isUsersLoading || !hasNextPage}
-          isLoading={isUsersLoading}
+          disabled={users.isLoading || !users.hasNextPage}
+          isLoading={users.isLoading}
           onClick={() => {
-            fetchNextPage();
+            users.fetchNextPage();
           }}
           className="w-fit cursor-pointer rounded-full bg-secbuttn px-4 py-2 text-primbuttn  "
         >
-          {hasNextPage ? "بیشتر" : "تمام"}
+          {users.hasNextPage ? "بیشتر" : "تمام"}
         </Button>
       </div>
     </>

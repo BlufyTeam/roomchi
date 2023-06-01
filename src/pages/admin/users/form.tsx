@@ -27,12 +27,7 @@ export function UserForm({
   onCreateSuccess?: (user: User) => any;
   onClearUser?: () => any;
 }) {
-  const {
-    selectedRowUser: user,
-    setSelectedRowUser,
-    flatUsers,
-    refetchUsers,
-  } = useUser();
+  const { selectedRowUser: user, setSelectedRowUser } = useUser();
   const utils = api.useContext();
 
   const createUser = api.user.createUser.useMutation({
@@ -66,7 +61,6 @@ export function UserForm({
 
   const updateUser = api.user.updateUser.useMutation({
     onSuccess: async (data) => {
-      console.log({ data });
       await utils.user.getUsers.invalidate();
     },
   });
