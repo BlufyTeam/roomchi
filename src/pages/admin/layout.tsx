@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { twMerge } from "tailwind-merge";
 import Button from "~/ui/buttons";
 import Link from "next/link";
 
-import { motion } from "framer-motion";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { getPathName } from "~/utils/util";
@@ -13,6 +11,7 @@ import ExitIcon from "~/ui/icons/exits";
 import Image from "next/image";
 import Menu from "~/features/menu";
 import BlurBackground from "~/ui/blur-backgrounds";
+import ThemeBox from "~/features/theme-box";
 
 const menuList = [
   {
@@ -58,14 +57,16 @@ export default function AdminMainLayout({ children }: any): any {
             className="flex flex-col items-center justify-between gap-5  py-8 md:flex-row"
             dir="rtl"
           >
-            <div>
+            <div className="flex items-center justify-center">
               <Link href={"/admin"} className="text-accent">
                 {session.data.user.name}
               </Link>
               <span className="text-accent/80">
                 {currentMenuItem && " / " + currentMenuItem.value}
               </span>
+              <ThemeBox />
             </div>
+
             <div className="flex items-center justify-center gap-5 ">
               <Button className="cursor-pointer rounded-full stroke-accent p-1.5  ring-1 ring-accent hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50">
                 <NotificationIcon className="h-4 w-4  " />

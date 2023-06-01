@@ -52,15 +52,18 @@ function MyApp({
     const matchPrefersLight = window.matchMedia("(prefers-color-scheme:light)");
     if (matchPrefersLight.matches) {
       document.querySelector("body").className = "theme-light-2";
+      localStorage.setItem("theme", "theme-light-2");
       matchColorSchemeToTheme("light");
     } else {
       document.querySelector("body").className = "theme-dark-1";
+      localStorage.setItem("theme", "theme-dark-1");
       matchColorSchemeToTheme("dark");
     }
     matchPrefersLight.addEventListener("change", (event) => {
       const theme = event.matches ? "theme-light-2" : "theme-dark-3";
 
       document.querySelector("body").className = theme;
+      localStorage.setItem("theme", theme);
       matchColorSchemeToTheme(theme);
     });
 

@@ -22,12 +22,12 @@ export default function useLocalStorage<T>(
 
   useIsomorphicLayoutEffect(() => {
     setValue(() => {
-      let jsonValue: any = JSON.stringify(initialValue);
+      let jsonValue: any = initialValue;
       if (typeof window !== "undefined" && window.localStorage) {
         jsonValue = localStorage.getItem(key);
       }
 
-      if (jsonValue != undefined) return JSON.parse(jsonValue);
+      if (jsonValue != undefined) return jsonValue;
 
       if (typeof initialValue === "function") {
         return (initialValue as () => T)();
@@ -37,7 +37,8 @@ export default function useLocalStorage<T>(
     });
   }, []);
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
+    //@ts-ignore
+    localStorage.setItem(key, value);
   }, [key, value]);
 
   return [value, setValue] as [typeof value, typeof setValue];
