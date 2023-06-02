@@ -17,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import UploadImage from "~/features/uplaod-image-base64";
 
 const frameworks = [
   {
@@ -44,7 +45,7 @@ const frameworks = [
 export default function TestPage() {
   return (
     <>
-      <ComboBox value={frameworks} placeHolder="جستجو شرکت ها" />
+      <UploadImage />
     </>
   );
 }

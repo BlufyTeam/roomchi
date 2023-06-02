@@ -32,13 +32,14 @@ export const companyRouter = createTRPCRouter({
   updateCompany: protectedProcedure
     .input(updateCompanySchema)
     .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.user.update({
+      return await ctx.prisma.company.update({
         where: {
           id: input.id,
         },
         data: {
           name: input.name,
           description: input.description,
+          logo_base64: input.logo_base64,
         },
       });
     }),

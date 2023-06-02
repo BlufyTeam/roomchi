@@ -17,6 +17,7 @@ import { User } from "~/types";
 import { useUser } from "~/context/user.context";
 import { Command } from "~/components/ui/command";
 import { ComboBox } from "~/features/shadui/ComboBox";
+import { reloadSession } from "~/utils/util";
 
 const TextFieldWithLable = withLabel(TextField);
 // const TextAreaWithLable = withLabel(TextAreaField);
@@ -67,6 +68,7 @@ export function UserForm({
 
   const updateUser = api.user.updateUser.useMutation({
     onSuccess: async (data) => {
+      reloadSession();
       await utils.user.getUsers.invalidate();
     },
   });

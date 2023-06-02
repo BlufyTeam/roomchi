@@ -1,6 +1,4 @@
-export default function Upload({
-  className = "w-6 h-6 fill-gray-500 stroke-gray-500 ",
-}) {
+export default function UploadIcon({ className = "w-6 h-6  stroke-accent " }) {
   return (
     <svg className={className} viewBox="0 0 24 24">
       <path

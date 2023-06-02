@@ -12,8 +12,14 @@ import Image from "next/image";
 import Menu from "~/features/menu";
 import BlurBackground from "~/ui/blur-backgrounds";
 import ThemeBox from "~/features/theme-box";
+import Company from "~/features/company";
+import { api } from "~/utils/api";
 
 const menuList = [
+  {
+    value: "پروفایل",
+    link: "profile",
+  },
   {
     value: "تنظیمات",
     link: "settings",
@@ -28,10 +34,7 @@ const menuList = [
     description: `در این بخش می توانید کاربر های مد نظر خود را بسازید، ویرایش کنید و
     یا حذف کنید و تنظیمات مربوط به آن ها را تغییر دهید`,
   },
-  {
-    value: "نظارت",
-    link: "monitoring",
-  },
+
   {
     value: "رنگ",
     link: "theme",
@@ -41,6 +44,7 @@ const menuList = [
 export default function AdminMainLayout({ children }: any): any {
   const router = useRouter();
   const session = useSession();
+
   if (session.status === "loading") return "loading";
 
   const currentMenuItem = menuList.find(
@@ -81,18 +85,7 @@ export default function AdminMainLayout({ children }: any): any {
                 </span>
               </Button>
               <span className="text-primary">|</span>
-              <div className="flex items-center justify-center gap-5 text-primary">
-                <span className="text-sm">
-                  {session.data.user.company.name}
-                </span>
-                <Image
-                  src={session.data.user.company.logo_base64}
-                  alt="logo"
-                  className="rounded-full object-fill ring-2 ring-primary"
-                  width={45}
-                  height={45}
-                />
-              </div>
+              <Company company={session.data.user.company} />
             </div>
           </div>
         </Container>
