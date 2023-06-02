@@ -77,6 +77,7 @@ export default function CompanyForm({ company }: { company: Company }) {
         />
         <InputError message={formik.errors.description} />
       </div>
+      <h3>لوگو شرکت</h3>
       <UploadImageBase64
         images={
           formik.values.logo_base64?.length > 0
