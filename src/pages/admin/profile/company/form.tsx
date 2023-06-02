@@ -12,6 +12,7 @@ import withLabel from "~/ui/forms/with-label";
 import InputError from "~/ui/forms/input-error";
 import Button from "~/ui/buttons";
 import { useToast } from "~/components/ui/toast/use-toast";
+import { reloadSession } from "~/utils/util";
 const TextFieldWithLable = withLabel(TextField);
 
 export default function CompanyForm({ company }: { company: Company }) {
@@ -19,7 +20,7 @@ export default function CompanyForm({ company }: { company: Company }) {
   const utils = api.useContext();
   const updateCompany = api.company.updateCompany.useMutation({
     onSuccess: () => {
-      utils.company.getCompanyById.invalidate();
+      reloadSession();
     },
   });
   const formik = useFormik({
@@ -82,11 +83,12 @@ export default function CompanyForm({ company }: { company: Company }) {
             ? [formik.values.logo_base64]
             : []
         }
-        onChange={(base64) => {
+        onChange={(base64: string) => {
+          console.log({ base64 });
           formik.setValues((values) => {
             return {
               ...values,
-              logo_base64: base64 ?? undefined,
+              logo_base64: base64,
             };
           });
         }}
@@ -97,7 +99,7 @@ export default function CompanyForm({ company }: { company: Company }) {
           });
         }}
       />
-
+      <InputError message={formik.errors.logo_base64} />
       <Button
         disabled={updateCompany.isLoading || !formik.isValid}
         isLoading={updateCompany.isLoading || updateCompany.isLoading}

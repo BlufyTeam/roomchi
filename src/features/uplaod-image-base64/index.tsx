@@ -45,7 +45,7 @@ export default function UploadImageBase64({
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onChange([]);
+                    onChange("");
                   }}
                   className="group relative overflow-hidden"
                 >

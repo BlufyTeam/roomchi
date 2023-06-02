@@ -14,13 +14,10 @@ import BlurBackground from "~/ui/blur-backgrounds";
 import { api } from "~/utils/api";
 
 export default function Company({ company }: { company: Company }) {
-  const getCompany = api.company.getCompanyById.useQuery(
-    { id: company.id },
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
-  if (getCompany.isLoading) return <>loading</>;
+  const image =
+    company.logo_base64.length <= 0
+      ? "/images/default-door.png"
+      : company.logo_base64;
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
@@ -29,9 +26,9 @@ export default function Company({ company }: { company: Company }) {
             variant="link"
             className="flex items-center justify-center gap-5 text-primary"
           >
-            <span className="text-sm">{getCompany.data.name}</span>
+            <span className="text-sm">{company.name}</span>
             <Image
-              src={getCompany.data.logo_base64}
+              src={image}
               alt="logo"
               className="rounded-full object-fill ring-2 ring-primary"
               width={45}
@@ -44,8 +41,8 @@ export default function Company({ company }: { company: Company }) {
         <BlurBackground />
         <div className="flex justify-between space-x-4 text-accent">
           <div className="flex flex-col items-start justify-center gap-2">
-            <h4 className="text-sm font-semibold">{getCompany.data.name}</h4>
-            <p className="text-sm">{getCompany.data.description}</p>
+            <h4 className="text-sm font-semibold">{company.name}</h4>
+            <p className="text-sm">{company.description}</p>
           </div>
         </div>
       </HoverCardContent>
