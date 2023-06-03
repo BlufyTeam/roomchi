@@ -12,15 +12,21 @@ import {
 
 export const roomRouter = createTRPCRouter({
   getRoomsByCompanyId: protectedProcedure
-    .input(z.object({ companyId: z.string().optional() }))
+    .input(z.object({ companyId: z.string().optional() }).optional())
     .query(({ ctx, input }) => {
       return ctx.prisma.room.findMany({
-        where: { companyId: input.companyId ?? ctx.session.user.companyId },
+        where: { companyId: ctx.session.user.companyId },
       });
     }),
-  getRooms: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.room.findMany();
-  }),
+    getRooms: protectedProcedure.input(z.object({companyId:z.string().optional()})).query(({ ctx,input }) => {
+      if(input.companyId != null){
+        return ctx.prisma.room.findMany()
+        
+      }else{
+        return ctx.prisma.room.findMany({
+          where:{companyId:input.companyId}
+        });
+      }
   getRoomById: protectedProcedure
     .input(roomIdSchema)
     .query(({ ctx, input }) => {
