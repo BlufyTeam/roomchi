@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Base64 } from "js-base64";
 
 export const updateRoomSchema = z.object({
   id: z.string({ required_error: "این فیلد اجباری است" }),
@@ -8,7 +7,7 @@ export const updateRoomSchema = z.object({
     description: "نام",
   }),
   description: z.string({ description: "توضیحات" }).optional(),
-  logo_rule: z.string().optional(),
+  image: z.string().optional(),
   price: z.number().optional(),
   capacity: z.number().optional(),
   companyId: z.string(),
@@ -20,7 +19,7 @@ export const roomIdSchema = z.object({
 
 export const createRoomSchema = z.object({
   title: z.string({ required_error: "این فیلد اجباری است" }),
-  logo_rule: z.string().optional(),
+  image: z.string().optional(),
   price: z.number({ required_error: "این فیلد اجباری است" }),
   capacity: z.number({ required_error: "این فیلد اجباری است" }),
   description: z.string().optional(),

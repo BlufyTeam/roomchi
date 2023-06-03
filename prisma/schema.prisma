@@ -69,7 +69,7 @@ model Room {
     id          String     @id @default(cuid())
     company     Company    @relation(fields: [companyId], references: [id])
     companyId   String
-    logo_rule   String
+    image       String?
     description String
     price       Int
     capacity    Int
