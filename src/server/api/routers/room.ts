@@ -5,12 +5,14 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import {
-  roomIdSchema,createRoomSchema,updateRoomSchema
+  roomIdSchema,
+  createRoomSchema,
+  updateRoomSchema,
 } from "~/server/validations/room.validation";
 
 export const roomRouter = createTRPCRouter({
   getRooms: protectedProcedure.query(({ ctx }) => {
-   return ctx.prisma.room.findMany()
+    return ctx.prisma.room.findMany();
   }),
   getRoomById: protectedProcedure
     .input(roomIdSchema)
@@ -18,7 +20,6 @@ export const roomRouter = createTRPCRouter({
       return ctx.prisma.room.findUnique({
         where: {
           id: input.id,
-
         },
       });
     }),
@@ -34,8 +35,6 @@ export const roomRouter = createTRPCRouter({
           capacity: input.capacity,
           description: input.description,
           companyId: input.companyId,
-          
-
         },
       });
     }),
@@ -47,16 +46,16 @@ export const roomRouter = createTRPCRouter({
           id: input.id,
         },
         data: {
-            title: input.title,
-            logo_rule: input.logo_rule,
-            price: input.price,
-            capacity: input.capacity,
-            description: input.description,
-            companyId: input.companyId,
-        }
+          title: input.title,
+          logo_rule: input.logo_rule,
+          price: input.price,
+          capacity: input.capacity,
+          description: input.description,
+          companyId: input.companyId,
+        },
       });
     }),
-  
+
   deleteRoom: protectedProcedure
     .input(roomIdSchema)
     .mutation(async ({ input, ctx }) => {

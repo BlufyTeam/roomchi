@@ -14,11 +14,7 @@ import BlurBackground from "~/ui/blur-backgrounds";
 import { api } from "~/utils/api";
 
 export default function Company({ company }: { company: Company }) {
-
-  const image =
-    company.logo_base64.length <= 0
-      ? "/images/default-door.png"
-      : company.logo_base64;
+  const image = company.logo_base64;
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
@@ -29,6 +25,7 @@ export default function Company({ company }: { company: Company }) {
           >
             <span className="text-sm">{company.name}</span>
             <Image
+              //@ts-ignore
               src={image}
               alt="logo"
               className="rounded-full object-fill ring-2 ring-primary"

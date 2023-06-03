@@ -20,6 +20,10 @@ export default function CompanyForm({ company }: { company: Company }) {
   const utils = api.useContext();
   const updateCompany = api.company.updateCompany.useMutation({
     onSuccess: () => {
+      toast({
+        title: "ویرایش شرکت",
+        description: "ویرایش شد",
+      });
       reloadSession();
     },
   });
@@ -27,6 +31,7 @@ export default function CompanyForm({ company }: { company: Company }) {
     initialValues: {
       id: company.id,
       name: company.name,
+      //@ts-ignore
       logo_base64: company.logo_base64,
       description: company.description,
     },
@@ -46,10 +51,6 @@ export default function CompanyForm({ company }: { company: Company }) {
       //       changes.push(`${key} به ${formik.values[key]} تغییر پیدا کرد`);
       //   });
       //  changes.length <= 0 ? "مقداری تغییر نکرد" : changes.join("\n"),
-      toast({
-        title: "ویرایش شرکت",
-        description: "ویرایش شد",
-      });
     },
   });
   return (

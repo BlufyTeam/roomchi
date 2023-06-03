@@ -19,7 +19,8 @@ export default function TextField({
   isRtl = true,
   min = 0,
   max = 1000,
-  onChange = (value) => {},
+  onChange = (e) => {},
+  onValueChange = (value) => {},
   focused = false,
   onFocus = () => {},
 
@@ -64,7 +65,7 @@ export default function TextField({
           placeholderRef.current.style.opacity = 0;
         }}
         onChange={(e) => {
-          // onChange(parse(e.target.value));
+          onValueChange(e.target.value);
           onChange(e);
         }}
         {...rest}

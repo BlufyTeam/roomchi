@@ -88,8 +88,13 @@ export default function AdminMainLayout({ children }: any): any {
                   خروج
                 </span>
               </Button>
-              <span className="text-primary">|</span>
-              <Company company={session.data.user.company} />
+
+              {session.data.user.company && (
+                <>
+                  <span className="text-primary">|</span>
+                  <Company company={session.data.user.company} />
+                </>
+              )}
             </div>
           </div>
         </Container>

@@ -21,8 +21,8 @@ export const companyRouter = createTRPCRouter({
 
   getCompanyById: protectedProcedure
     .input(companyIdSchema)
-    .query(({ ctx, input }) => {
-      return ctx.prisma.company.findUnique({
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.company.findUnique({
         where: {
           id: input.id,
         },
