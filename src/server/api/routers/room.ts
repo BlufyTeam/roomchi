@@ -11,7 +11,6 @@ import {
 } from "~/server/validations/room.validation";
 
 export const roomRouter = createTRPCRouter({
-<<<<<<< HEAD
   getRoomsByCompanyId: protectedProcedure
     .input(z.object({ companyId: z.string().optional() }))
     .query(({ ctx, input }) => {
@@ -21,31 +20,16 @@ export const roomRouter = createTRPCRouter({
     }),
   getRooms: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.room.findMany();
-=======
-  getRooms: protectedProcedure.input(z.object({companyId:z.string().optional()})).query(({ ctx,input }) => {
-    if(input.companyId != null){
-      return ctx.prisma.room.findMany()
-      
-    }else{
-      return ctx.prisma.room.findMany({
-        where:{companyId:input.companyId}
-      });
-    }
-    
->>>>>>> 74142a43e25c1fcc0c73ae35899843be55630978
   }),
   getRoomById: protectedProcedure
     .input(roomIdSchema)
     .query(({ ctx, input }) => {
-  return ctx.prisma.room.findUnique({
+      return ctx.prisma.room.findUnique({
         where: {
           id: input.id,
         },
-      })
-   
-    
+      });
     }),
-    
 
   createRoom: protectedProcedure
     .input(createRoomSchema)
