@@ -25,19 +25,12 @@ export const roomRouter = createTRPCRouter({
   getRoomById: protectedProcedure
     .input(roomIdSchema)
     .query(({ ctx, input }) => {
-      if(input.id != null)
-      {  return ctx.prisma.room.findUnique({
+  return ctx.prisma.room.findUnique({
         where: {
           id: input.id,
         },
       })
-    }else{
-      return ctx.prisma.room.findUnique({
-        where: {
-          id: ctx.session.user.companyId,
-        },
-      })
-      }
+   
     
     }),
     
