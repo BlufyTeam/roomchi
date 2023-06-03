@@ -14,6 +14,7 @@ import BlurBackground from "~/ui/blur-backgrounds";
 import ThemeBox from "~/features/theme-box";
 import Company from "~/features/company";
 import { api } from "~/utils/api";
+import useStatus from "~/hooks/useStatus";
 
 const menuList = [
   {
@@ -44,6 +45,7 @@ const menuList = [
 export default function AdminMainLayout({ children }: any): any {
   const router = useRouter();
   const session = useSession();
+  const { isOnline, isDesktop } = useStatus();
 
   if (session.status === "loading") return "loading";
 
@@ -61,13 +63,15 @@ export default function AdminMainLayout({ children }: any): any {
             className="flex flex-col items-center justify-between gap-5  py-8 md:flex-row"
             dir="rtl"
           >
-            <div className="flex items-center justify-center">
-              <Link href={"/admin"} className="text-accent">
-                {session.data.user.name}
-              </Link>
-              <span className="text-accent/80">
-                {currentMenuItem && " / " + currentMenuItem.value}
-              </span>
+            <div className="flex flex-col  items-center justify-center gap-2 md:flex-row">
+              <div>
+                <Link href={"/admin"} className="text-accent">
+                  {isDesktop ? "💻" : "📱"} {session.data.user.name}
+                </Link>
+                <span className="text-accent/80">
+                  {currentMenuItem && " / " + currentMenuItem.value}
+                </span>
+              </div>
               <ThemeBox />
             </div>
 
