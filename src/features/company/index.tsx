@@ -14,6 +14,7 @@ import BlurBackground from "~/ui/blur-backgrounds";
 import { api } from "~/utils/api";
 
 export default function Company({ company }: { company: Company }) {
+
   const image =
     company.logo_base64.length <= 0
       ? "/images/default-door.png"

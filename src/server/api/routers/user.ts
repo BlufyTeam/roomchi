@@ -26,6 +26,7 @@ export const userRouter = createTRPCRouter({
           password: input.password,
           description: input.description,
           role: input.role,
+          companyId: input.companyId,
         },
       });
     }),
@@ -44,7 +45,7 @@ export const userRouter = createTRPCRouter({
           description: input.description,
           role: input.role,
           companyId: input.companyId,
-        },
+        }
       });
     }),
   getUsers: publicProcedure
