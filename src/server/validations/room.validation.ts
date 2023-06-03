@@ -16,6 +16,7 @@ export const updateRoomSchema = z.object({
 
 export const roomIdSchema = z.object({
   id: z.string({ required_error: "این فیلد اجباری است" }),
+  companyId:z.string().optional()
 });
 
 export const createRoomSchema = z.object({
