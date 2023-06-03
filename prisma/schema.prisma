@@ -75,6 +75,7 @@ model Room {
     capacity    Int
     plans       Plan[]
     resources   Resource[]
+    title       String
 
     @@map("rooms")
 }
@@ -82,7 +83,7 @@ model Room {
 model Company {
     id          String   @id @default(cuid())
     name        String
-    logo_base64 String
+    logo_base64 Bytes
     description String
     users       User[]
     created_at  DateTime @default(now())
