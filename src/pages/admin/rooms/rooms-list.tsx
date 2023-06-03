@@ -1,9 +1,15 @@
 import { Room } from "@prisma/client";
 import {
+  AppleIcon,
   BanIcon,
+  BananaIcon,
   CalendarCheck,
   CalendarRangeIcon,
   CalendarSearchIcon,
+  CherryIcon,
+  CitrusIcon,
+  CookieIcon,
+  CroissantIcon,
   DoorOpenIcon,
   PersonStandingIcon,
 } from "lucide-react";
@@ -76,44 +82,56 @@ function RoomItem({
               <span>{room.description}</span>
             </div>
           </div>
-          <div className="flex flex-col">
-            {status === "Open" && (
-              <span className="flex items-center justify-center gap-2  rounded-lg bg-emerald-500/10 p-2 text-sm text-emerald-600 ">
-                <DoorOpenIcon />
-                باز است
-              </span>
-            )}
-            {status === "Reserved" && (
-              <span className="flex items-center justify-center gap-2 rounded-lg bg-rose-500/10 p-2 text-sm text-rose-600">
-                <CalendarRangeIcon />
-                رزرو شده
-              </span>
-            )}
-            {status === "Ocupied" && (
-              <span className="flex items-center justify-center gap-2 rounded-lg  bg-amber-500/10 p-2 text-sm text-amber-600">
-                <BanIcon />
-                در حال بر گذاری
-              </span>
-            )}
+          <div className="flex flex-col items-end justify-center gap-5">
+            <div className="flex flex-col">
+              {status === "Open" && (
+                <span className="flex items-center justify-center gap-2  rounded-lg bg-emerald-500/10 p-2 text-sm text-emerald-600 ">
+                  <DoorOpenIcon />
+                  باز است
+                </span>
+              )}
+              {status === "Reserved" && (
+                <span className="flex items-center justify-center gap-2 rounded-lg bg-rose-500/10 p-2 text-sm text-rose-600">
+                  <CalendarRangeIcon />
+                  رزرو شده
+                </span>
+              )}
+              {status === "Ocupied" && (
+                <span className="flex items-center justify-center gap-2 rounded-lg  bg-amber-500/10 p-2 text-sm text-amber-600">
+                  <BanIcon />
+                  در حال بر گذاری
+                </span>
+              )}
+            </div>
           </div>
         </div>
-        <div className=" flex w-40 flex-wrap  items-center justify-start  gap-2">
-          {[...Array(capicity).keys()].map((i) => {
-            return (
-              <>
-                <PersonStandingIcon
-                  key={i}
-                  className={`  ${
-                    i <= filled ? "stroke-primbuttn" : "stroke-gray-400"
-                  }`}
-                  style={{
-                    animationDelay: `${i * 5}`,
-                    animationDuration: "1s",
-                  }}
-                />
-              </>
-            );
-          })}
+        <div className=" flex  flex-row  items-start justify-between  gap-2">
+          <div className=" flex w-40 flex-wrap  items-center justify-start  gap-2">
+            {[...Array(capicity).keys()].map((i) => {
+              return (
+                <>
+                  <PersonStandingIcon
+                    key={i}
+                    className={`  ${
+                      i <= filled ? "stroke-primbuttn" : "stroke-gray-400"
+                    }`}
+                    style={{
+                      animationDelay: `${i * 5}`,
+                      animationDuration: "1s",
+                    }}
+                  />
+                </>
+              );
+            })}
+          </div>
+          <div className="grid grid-cols-3 items-center justify-end gap-2">
+            <AppleIcon className="fill-rose-600 stroke-rose-600" />
+            <BananaIcon className="fill-yellow-400 stroke-yellow-400" />
+            <CookieIcon className="fill-amber-900 stroke-yellow-800" />
+            <CroissantIcon className="fill-amber-700 stroke-yellow-800" />
+            <CitrusIcon className="fill-orange-500 stroke-orange-800" />
+            <CherryIcon className="fill-rose-600 stroke-rose-800" />
+          </div>
         </div>
         <span>{room.price} تومان</span>
       </div>

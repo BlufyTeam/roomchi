@@ -16,7 +16,7 @@ export default function RoomsPage() {
           <div className="sticky top-5 h-fit rounded-lg border border-accent/30 bg-secondary p-5 2xl:w-3/12">
             <UserForm />
           </div>
-          <div className=" h-fit max-h-[42rem] overflow-hidden overflow-y-auto rounded-lg  border border-accent/30 bg-secondary p-5 2xl:w-9/12">
+          <div className=" h-fit max-h-[42rem] w-full overflow-hidden overflow-y-auto rounded-lg  border border-accent/30 bg-secondary  2xl:w-9/12 2xl:p-5">
             <UsersList />
           </div>
         </UserProvider>

@@ -1,3 +1,4 @@
+import moment from "jalali-moment";
 import { z } from "zod";
 import {
   createTRPCRouter,
@@ -13,10 +14,26 @@ import {
 export const roomRouter = createTRPCRouter({
   getRoomsByCompanyId: protectedProcedure
     .input(z.object({ companyId: z.string().optional() }).optional())
-    .query(({ ctx, input }) => {
-      return ctx.prisma.room.findMany({
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.room.findMany({
         where: { companyId: input?.companyId ?? ctx.session.user.companyId },
+        include: {
+          plans: true,
+        },
       });
+
+      // rooms.map((room) => {
+
+      //   const isRoomAvalibleNow = !moment(Date.now()).isBetween(
+      //     room.plans[0].start_datetime,
+      //     room.plans[0].end_datetime
+      //   );
+
+      //   const isRoomOcupied = moment(Date.now()).isBetween(
+      //     room.plans[0].start_datetime,
+      //     room.plans[0].end_datetime
+      //   );
+      // });
     }),
   getRooms: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.room.findMany();
