@@ -57,6 +57,7 @@ function RoomItem({
   capicity?: number;
   filled?: number;
 }) {
+  if (status === "Open") filled = -1;
   return (
     <>
       <div className="flex  cursor-pointer  flex-col gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary">
