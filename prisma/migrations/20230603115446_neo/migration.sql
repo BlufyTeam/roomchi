@@ -36,6 +36,7 @@ CREATE TABLE "rooms" (
     "description" TEXT NOT NULL,
     "price" INTEGER NOT NULL,
     "capacity" INTEGER NOT NULL,
+    "title" TEXT NOT NULL,
     CONSTRAINT "rooms_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companies" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -43,7 +44,7 @@ CREATE TABLE "rooms" (
 CREATE TABLE "companies" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
-    "logo_base64" TEXT NOT NULL,
+    "logo_base64" TEXT,
     "description" TEXT NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL
