@@ -1,4 +1,13 @@
 import { Room } from "@prisma/client";
+import {
+  BanIcon,
+  CalendarCheck,
+  CalendarRangeIcon,
+  CalendarSearchIcon,
+  DoorOpenIcon,
+  PersonStandingIcon,
+} from "lucide-react";
+import Image from "next/image";
 import React from "react";
 import { api } from "~/utils/api";
 
@@ -12,11 +21,24 @@ export default function RoomsList() {
       </div>
     );
   return (
-    <div className="flex flex-wrap items-center justify-center gap-10 ">
+    <div className=" grid gap-5 md:grid-cols-3 ">
       {getRooms.data.map((room) => {
         return (
           <>
-            <RoomItem room={room} />
+            <RoomItem room={room} status="Ocupied" capicity={10} filled={5} />
+            <RoomItem room={room} status="Open" capicity={15} filled={2} />
+            <RoomItem room={room} status="Reserved" capicity={6} filled={2} />
+            <RoomItem room={room} status="Reserved" capicity={15} filled={15} />
+            <RoomItem room={room} status="Reserved" capicity={10} filled={9} />
+            <RoomItem room={room} status="Reserved" capicity={7} filled={1} />
+            <RoomItem room={room} status="Open" capicity={5} filled={0} />
+            <RoomItem room={room} status="Open" capicity={10} filled={5} />
+            <RoomItem room={room} status="Open" capicity={10} filled={5} />
+            <RoomItem room={room} status="Ocupied" capicity={10} filled={5} />
+            <RoomItem room={room} status="Ocupied" capicity={10} filled={5} />
+            <RoomItem room={room} status="Reserved" capicity={10} filled={5} />
+            <RoomItem room={room} status="Ocupied" capicity={10} filled={5} />
+            <RoomItem room={room} status="Open" capicity={10} filled={5} />
           </>
         );
       })}
@@ -24,12 +46,74 @@ export default function RoomsList() {
   );
 }
 
-function RoomItem({ room }: { room: Room }) {
+function RoomItem({
+  room,
+  status,
+  capicity = 10,
+  filled = 5,
+}: {
+  room: Room;
+  status?: "Ocupied" | "Open" | "Reserved";
+  capicity?: number;
+  filled?: number;
+}) {
   return (
     <>
-      <div className="bg-accent">
-        <span>{room.title}</span>
-        <span>{room.description}</span>
+      <div className="flex  cursor-pointer  flex-col gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary">
+        <div className="flex items-start justify-between gap-5">
+          <div className="flex items-start justify-between gap-5">
+            <div className="relative h-10 w-10">
+              <Image
+                className=" rounded-full p-[2px] ring-1 ring-primary"
+                src={"/images/default-door.png"}
+                alt=""
+                fill
+              />
+            </div>
+            <div className="flex flex-col">
+              <h3 className="font-bold">{room.title}</h3>
+              <span>{room.description}</span>
+            </div>
+          </div>
+          <div className="flex flex-col">
+            {status === "Open" && (
+              <span className="flex items-center justify-center gap-2  rounded-lg bg-emerald-500/10 p-2 text-sm text-emerald-600 ">
+                <DoorOpenIcon />
+                باز است
+              </span>
+            )}
+            {status === "Reserved" && (
+              <span className="flex items-center justify-center gap-2 rounded-lg bg-rose-500/10 p-2 text-sm text-rose-600">
+                <CalendarRangeIcon />
+                رزرو شده
+              </span>
+            )}
+            {status === "Ocupied" && (
+              <span className="flex items-center justify-center gap-2 rounded-lg  bg-amber-500/10 p-2 text-sm text-amber-600">
+                <BanIcon />
+                در حال بر گذاری
+              </span>
+            )}
+          </div>
+        </div>
+        <div className=" flex w-40 flex-wrap  items-center justify-start  gap-2">
+          {[...Array(capicity).keys()].map((i) => {
+            return (
+              <>
+                <PersonStandingIcon
+                  key={i}
+                  className={`  ${
+                    i <= filled ? "stroke-primbuttn" : "stroke-gray-400"
+                  }`}
+                  style={{
+                    animationDelay: `${i * 5}`,
+                    animationDuration: "1s",
+                  }}
+                />
+              </>
+            );
+          })}
+        </div>
         <span>{room.price} تومان</span>
       </div>
     </>

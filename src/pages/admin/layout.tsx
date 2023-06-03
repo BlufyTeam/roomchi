@@ -58,7 +58,7 @@ export default function AdminMainLayout({ children }: any): any {
       <Container className="flex w-full items-center justify-center ">
         <BlurBackground />
 
-        <Container className="flex  flex-col ">
+        <Container className="flex  flex-col bg-secondary">
           <div
             className="flex flex-col items-center justify-between gap-5  py-8 md:flex-row"
             dir="rtl"
@@ -107,8 +107,9 @@ export default function AdminMainLayout({ children }: any): any {
       {currentMenuItem && (
         <LayoutSubContainer currentMenuItem={currentMenuItem} />
       )}
-
-      {children}
+      <ContainerBottomBorder className="h-full items-start bg-accent/5 ">
+        {children}
+      </ContainerBottomBorder>
     </div>
   );
 }

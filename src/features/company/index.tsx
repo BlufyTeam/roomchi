@@ -14,7 +14,7 @@ import BlurBackground from "~/ui/blur-backgrounds";
 import { api } from "~/utils/api";
 
 export default function Company({ company }: { company: Company }) {
-  const image = company.logo_base64;
+  const image = company.logo_base64 ?? "/images/default-door.png";
   return (
     <HoverCard>
       <HoverCardTrigger asChild>

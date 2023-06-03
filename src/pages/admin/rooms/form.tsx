@@ -43,7 +43,7 @@ export default function RoomForm() {
       onSubmit={formik.handleSubmit}
       className="relative flex flex-col items-center justify-center gap-8"
     >
-      <h1 className="w-full pb-2 text-accent">ویرایش شرکت</h1>
+      <h1 className="w-full pb-2 text-accent">ساخت اتاق</h1>
 
       <div className="w-full ">
         <TextFieldWithLable
