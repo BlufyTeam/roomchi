@@ -69,6 +69,9 @@ export const planRouter = createTRPCRouter({
             },
           ],
         },
+        include: {
+          room: true,
+        },
         orderBy: { start_datetime: "desc" },
       });
     }),
