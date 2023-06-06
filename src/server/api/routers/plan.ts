@@ -10,7 +10,7 @@ import {
   createPlanSchema,
   updatePlanSchema,
   planDateSchema,
-  planDateAndRoomSchema
+  planDateAndRoomSchema,
 } from "~/server/validations/plan.validation";
 
 export const planRouter = createTRPCRouter({
@@ -18,10 +18,8 @@ export const planRouter = createTRPCRouter({
     .input(z.object({ roomId: z.string().optional() }).optional())
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.plan.findMany({
-        where: { roomId: input?.roomId},
-        
+        where: { roomId: input?.roomId },
       });
-
     }),
   getPlans: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.plan.findMany();
@@ -35,30 +33,46 @@ export const planRouter = createTRPCRouter({
         },
       });
     }),
-    getPlansByDateAndRoom: protectedProcedure
+  getPlansByDateAndRoom: protectedProcedure
     .input(planDateAndRoomSchema)
     .query(({ ctx, input }) => {
       return ctx.prisma.plan.findMany({
         where: {
           roomId: input.roomId,
           OR: [
-            { start_datetime: { lte: input?.end_datetime }, end_datetime: { gte: input?.start_datetime } },
-            { start_datetime: { gte: input?.start_datetime }, end_datetime: { lte: input?.end_datetime } },
-         ]
-        }, orderBy: { start_datetime: 'desc' }
+            {
+              start_datetime: { lte: input?.end_datetime },
+              end_datetime: { gte: input?.start_datetime },
+            },
+            {
+              start_datetime: { gte: input?.start_datetime },
+              end_datetime: { lte: input?.end_datetime },
+            },
+          ],
+        },
+        orderBy: { start_datetime: "desc" },
       });
     }),
-    getPlansByDate: protectedProcedure
+  getPlansByDate: protectedProcedure
     .input(planDateSchema)
     .query(({ ctx, input }) => {
       return ctx.prisma.plan.findMany({
         where: {
-         
           OR: [
-            { start_datetime: { lte: input?.end_datetime }, end_datetime: { gte: input?.start_datetime } },
-            { start_datetime: { gte: input?.start_datetime }, end_datetime: { lte: input?.end_datetime } },
-         ]
-        }, orderBy: { start_datetime: 'desc' }
+            {
+              start_datetime: { lte: input?.end_datetime },
+              end_datetime: { gte: input?.start_datetime },
+            },
+            {
+              start_datetime: { gte: input?.start_datetime },
+              end_datetime: { lte: input?.end_datetime },
+            },
+          ],
+        },
+        include: {
+          room: true,
+        },
+        orderBy: { start_datetime: "desc" },
       });
     }),
   createPlan: protectedProcedure
@@ -83,12 +97,12 @@ export const planRouter = createTRPCRouter({
           id: input.id,
         },
         data: {
-            title: input.title,
-            userId: input.userId,
-            roomId: input.roomId,
-            start_datetime: input.start_datetime,
-            description: input.description,
-            end_datetime: input.end_datetime,
+          title: input.title,
+          userId: input.userId,
+          roomId: input.roomId,
+          start_datetime: input.start_datetime,
+          description: input.description,
+          end_datetime: input.end_datetime,
         },
       });
     }),

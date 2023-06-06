@@ -128,7 +128,6 @@ export default function RoomForm() {
           />
         )}
       </div>
-      {JSON.stringify(formik.errors)}
       <Button
         disabled={createRoom.isLoading || !formik.isValid}
         isLoading={createRoom.isLoading || createRoom.isLoading}
