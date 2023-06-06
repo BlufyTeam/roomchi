@@ -9,6 +9,7 @@ import {
   planIdSchema,
   createPlanSchema,
   updatePlanSchema,
+  planDateSchema
 } from "~/server/validations/plan.validation";
 
 export const planRouter = createTRPCRouter({
@@ -33,7 +34,19 @@ export const planRouter = createTRPCRouter({
         },
       });
     }),
-
+    getPlansByDate: protectedProcedure
+    .input(planDateSchema)
+    .query(({ ctx, input }) => {
+      return ctx.prisma.plan.findMany({
+        where: {
+          roomId: input.roomId,
+          OR: [
+            { start_datetime: { lte: input?.end_datetime }, end_datetime: { gte: input?.start_datetime } },
+            { start_datetime: { gte: input?.start_datetime }, end_datetime: { lte: input?.end_datetime } },
+         ]
+        }, orderBy: { start_datetime: 'desc' }
+      });
+    }),
   createPlan: protectedProcedure
     .input(createPlanSchema)
     .mutation(async ({ input, ctx }) => {
