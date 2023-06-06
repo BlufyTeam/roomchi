@@ -1,3 +1,4 @@
+import { LayoutGroup } from "framer-motion";
 import React from "react";
 import Menu from "~/features/menu";
 import AdminMainLayout from "~/pages/admin/layout";
@@ -23,7 +24,9 @@ export default function SettingsLayout({ children }) {
       <div className="flex min-h-screen w-full flex-col items-center gap-10 bg-secondary">
         <ContainerBottomBorder className=" sticky top-0 z-50 flex pt-2 backdrop-blur-lg">
           <Container className=" max2xl:w-full">
-            <Menu rootPath="settings" list={menuList} />
+            <LayoutGroup id="settings-menu">
+              <Menu rootPath="settings" list={menuList} />
+            </LayoutGroup>
           </Container>
         </ContainerBottomBorder>
         {children}

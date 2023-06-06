@@ -1,3 +1,4 @@
+import { LayoutGroup } from "framer-motion";
 import { useSession } from "next-auth/react";
 import React from "react";
 import Menu from "~/features/menu";
@@ -24,7 +25,9 @@ export default function ProfileLayout({ children }) {
         {menuList.length > 0 && (
           <ContainerBottomBorder className=" sticky top-0 z-50 flex pt-2 backdrop-blur-lg">
             <Container className=" max2xl:w-full">
-              <Menu rootPath="profile" list={menuList} />
+              <LayoutGroup id="profile-menu">
+                <Menu rootPath="profile" list={menuList} />
+              </LayoutGroup>
             </Container>
           </ContainerBottomBorder>
         )}

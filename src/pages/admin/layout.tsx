@@ -15,6 +15,7 @@ import ThemeBox from "~/features/theme-box";
 import Company from "~/features/company";
 import { api } from "~/utils/api";
 import useStatus from "~/hooks/useStatus";
+import { LayoutGroup } from "framer-motion";
 
 const menuList = [
   {
@@ -54,7 +55,7 @@ export default function AdminMainLayout({ children }: any): any {
   );
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center bg-secondary ">
+    <div className="m-auto flex min-h-screen w-full max-w-[1920px] flex-col items-center bg-secondary">
       <Container className="flex w-full items-center justify-center ">
         <BlurBackground />
 
@@ -101,7 +102,9 @@ export default function AdminMainLayout({ children }: any): any {
       </Container>
       <ContainerBottomBorder className=" sticky top-0 z-50 flex pt-2 backdrop-blur-lg">
         <Container className=" max2xl:w-full">
-          <Menu rootPath={"/admin"} list={menuList} />
+          <LayoutGroup id="main-menu">
+            <Menu rootPath={"/admin"} list={menuList} />
+          </LayoutGroup>
         </Container>
       </ContainerBottomBorder>
       {currentMenuItem && (

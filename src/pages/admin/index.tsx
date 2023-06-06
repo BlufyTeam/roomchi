@@ -13,6 +13,8 @@ import Link from "next/link";
 import AdminMainLayout from "~/pages/admin/layout";
 import moment, { Moment } from "jalali-moment";
 import { api } from "~/utils/api";
+import { MegaphoneIcon } from "lucide-react";
+import Calender from "~/features/calender";
 
 let calendarTemp = [];
 const today = moment(Date.now()).locale("fa");
@@ -46,67 +48,67 @@ export default function AdminPage() {
       enabled: session.status === "authenticated",
     }
   );
+  const utils = api.useContext();
   if (session.status === "unauthenticated") return "not authed";
   if (session.status === "loading") return "loading";
   if (getPlansByDate.isLoading) return "loading";
+
   return (
     <AdminMainLayout>
-      <div className="felx flex-col  py-10">
-        {moment(getPlansByDate.data[0].start_datetime)
-          .locale("fa")
-          .format("DD  MMMM")}
-        <div className="grid grid-cols-7 text-center text-primary">
-          <span>شنبه</span>
-          <span>یک شنبه</span>
-          <span>دو شنبه</span>
-          <span>سه شنبه</span>
-          <span>چهار شنبه</span>
-          <span>پنج شنبه</span>
-          <span>جمعه</span>
-        </div>
-        <div className="grid  grid-cols-7  ">
-          {calendar.map((item: Moment) => {
-            const plan = getPlansByDate.data.find(
-              (plan) =>
-                moment(plan.start_datetime)
-                  .locale("fa")
-                  .format("DD  MMMM yyyy") ==
-                item.locale("fa").format("DD  MMMM yyyy")
-            );
+      <Calender
+        onMonthChange={(startDate, endDate) => {
+          utils.plan.getPlansByDate.invalidate({
+            start_datetime: startDate.toDate(),
+            end_datetime: endDate.toDate(),
+          });
+        }}
+        onDate={(date, monthNumber) => {
+          const plan = getPlansByDate.data.find(
+            (plan) =>
+              moment(plan.start_datetime)
+                .locale("fa")
+                .format("DD  MMMM yyyy") ==
+              date.locale("fa").format("DD  MMMM yyyy")
+          );
 
-            return (
-              <>
-                <button
-                  disabled={item.isBefore(today.clone().subtract(1, "day"))}
-                  className={twMerge(
-                    "group flex h-40 w-40 cursor-pointer items-center justify-center text-center "
-                  )}
-                >
-                  <div
-                    className={twMerge(
-                      `flex h-5/6 w-11/12 flex-col items-center  justify-between
-                     rounded-xl bg-accent/10
-                     py-2 text-center                   
+          return (
+            <>
+              <div
+                className={twMerge(
+                  ` relative flex  w-full flex-col items-center justify-center gap-2  
+                      bg-accent/10
+                      py-2
+                      text-center                   
                      text-primary
                      transition-colors
                      duration-500
-                     group-enabled:group-hover:bg-accent 
+                     group-enabled:group-hover:bg-primbuttn 
                      group-enabled:group-hover:text-secondary 
-                    group-disabled:bg-transparent
+                     group-disabled:bg-transparent
                       
-                    group-disabled:text-gray-500`
-                    )}
-                  >
-                    <span> {item.format("DD  MMMM")}</span>
-                    <span> {plan?.title}</span>
-                    <span> {plan?.room.title}</span>
-                  </div>
-                </button>
-              </>
-            );
-          })}
-        </div>
-      </div>
+                    group-disabled:text-gray-500`,
+                  plan ? "rounded-2xl border  border-accent" : " rounded-md"
+                )}
+              >
+                {parseInt(date.format("M")) !== monthNumber + 1 ? (
+                  <span>{date.format("D MMMM")}</span>
+                ) : (
+                  <span>{date.format("D")}</span>
+                )}
+
+                {plan && (
+                  <>
+                    <span className="flex flex-col items-center justify-center gap-2 px-2  text-sm text-accent group-hover:text-secbuttn ">
+                      <MegaphoneIcon className="" />
+                      <p>{plan?.title}</p>
+                    </span>
+                  </>
+                )}
+              </div>
+            </>
+          );
+        }}
+      />
     </AdminMainLayout>
   );
 }
