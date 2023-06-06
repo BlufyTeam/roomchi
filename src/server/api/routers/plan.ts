@@ -32,7 +32,7 @@ export const planRouter = createTRPCRouter({
       return ctx.prisma.plan.findUnique({
         where: {
           id: input.id,
-        },
+        },include:{room:true}
       });
     }),
     getPlansByDateAndRoom: protectedProcedure
@@ -45,7 +45,7 @@ export const planRouter = createTRPCRouter({
             { start_datetime: { lte: input?.end_datetime }, end_datetime: { gte: input?.start_datetime } },
             { start_datetime: { gte: input?.start_datetime }, end_datetime: { lte: input?.end_datetime } },
          ]
-        }, orderBy: { start_datetime: 'desc' }
+        }, orderBy: { start_datetime: 'desc' },include:{room:true}
       });
     }),
     getPlansByDate: protectedProcedure
@@ -58,7 +58,7 @@ export const planRouter = createTRPCRouter({
             { start_datetime: { lte: input?.end_datetime }, end_datetime: { gte: input?.start_datetime } },
             { start_datetime: { gte: input?.start_datetime }, end_datetime: { lte: input?.end_datetime } },
          ]
-        }, orderBy: { start_datetime: 'desc' }
+        }, orderBy: { start_datetime: 'desc' },include:{room:true}
       });
     }),
   createPlan: protectedProcedure
