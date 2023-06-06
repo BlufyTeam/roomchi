@@ -54,6 +54,7 @@ model Resource {
 
 model Plan {
     id             String   @id @default(cuid())
+    title           String
     user           User     @relation(fields: [userId], references: [id])
     userId         String
     room           Room     @relation(fields: [roomId], references: [id])

@@ -32,7 +32,7 @@ CREATE TABLE "plans" (
 CREATE TABLE "rooms" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "companyId" TEXT NOT NULL,
-    "logo_rule" TEXT NOT NULL,
+    "image" TEXT,
     "description" TEXT NOT NULL,
     "price" INTEGER NOT NULL,
     "capacity" INTEGER NOT NULL,
