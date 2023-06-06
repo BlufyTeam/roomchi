@@ -32,7 +32,7 @@ export default function RoomsList() {
         return (
           <>
             <RoomItem room={room} status="Ocupied" capicity={10} filled={5} />
-            <RoomItem room={room} status="Open" capicity={15} filled={2} />
+            {/* <RoomItem room={room} status="Open" capicity={15} filled={2} />
             <RoomItem room={room} status="Reserved" capicity={6} filled={2} />
             <RoomItem room={room} status="Reserved" capicity={15} filled={15} />
             <RoomItem room={room} status="Reserved" capicity={10} filled={9} />
@@ -44,7 +44,7 @@ export default function RoomsList() {
             <RoomItem room={room} status="Ocupied" capicity={10} filled={5} />
             <RoomItem room={room} status="Reserved" capicity={10} filled={5} />
             <RoomItem room={room} status="Ocupied" capicity={10} filled={5} />
-            <RoomItem room={room} status="Open" capicity={10} filled={5} />
+            <RoomItem room={room} status="Open" capicity={10} filled={5} /> */}
           </>
         );
       })}

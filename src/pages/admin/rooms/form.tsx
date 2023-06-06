@@ -36,7 +36,16 @@ export default function RoomForm() {
     },
     validationSchema: toFormikValidationSchema(createRoomSchema),
     validateOnBlur: true,
-    onSubmit: (values: typeof createRoomSchema._type) => {},
+    onSubmit: (values: typeof createRoomSchema._type) => {
+      createRoom.mutate({
+        capacity: values.capacity,
+        companyId: values.companyId,
+        description: values.description,
+        price: values.price,
+        title: values.title,
+        image: values.image,
+      });
+    },
   });
   return (
     <form
@@ -119,14 +128,14 @@ export default function RoomForm() {
           />
         )}
       </div>
-
+      {JSON.stringify(formik.errors)}
       <Button
         disabled={createRoom.isLoading || !formik.isValid}
         isLoading={createRoom.isLoading || createRoom.isLoading}
         type="submit"
         className="w-full rounded-xl bg-primbuttn text-secondary"
       >
-        ویرایش
+        ثبت
       </Button>
     </form>
   );
