@@ -13,8 +13,13 @@ export const updatePlanSchema = z.object({
 export const planIdSchema = z.object({
   id: z.string({ required_error: "این فیلد اجباری است" }),
 });
-export const planDateSchema = z.object({
+export const planDateAndRoomSchema = z.object({
   roomId: z.string({ required_error: "این فیلد اجباری است" }),
+  start_datetime: z.date(),
+  end_datetime: z.date(),
+});
+export const planDateSchema = z.object({
+
   start_datetime: z.date(),
   end_datetime: z.date(),
 });
