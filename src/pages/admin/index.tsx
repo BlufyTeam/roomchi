@@ -99,7 +99,7 @@ export default function AdminPage() {
                   >
                     <span> {item.format("DD  MMMM")}</span>
                     <span> {plan?.title}</span>
-                    <span> {plan?.room.title}</span>
+                    {/* <span> {plan?.room.title}</span> */}
                   </div>
                 </button>
               </>
