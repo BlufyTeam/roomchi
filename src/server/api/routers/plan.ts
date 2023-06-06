@@ -93,7 +93,7 @@ export const planRouter = createTRPCRouter({
       });
     }),
 
-  deleteRoom: protectedProcedure
+  deletePlan: protectedProcedure
     .input(planIdSchema)
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.plan.delete({
