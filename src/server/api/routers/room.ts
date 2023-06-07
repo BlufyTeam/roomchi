@@ -10,6 +10,7 @@ import {
   createRoomSchema,
   updateRoomSchema,
 } from "~/server/validations/room.validation";
+import { RoomStatus } from "~/types";
 
 export const roomRouter = createTRPCRouter({
   getRoomsByCompanyId: protectedProcedure
@@ -87,6 +88,36 @@ export const roomRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
+      });
+    }),
+  getReservedRoomsByDate: protectedProcedure
+    .input(z.object({ date: z.date().optional() }).optional())
+    .query(async ({ input, ctx }) => {
+      const rooms = await ctx.prisma.room.findMany({
+        include: {
+          plans: true,
+        },
+      });
+
+      return rooms.map((room) => {
+        const plans = room.plans.map((plan) => {
+          let status: RoomStatus = "Open";
+
+          if (moment().isBetween(plan.start_datetime, plan.end_datetime))
+            status = "AlreadyStarted";
+          if (moment().isAfter(plan.end_datetime)) status = "Open";
+          if (moment().isBefore(plan.start_datetime)) status = "Reserved";
+
+          return {
+            status,
+            start_datetime: plan.start_datetime,
+            end_datetime: plan.end_datetime,
+          };
+        });
+        return {
+          ...room,
+          plans,
+        };
       });
     }),
 });

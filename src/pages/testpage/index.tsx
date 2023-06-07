@@ -43,11 +43,7 @@ const frameworks = [
 ];
 
 export default function TestPage() {
-  return (
-    <>
-      <UploadImage />
-    </>
-  );
+  return <></>;
 }
 
 export function ComboBox({

@@ -15,10 +15,11 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { RoomStatus } from "~/types";
 import { api } from "~/utils/api";
 
 export default function RoomsList() {
-  const getRooms = api.room.getRoomsByCompanyId.useQuery();
+  const getRooms = api.room.getReservedRoomsByDate.useQuery();
   if (getRooms.isLoading) return <RoomsListSkeleton />;
   if (getRooms.data.length <= 0)
     return (
@@ -31,7 +32,12 @@ export default function RoomsList() {
       {getRooms.data.map((room) => {
         return (
           <>
-            <RoomItem room={room} status="Ocupied" capicity={10} filled={5} />
+            <RoomItem
+              room={room}
+              status={room.plans.length <= 0 ? "Open" : room.plans[0].status}
+              capicity={10}
+              filled={5}
+            />
             {/* <RoomItem room={room} status="Open" capicity={15} filled={2} />
             <RoomItem room={room} status="Reserved" capicity={6} filled={2} />
             <RoomItem room={room} status="Reserved" capicity={15} filled={15} />
@@ -59,7 +65,7 @@ function RoomItem({
   filled = 5,
 }: {
   room: Room;
-  status?: "Ocupied" | "Open" | "Reserved";
+  status?: RoomStatus;
   capicity?: number;
   filled?: number;
 }) {
@@ -96,7 +102,7 @@ function RoomItem({
                   رزرو شده
                 </span>
               )}
-              {status === "Ocupied" && (
+              {status === "AlreadyStarted" && (
                 <span className="flex items-center justify-center gap-2 rounded-lg  bg-amber-500/10 p-2 text-sm text-amber-600">
                   <BanIcon />
                   در حال بر گذاری

@@ -218,12 +218,12 @@ export default function Modal({
                         {title}
                       </p>
                       {!isOnMobile && (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+                        <div className="group flex h-8 w-8 items-center justify-center rounded-full hover:bg-primbuttn/20 ">
                           <Button
                             className="duration-400 relative flex w-full select-none items-center justify-center rounded-lg transition-all"
                             onClick={handleClose}
                           >
-                            <XIcon className="h-7 w-7 scale-110 stroke-gray-500 " />
+                            <XIcon className="h-7 w-7 scale-110 stroke-primbuttn group-hover:stroke-accent " />
                           </Button>
                         </div>
                       )}

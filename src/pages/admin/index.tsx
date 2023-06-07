@@ -15,6 +15,9 @@ import moment, { Moment } from "jalali-moment";
 import { api } from "~/utils/api";
 import { MegaphoneIcon } from "lucide-react";
 import Calender from "~/features/calender";
+import Modal from "~/ui/modals";
+import { useRouter } from "next/router";
+import PlanRooms from "~/features/plan-rooms";
 
 let calendarTemp = [];
 const today = moment(Date.now()).locale("fa");
@@ -49,6 +52,7 @@ export default function AdminPage() {
     }
   );
   const utils = api.useContext();
+  const router = useRouter();
   if (session.status === "unauthenticated") return "not authed";
   if (session.status === "loading") return "loading";
   if (getPlansByDate.isLoading) return "loading";
@@ -65,50 +69,61 @@ export default function AdminPage() {
         onDate={(date, monthNumber) => {
           const plan = getPlansByDate.data.find(
             (plan) =>
-              moment(plan.start_datetime)
-                .locale("fa")
-                .format("DD  MMMM yyyy") ==
-              date.locale("fa").format("DD  MMMM yyyy")
+              moment(plan.start_datetime).locale("fa").format("DD MMMM yyyy") ==
+              date.locale("fa").format("DD MMMM yyyy")
           );
-
+          const formattedDate = date.toISOString();
           return (
-            <>
-              <div
-                className={twMerge(
-                  ` relative flex  w-full flex-col items-center justify-center gap-2  
-                      bg-accent/10
-                      py-2
-                      text-center                   
-                     text-primary
-                     transition-colors
-                     duration-500
-                     group-enabled:group-hover:bg-primbuttn 
-                     group-enabled:group-hover:text-secondary 
-                     group-disabled:bg-transparent
-                      
-                    group-disabled:text-gray-500`,
-                  plan ? "rounded-2xl border  border-accent" : " rounded-md"
-                )}
-              >
-                {parseInt(date.format("M")) !== monthNumber + 1 ? (
-                  <span>{date.format("D MMMM")}</span>
-                ) : (
-                  <span>{date.format("D")}</span>
-                )}
+            <Link
+              href={`/admin/?plan=${formattedDate}`}
+              as={`/admin/${formattedDate}`}
+              shallow={true}
+              className={twMerge(
+                `relative flex w-full  flex-col items-center justify-center gap-2 bg-accent/10  
+                    py-2
+                    text-center
+                    text-primary                   
+                   transition-colors
+                   duration-500
+                   group-enabled:group-hover:bg-primbuttn
+                   group-enabled:group-hover:text-secondary 
+                   group-disabled:cursor-not-allowed 
+                   group-disabled:bg-transparent
+                    
+                  group-disabled:text-gray-500`,
+                plan
+                  ? "rounded-2xl border   group-enabled:border-accent"
+                  : " rounded-md"
+              )}
+            >
+              {parseInt(date.format("M")) !== monthNumber + 1 ? (
+                <span>{date.format("D MMMM")}</span>
+              ) : (
+                <span>{date.format("D")}</span>
+              )}
 
-                {plan && (
-                  <>
-                    <span className="flex flex-col items-center justify-center gap-2 px-2  text-sm text-accent group-hover:text-secbuttn ">
-                      <MegaphoneIcon className="" />
-                      <p>{plan?.title}</p>
-                    </span>
-                  </>
-                )}
-              </div>
-            </>
+              {plan && (
+                <>
+                  <span className="flex flex-col items-center justify-center gap-2 px-2  text-sm  group-enabled:text-accent  group-enabled:group-hover:text-secbuttn ">
+                    <MegaphoneIcon className="" />
+                    <p>{plan?.title}</p>
+                  </span>
+                </>
+              )}
+            </Link>
           );
         }}
       />
+
+      <Modal
+        isOpen={!!router.query.plan}
+        center
+        onClose={() => {
+          router.replace("/admin", undefined, { shallow: true });
+        }}
+      >
+        <PlanRooms date={moment(router.query.plan)} />
+      </Modal>
     </AdminMainLayout>
   );
 }

@@ -1,7 +1,8 @@
 import React from "react";
+import RoomsList from "~/features/rooms-list";
 import AdminMainLayout from "~/pages/admin/layout";
 import RoomForm from "~/pages/admin/rooms/form";
-import RoomsList from "~/pages/admin/rooms/rooms-list";
+
 import { Container, ContainerBottomBorder } from "~/ui/containers";
 
 export default function RoomsPage() {

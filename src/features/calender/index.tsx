@@ -49,9 +49,14 @@ type Props = {
     monthNumber: number
   ) => React.ReactNode | string | undefined;
   onMonthChange?: (startDate: Moment, endDate: Moment) => unknown;
+  onClick?: (date: Moment) => unknown;
 };
 
-export default function Calender({ onDate, onMonthChange }: Props) {
+export default function Calender({
+  onDate,
+  onMonthChange,
+  onClick = () => {},
+}: Props) {
   const [calendar, setCalender] = useState(getMonthDays(moment().locale("fa")));
   return (
     <div className="grid  max-w-7xl  gap-10 px-2 py-10">
@@ -82,11 +87,12 @@ export default function Calender({ onDate, onMonthChange }: Props) {
         <span>پنج شنبه</span>
         <span>جمعه</span>
       </div>
-      <div className="grid  grid-cols-7 gap-2  ">
+      <div className="grid  grid-cols-7 gap-2">
         {calendar.map((item: Moment, i) => {
           return (
             <>
               <button
+                onClick={() => onClick(item)}
                 key={i}
                 disabled={item.isBefore(
                   moment().locale("fa").subtract(1, "day")
