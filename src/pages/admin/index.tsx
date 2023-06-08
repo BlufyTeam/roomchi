@@ -42,7 +42,7 @@ const calendar: Moment[] = calendarTemp.map((a) => a.days).flat(1);
 
 export default function AdminPage() {
   const session = useSession();
-  const getPlansByDate = api.plan.getPlansByDate.useQuery(
+  const getPlansBetWeenDates = api.plan.getPlansBetWeenDates.useQuery(
     {
       start_datetime: calendar.at(0).toDate(),
       end_datetime: calendar.at(calendar.length - 1).toDate(),
@@ -55,59 +55,75 @@ export default function AdminPage() {
   const router = useRouter();
   if (session.status === "unauthenticated") return "not authed";
   if (session.status === "loading") return "loading";
-  if (getPlansByDate.isLoading) return "loading";
+  if (getPlansBetWeenDates.isLoading) return "loading";
 
   return (
     <AdminMainLayout>
       <Calender
         onMonthChange={(startDate, endDate) => {
-          utils.plan.getPlansByDate.invalidate({
+          utils.plan.getPlansBetWeenDates.invalidate({
             start_datetime: startDate.toDate(),
             end_datetime: endDate.toDate(),
           });
         }}
         onDate={(date, monthNumber) => {
-          const plan = getPlansByDate.data.find(
-            (plan) =>
-              moment(plan.start_datetime).locale("fa").format("DD MMMM yyyy") ==
-              date.locale("fa").format("DD MMMM yyyy")
-          );
-          const formattedDate = date.toISOString();
+          const plans = getPlansBetWeenDates.data
+            .filter((plan) =>
+              moment(plan.start_datetime)
+                .startOf("day")
+                .isSame(date.startOf("day"))
+            )
+            .reverse();
+
+          const formattedDate =
+            date.clone().add(1, "day").isBefore(moment()) && plans.length <= 0
+              ? undefined
+              : date.toISOString();
           return (
             <Link
-              href={`/admin/?plan=${formattedDate}`}
-              as={`/admin/${formattedDate}`}
+              href={formattedDate ? `/admin/?plan=${formattedDate}` : ""}
+              as={formattedDate ? `/admin/${formattedDate}` : ""}
               shallow={true}
               className={twMerge(
-                `relative flex w-full  flex-col items-center justify-center gap-2 bg-accent/10  
+                `disabled:cursor-not-allowe relative flex  w-full flex-col items-center justify-center gap-2  
+                    bg-accent/10
                     py-2
-                    text-center
-                    text-primary                   
+                    text-center                   
+                   text-primary
                    transition-colors
                    duration-500
-                   group-enabled:group-hover:bg-primbuttn
+                   group-enabled:group-hover:bg-primbuttn 
                    group-enabled:group-hover:text-secondary 
-                   group-disabled:cursor-not-allowed 
+                   
                    group-disabled:bg-transparent
                     
                   group-disabled:text-gray-500`,
-                plan
+                plans.length > 0
                   ? "rounded-2xl border   group-enabled:border-accent"
-                  : " rounded-md"
+                  : " rounded-md group-disabled:cursor-not-allowed"
               )}
             >
               {parseInt(date.format("M")) !== monthNumber + 1 ? (
-                <span>{date.format("D MMMM")}</span>
+                <span className="text-sm">{date.format("D MMMM")}</span>
               ) : (
                 <span>{date.format("D")}</span>
               )}
 
-              {plan && (
+              {plans.length > 0 && (
                 <>
-                  <span className="flex flex-col items-center justify-center gap-2 px-2  text-sm  group-enabled:text-accent  group-enabled:group-hover:text-secbuttn ">
+                  <div className="flex flex-col items-center justify-center gap-2 px-2  text-sm  group-enabled:text-accent  group-enabled:group-hover:text-secbuttn ">
                     <MegaphoneIcon className="" />
-                    <p>{plan?.title}</p>
-                  </span>
+                    {plans.map((plan) => {
+                      return (
+                        <div className="hidden items-center justify-center gap-2 md:flex ">
+                          <span>{plan.title}</span>
+                          <span>
+                            {moment(plan.start_datetime).format("HH:MM")}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </>
               )}
             </Link>
@@ -118,6 +134,7 @@ export default function AdminPage() {
       <Modal
         isOpen={!!router.query.plan}
         center
+        title={moment(router.query.plan).locale("fa").format("D MMMM yyyy")}
         onClose={() => {
           router.replace("/admin", undefined, { shallow: true });
         }}

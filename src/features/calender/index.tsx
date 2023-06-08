@@ -94,11 +94,11 @@ export default function Calender({
               <button
                 onClick={() => onClick(item)}
                 key={i}
-                disabled={item.isBefore(
-                  moment().locale("fa").subtract(1, "day")
-                )}
+                disabled={item
+                  .clone()
+                  .isBefore(moment().locale("fa").subtract(1, "day"))}
                 className={twMerge(
-                  "group flex cursor-pointer items-center justify-center text-center disabled:cursor-not-allowed"
+                  "text-centerd group flex cursor-pointer items-center justify-center"
                 )}
               >
                 {onDate(item, calendar[16].jMonth())}

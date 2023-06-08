@@ -94,6 +94,16 @@ export const roomRouter = createTRPCRouter({
     .input(z.object({ date: z.date().optional() }).optional())
     .query(async ({ input, ctx }) => {
       const rooms = await ctx.prisma.room.findMany({
+        where: {
+          plans: {
+            every: {
+              start_datetime: {
+                gte: input.date,
+                lte: input.date,
+              },
+            },
+          },
+        },
         include: {
           plans: true,
         },

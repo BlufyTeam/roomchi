@@ -12,6 +12,7 @@ import {
   planDateSchema,
   planDateAndRoomSchema,
 } from "~/server/validations/plan.validation";
+import { RoomStatus } from "~/types";
 
 export const planRouter = createTRPCRouter({
   getPlansByRoomId: protectedProcedure
@@ -53,7 +54,7 @@ export const planRouter = createTRPCRouter({
         orderBy: { start_datetime: "desc" },
       });
     }),
-  getPlansByDate: protectedProcedure
+  getPlansBetWeenDates: protectedProcedure
     .input(planDateSchema)
     .query(({ ctx, input }) => {
       return ctx.prisma.plan.findMany({
@@ -73,6 +74,36 @@ export const planRouter = createTRPCRouter({
           room: true,
         },
         orderBy: { start_datetime: "desc" },
+      });
+    }),
+  getPlansByDate: protectedProcedure
+    .input(z.object({ date: z.date().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const plans = await ctx.prisma.plan.findMany({
+        where: {
+          start_datetime: {
+            gte: input.date,
+            // lt: moment(input.date).endOf("day").toDate(),
+          },
+        },
+        include: {
+          room: true,
+        },
+        orderBy: { start_datetime: "desc" },
+      });
+
+      return plans.map((plan) => {
+        let status: RoomStatus = "Open";
+
+        if (moment().isBetween(plan.start_datetime, plan.end_datetime))
+          status = "AlreadyStarted";
+        if (moment().isAfter(plan.end_datetime)) status = "Done";
+        if (moment().isBefore(plan.start_datetime)) status = "Reserved";
+
+        return {
+          ...plan,
+          status,
+        };
       });
     }),
   createPlan: protectedProcedure
