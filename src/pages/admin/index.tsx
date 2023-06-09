@@ -139,7 +139,6 @@ export default function AdminPage() {
         }}
       >
         <PlanRooms date={moment(router.query.plan)} />
-        <PickTimeView />
       </Modal>
     </AdminMainLayout>
   );

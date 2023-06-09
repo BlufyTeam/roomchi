@@ -1,5 +1,6 @@
-import { Moment } from "jalali-moment";
+import moment, { Moment } from "jalali-moment";
 import React from "react";
+import PickTimeView from "~/features/pick-time-view";
 import PlanListWithRoom from "~/features/plan-list-with-room";
 import RoomsList from "~/features/rooms-list";
 import { api } from "~/utils/api";
@@ -11,9 +12,12 @@ export default function PlanRooms({ date }: Props) {
     date: date.toDate(),
   });
   if (getPlans.isLoading) return <>loaidng</>;
+
+  const canPickTime = date.isSameOrAfter(moment(), "jDay");
   return (
     <div className="p-5">
       <PlanListWithRoom plans={getPlans.data} />
+      {canPickTime && <PickTimeView />}
     </div>
   );
 }
