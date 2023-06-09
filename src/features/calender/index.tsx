@@ -90,7 +90,8 @@ export default function Calender({
       <div className="grid  grid-cols-7 gap-2">
         {calendar.map((item: Moment, i) => {
           const isItemToday =
-            moment().locale("fa").format("D") === item.locale("fa").format("D");
+            moment().locale("fa").format("D MMMM yyyy") ===
+            item.locale("fa").format("D MMMM yyyy");
           return (
             <>
               <button
