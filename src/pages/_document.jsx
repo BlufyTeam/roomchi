@@ -7,7 +7,6 @@ export default function Document() {
       <Head>
         {/* <link rel="shortcut icon" href={favicon} /> */}
         {/* <link rel="shortcut icon" href="/icons/main/roomchi.svg" /> */}
-        <title>Roomchi</title>
       </Head>
 
       <body

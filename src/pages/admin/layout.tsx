@@ -16,6 +16,7 @@ import Company from "~/features/company";
 import { api } from "~/utils/api";
 import useStatus from "~/hooks/useStatus";
 import { LayoutGroup } from "framer-motion";
+import AdminSkeleton from "~/pages/admin/loading";
 
 const menuList = [
   {
@@ -48,7 +49,7 @@ export default function AdminMainLayout({ children }: any): any {
   const session = useSession();
   const { isOnline, isDesktop } = useStatus();
 
-  if (session.status === "loading") return "loading";
+  if (session.status === "loading") return <AdminSkeleton />;
 
   const currentMenuItem = menuList.find(
     (a) => a.link == getPathName(router.asPath)

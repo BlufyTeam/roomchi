@@ -18,6 +18,7 @@ import Calender from "~/features/calender";
 import Modal from "~/ui/modals";
 import { useRouter } from "next/router";
 import PlanRooms from "~/features/plan-rooms";
+import AdminSkeleton from "~/pages/admin/loading";
 
 let calendarTemp = [];
 const today = moment(Date.now()).locale("fa");
@@ -53,9 +54,9 @@ export default function AdminPage() {
   );
   const utils = api.useContext();
   const router = useRouter();
-  if (session.status === "unauthenticated") return "not authed";
-  if (session.status === "loading") return "loading";
-  if (getPlansBetWeenDates.isLoading) return "loading";
+  if (session.status === "unauthenticated") return router.replace("/login");
+  if (session.status === "loading" || !getPlansBetWeenDates.data)
+    return <AdminSkeleton />;
 
   return (
     <AdminMainLayout>
@@ -81,22 +82,23 @@ export default function AdminPage() {
               : date.toISOString();
           return (
             <Link
+              key={date.toString()}
               href={formattedDate ? `/admin/?plan=${formattedDate}` : ""}
               as={formattedDate ? `/admin/${formattedDate}` : ""}
               shallow={true}
               className={twMerge(
-                `disabled:cursor-not-allowe relative flex  w-full flex-col items-center justify-center gap-2  
+                `disabled:cursor-not-allowe relative flex  w-full flex-col items-center justify-center gap-2
                     bg-accent/10
                     py-2
-                    text-center                   
+                    text-center
                    text-primary
                    transition-colors
                    duration-500
-                   group-enabled:group-hover:bg-primbuttn 
-                   group-enabled:group-hover:text-secondary 
-                   
+                   group-enabled:group-hover:bg-primbuttn
+                   group-enabled:group-hover:text-secondary
+
                    group-disabled:bg-transparent
-                    
+
                   group-disabled:text-gray-500`,
                 plans.length > 0
                   ? "rounded-2xl border   group-enabled:border-accent"
@@ -113,9 +115,12 @@ export default function AdminPage() {
                 <>
                   <div className="flex flex-col items-center justify-center gap-2 px-2  text-sm  group-enabled:text-accent  group-enabled:group-hover:text-secbuttn ">
                     <MegaphoneIcon className="" />
-                    {plans.map((plan) => {
+                    {plans.map((plan, i) => {
                       return (
-                        <div className="hidden items-center justify-center gap-2 md:flex ">
+                        <div
+                          key={i}
+                          className="hidden items-center justify-center gap-2 md:flex "
+                        >
                           <span>{plan.title}</span>
                           <span>
                             {moment(plan.start_datetime).format("HH:MM")}
