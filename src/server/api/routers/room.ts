@@ -63,7 +63,7 @@ export const roomRouter = createTRPCRouter({
         },
       });
     }),
-  updateUser: protectedProcedure
+  updateRoom: protectedProcedure
     .input(updateRoomSchema)
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.room.update({
@@ -80,7 +80,31 @@ export const roomRouter = createTRPCRouter({
         },
       });
     }),
-
+  upsertRoom: protectedProcedure
+    .input(updateRoomSchema)
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.room.upsert({
+        where: {
+          id: input.id,
+        },
+        create: {
+          title: input.title,
+          image: input.image,
+          price: input.price,
+          capacity: input.capacity,
+          description: input.description,
+          companyId: input.companyId,
+        },
+        update: {
+          title: input.title,
+          image: input.image,
+          price: input.price,
+          capacity: input.capacity,
+          description: input.description,
+          companyId: input.companyId,
+        },
+      });
+    }),
   deleteRoom: protectedProcedure
     .input(roomIdSchema)
     .mutation(async ({ input, ctx }) => {

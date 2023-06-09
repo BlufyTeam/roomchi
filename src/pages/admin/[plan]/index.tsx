@@ -9,7 +9,7 @@ export default function PlanPage() {
   return (
     <AdminMainLayout>
       <div className="flex flex-col items-center justify-center py-10">
-        <h1 className="w=full flex items-center justify-center">
+        <h1 className="w=full flex items-center justify-center font-bold text-primary">
           {moment(router.query.plan).locale("fa").format("D MMMM yyyy")}
         </h1>
         <PlanRooms date={moment(router.query.plan)} />

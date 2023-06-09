@@ -22,13 +22,13 @@ export default function SettingsLayout({ children }) {
   return (
     <AdminMainLayout>
       <div className="flex min-h-screen w-full flex-col items-center gap-10 bg-secondary">
-        <ContainerBottomBorder className=" sticky top-0 z-50 flex pt-2 backdrop-blur-lg">
+        {/* <ContainerBottomBorder className=" sticky top-0 z-50 flex pt-2 backdrop-blur-lg">
           <Container className=" max2xl:w-full">
             <LayoutGroup id="settings-menu">
               <Menu rootPath="settings" list={menuList} />
             </LayoutGroup>
           </Container>
-        </ContainerBottomBorder>
+        </ContainerBottomBorder> */}
         {children}
       </div>
     </AdminMainLayout>

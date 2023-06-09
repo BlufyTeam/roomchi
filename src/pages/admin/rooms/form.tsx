@@ -1,6 +1,6 @@
 import { Company } from "@prisma/client";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import UploadImageBase64 from "~/features/uplaod-image-base64";
 import { updateCompanySchema } from "~/server/validations/company.validation";
@@ -16,6 +16,7 @@ import { useToast } from "~/components/ui/toast/use-toast";
 import { reloadSession } from "~/utils/util";
 import { createRoomSchema } from "~/server/validations/room.validation";
 import { ComboBox } from "~/features/shadui/ComboBox";
+import { useRoom } from "~/context/room.context";
 const TextFieldWithLable = withLabel(TextField);
 const IntegerFieldWithLable = withLabel(IntegerField);
 
@@ -23,21 +24,58 @@ export default function RoomForm() {
   const { toast } = useToast();
 
   const getCompany = api.company.getAll.useQuery();
+  const { selectedRowRoom, setSelectedRowRoom } = useRoom();
   const utils = api.useContext();
-  const createRoom = api.room.createRoom.useMutation();
+  const createRoom = api.room.createRoom.useMutation({
+    onSuccess: () => {
+      utils.room.getRoomsByCompanyId.invalidate();
+    },
+  });
+  const updateRoom = api.room.updateRoom.useMutation({
+    onSuccess: () => {
+      utils.room.getRoomsByCompanyId.invalidate();
+    },
+  });
+  const deleteRoom = api.room.deleteRoom.useMutation({
+    onSuccess: () => {
+      utils.room.getRoomsByCompanyId.invalidate();
+    },
+  });
+
+  useEffect(() => {
+    formik.setValues(() => {
+      return {
+        title: selectedRowRoom?.title ?? "",
+        capacity: selectedRowRoom?.capacity ?? 0,
+        companyId: selectedRowRoom?.companyId ?? undefined,
+        description: selectedRowRoom?.description ?? "",
+        price: selectedRowRoom?.price ?? 0,
+      };
+    });
+  }, [selectedRowRoom]);
   const formik = useFormik({
     initialValues: {
       title: "",
       capacity: 0,
       companyId: undefined,
       description: "",
-
       price: 0,
     },
     validationSchema: toFormikValidationSchema(createRoomSchema),
     validateOnBlur: true,
     onSubmit: (values: typeof createRoomSchema._type) => {
-      createRoom.mutate({
+      if (!selectedRowRoom)
+        return createRoom.mutate({
+          capacity: values.capacity,
+          companyId: values.companyId,
+          description: values.description,
+          price: values.price,
+          title: values.title,
+          image: values.image,
+        });
+
+      return updateRoom.mutate({
+        id: selectedRowRoom.id,
         capacity: values.capacity,
         companyId: values.companyId,
         description: values.description,
@@ -52,7 +90,16 @@ export default function RoomForm() {
       onSubmit={formik.handleSubmit}
       className="relative flex flex-col items-center justify-center gap-8"
     >
-      <h1 className="w-full pb-2 text-accent">ساخت اتاق</h1>
+      {selectedRowRoom && (
+        <Button
+          onClick={() => {
+            setSelectedRowRoom(undefined);
+          }}
+          className="absolute -top-10  border border-accent/10 bg-secondary text-primbuttn hover:bg-accent hover:text-secbuttn"
+        >
+          ساخت اتاق جدید +
+        </Button>
+      )}
 
       <div className="w-full ">
         <TextFieldWithLable
@@ -130,12 +177,25 @@ export default function RoomForm() {
       </div>
       <Button
         disabled={createRoom.isLoading || !formik.isValid}
-        isLoading={createRoom.isLoading || createRoom.isLoading}
+        isLoading={createRoom.isLoading || updateRoom.isLoading}
         type="submit"
         className="w-full rounded-xl bg-primbuttn text-secondary"
       >
-        ثبت
+        {selectedRowRoom ? "ویرایش" : "ثبت"}
       </Button>
+      {selectedRowRoom && (
+        <Button
+          disabled={createRoom.isLoading || !formik.isValid}
+          isLoading={createRoom.isLoading || updateRoom.isLoading}
+          type="button"
+          onClick={() => {
+            deleteRoom.mutate({ id: selectedRowRoom.id });
+          }}
+          className="w-full rounded-xl bg-amber-500 text-black"
+        >
+          حذف
+        </Button>
+      )}
     </form>
   );
 }

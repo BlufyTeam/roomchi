@@ -20,11 +20,13 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { useRoom } from "~/context/room.context";
 import { RoomStatus } from "~/types";
 import ProjectorIcon from "~/ui/icons/projector";
 import { RouterOutputs, api } from "~/utils/api";
 
-export default function RoomsList() {
+export default function RoomsList({ onClick = (room: Room) => {} }) {
+  const { setSelectedRowRoom } = useRoom();
   const getRooms = api.room.getRoomsByCompanyId.useQuery();
   if (getRooms?.isLoading) return <RoomsListSkeleton />;
   if (getRooms?.data.length <= 0)
@@ -39,7 +41,14 @@ export default function RoomsList() {
       {getRooms.data.map((room) => {
         return (
           <>
-            <RoomItem room={room} capicity={room.capacity} />
+            <RoomItem
+              room={room}
+              capicity={room.capacity}
+              onClick={(room) => {
+                onClick(room);
+                setSelectedRowRoom(room);
+              }}
+            />
             {/* <RoomItem room={room} status="Open" capicity={15} filled={2} />
             <RoomItem room={room} status="Reserved" capicity={6} filled={2} />
             <RoomItem room={room} status="Reserved" capicity={15} filled={15} />
@@ -64,14 +73,21 @@ function RoomItem({
   room,
   status,
   capicity = 10,
+  onClick,
 }: {
   room: Room;
   status?: RoomStatus;
   capicity?: number;
+  onClick?: (room: Room) => void;
 }) {
   return (
     <>
-      <div className="flex  cursor-pointer  flex-col gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary">
+      <div
+        onClick={() => {
+          onClick(room);
+        }}
+        className="flex  cursor-pointer  flex-col gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary"
+      >
         <div className="flex items-start justify-between gap-5">
           <div className="flex items-start justify-between gap-5">
             <div className="relative h-10 w-10">
