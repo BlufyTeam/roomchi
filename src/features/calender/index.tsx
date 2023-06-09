@@ -89,6 +89,8 @@ export default function Calender({
       </div>
       <div className="grid  grid-cols-7 gap-2">
         {calendar.map((item: Moment, i) => {
+          const isItemToday =
+            moment().locale("fa").format("D") === item.locale("fa").format("D");
           return (
             <>
               <button
@@ -98,9 +100,15 @@ export default function Calender({
                   .clone()
                   .isBefore(moment().locale("fa").subtract(1, "day"))}
                 className={twMerge(
-                  "text-centerd group flex cursor-pointer items-center justify-center"
+                  "text-centerd group relative flex cursor-pointer items-center justify-center"
                 )}
               >
+                {isItemToday && (
+                  <span className="absolute right-2  flex h-3 w-3 ">
+                    <span className="relative inline-flex h-3 w-3 rounded-full bg-accent/30"></span>
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/75  "></span>
+                  </span>
+                )}
                 {onDate(item, calendar[16].jMonth())}
               </button>
             </>

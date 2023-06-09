@@ -1,14 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSession } from "next-auth/react";
 import { twMerge } from "tailwind-merge";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 
-import superjson from "superjson";
-import { appRouter } from "~/server/api/root";
-import { helpers } from "~/server/helpers/ssgHelper";
-import { prisma } from "~/server/db";
-import Button from "~/ui/buttons";
 import Link from "next/link";
 import AdminMainLayout from "~/pages/admin/layout";
 import moment, { Moment } from "jalali-moment";
@@ -19,6 +12,7 @@ import Modal from "~/ui/modals";
 import { useRouter } from "next/router";
 import PlanRooms from "~/features/plan-rooms";
 import AdminSkeleton from "~/pages/admin/loading";
+import PickTimeView from "~/features/pick-time-view";
 
 let calendarTemp = [];
 const today = moment(Date.now()).locale("fa");
@@ -145,6 +139,7 @@ export default function AdminPage() {
         }}
       >
         <PlanRooms date={moment(router.query.plan)} />
+        <PickTimeView />
       </Modal>
     </AdminMainLayout>
   );
