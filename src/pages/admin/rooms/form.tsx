@@ -185,8 +185,8 @@ export default function RoomForm() {
       </Button>
       {selectedRowRoom && (
         <Button
-          disabled={createRoom.isLoading || !formik.isValid}
-          isLoading={createRoom.isLoading || updateRoom.isLoading}
+          disabled={deleteRoom.isLoading}
+          isLoading={deleteRoom.isLoading}
           type="button"
           onClick={() => {
             deleteRoom.mutate({ id: selectedRowRoom.id });
