@@ -83,7 +83,7 @@ export const planRouter = createTRPCRouter({
         where: {
           start_datetime: {
             gte: input.date,
-            // lt: moment(input.date).endOf("day").toDate(),
+            lt: moment(input.date).endOf("day").toDate(),
           },
         },
         include: {
