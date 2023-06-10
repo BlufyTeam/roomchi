@@ -185,3 +185,24 @@ input[type="number"] {
   background: #0009;
   background: linear-gradient(0deg, #0009 0%, hsla(0, 0%, 11%, 1) 100%);
 }
+
+.trackline {
+  flex: 1 1 0%;
+  position: relative;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0,
+    var(--primary) 25%,
+    var(--accent) 50%,
+    var(--primary) 75%,
+    var(--primary) 100%
+  );
+}
+
+.Onboarding_BranchTableLine__FC_bw,
+.Onboarding_TrackBranchLine__UTQSQ {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: Onboarding_dash__rRBdq 0.75s 0.15s forwards;
+}

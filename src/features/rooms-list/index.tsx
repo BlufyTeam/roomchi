@@ -24,6 +24,7 @@ import { useRoom } from "~/context/room.context";
 import { RoomsListSkeleton } from "~/features/rooms-list/loading";
 import { RoomStatus } from "~/types";
 import ProjectorIcon from "~/ui/icons/projector";
+import ToolTip from "~/ui/tooltip";
 import { api } from "~/utils/api";
 
 export default function RoomsList({ onClick = (room: Room) => {} }) {
@@ -47,7 +48,6 @@ export default function RoomsList({ onClick = (room: Room) => {} }) {
               capicity={room.capacity}
               onClick={(room) => {
                 onClick(room);
-                setSelectedRowRoom(room);
               }}
             />
             {/* <RoomItem room={room} status="Open" capicity={15} filled={2} />
@@ -105,22 +105,24 @@ function RoomItem({
             </div>
           </div>
         </div>
-        <div className=" flex  flex-row  items-start justify-between  gap-2">
-          <div className=" flex w-40 flex-wrap  items-center justify-start  gap-2">
-            {[...Array(capicity).keys()].map((i) => {
-              return (
-                <>
-                  <PersonStandingIcon
-                    key={i}
-                    className={`stroke-gray-400`}
-                    style={{
-                      animationDelay: `${i * 5}`,
-                      animationDuration: "1s",
-                    }}
-                  />
-                </>
-              );
-            })}
+        <div className="relative flex flex-row items-start  justify-between gap-2 ">
+          <div className="group relative ">
+            {/* make parent group relative to work :) */}
+            <ToolTip className="flex items-center justify-center gap-2">
+              <PersonStandingIcon className={`stroke-accent`} />
+              <span> ظرفیت {capicity} تا</span>
+            </ToolTip>
+
+            <div className="flex  w-40 flex-wrap items-center  justify-start gap-2">
+              {[...Array(Math.min(capicity, 10)).keys()].map((i) => {
+                return (
+                  <>
+                    <PersonStandingIcon key={i} className={`stroke-gray-400`} />
+                  </>
+                );
+              })}
+              {capicity > 10 && <span>...</span>}
+            </div>
           </div>
           <div className="grid grid-cols-3 items-center justify-end gap-2">
             <PrinterIcon />

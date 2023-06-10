@@ -1,6 +1,6 @@
 export function RoomsListSkeleton() {
   return (
-    <div className=" grid gap-5 md:grid-cols-3 ">
+    <div className="grid w-full gap-5 md:grid-cols-3 ">
       {[...Array(32).keys()].map((i) => {
         return (
           <>
@@ -12,7 +12,7 @@ export function RoomsListSkeleton() {
                 animationDuration: "1s",
               }}
             >
-              <div className="flex">
+              <div className="flex w-full">
                 <div className="mx-auto w-full max-w-sm rounded-md  p-4">
                   <div className="flex animate-pulse gap-5">
                     <div className="h-10 w-10 rounded-full bg-secondary"></div>
@@ -43,7 +43,7 @@ export function RoomsListSkeleton() {
                   </div>
                 </div>
               </div>
-              <div className="flex">
+              <div className="flex w-full">
                 <div className="mx-auto w-full max-w-sm rounded-md  p-4">
                   <div className="flex animate-pulse gap-5">
                     <div className="flex-1 space-y-6 py-1">

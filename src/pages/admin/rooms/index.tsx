@@ -15,11 +15,22 @@ export default function RoomsPage() {
           <div className="sticky top-5 h-fit rounded-lg border border-accent/30 bg-secondary p-5 2xl:w-3/12">
             <RoomForm />
           </div>
-          <div className=" h-fit max-h-[42rem] w-full overflow-hidden overflow-y-auto rounded-lg 2xl:w-9/12 2xl:p-5 ">
-            <RoomsList />
-          </div>
+          <RoomListWithContext />
         </RoomProvider>
       </Container>
     </AdminMainLayout>
+  );
+}
+
+export function RoomListWithContext() {
+  const { setSelectedRowRoom } = useRoom();
+  return (
+    <div className=" h-fit max-h-[42rem] w-full overflow-hidden overflow-y-auto rounded-lg 2xl:w-9/12 2xl:p-5 ">
+      <RoomsList
+        onClick={(room) => {
+          setSelectedRowRoom(room);
+        }}
+      />
+    </div>
   );
 }

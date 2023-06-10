@@ -196,7 +196,7 @@ export default function Modal({
                   // h-auto top-52
                 >
                   <div
-                    className={`sticky top-[0px] z-20 flex h-auto w-full  flex-col items-center justify-center  overflow-hidden bg-transparent  `}
+                    className={`sticky top-[0px] z-20 flex h-auto w-full  flex-col items-center justify-center  overflow-hidden  `}
                   >
                     {/* <div className="mobileMax:flex hidden w-1/2 h-[10px] bg-gray-300 mt-1 mb-auto rounded-2xl" /> */}
                     <div

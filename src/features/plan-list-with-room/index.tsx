@@ -22,6 +22,7 @@ import Image from "next/image";
 import React from "react";
 import { RoomStatus } from "~/types";
 import ProjectorIcon from "~/ui/icons/projector";
+import ToolTip from "~/ui/tooltip";
 import { RouterOutputs, api } from "~/utils/api";
 
 type PlanWithRoom = RouterOutputs["plan"]["getPlansByDate"][number];
@@ -99,47 +100,59 @@ function RoomItem({
           <div className="flex flex-col items-end justify-center gap-5 ">
             <div className="flex flex-col">
               {status === "Done" && (
-                <span className="flex items-center justify-center gap-2  rounded-lg bg-cyan-500/10 p-2 text-sm text-cyan-600 ">
-                  <CalendarCheckIcon className="h-5 w-5 md:h-6 md:w-6 " />
-                  <h3>تمام شده</h3>
-                  <span>{moment(plan.start_datetime).format("HH:MM")}</span>
+                <span className="flex items-center justify-center gap-1 rounded-lg  bg-cyan-500/10 px-0.5 py-2 text-sm text-cyan-600  md:p-2 ">
+                  <CalendarCheckIcon className="h-5 w-5 2xl:h-6 2xl:w-6 " />
+                  <h3 className="text-[10px]  2xl:text-sm">تمام شده</h3>
+                  <span className="text-[10px]  2xl:text-sm">
+                    {moment(plan.start_datetime).format("HH:MM")} تا{" "}
+                    {moment(plan.end_datetime).format("HH:MM")}
+                  </span>
                 </span>
               )}
               {status === "Reserved" && (
-                <span className="flex items-center justify-center gap-2 rounded-lg bg-rose-500/10 p-2 text-sm text-rose-600">
-                  <CalendarRangeIcon className="h-5 w-5 md:h-6 md:w-6 " />
-                  <h3>رزرو شده</h3>
-                  <span>{moment(plan.start_datetime).format("HH:MM")}</span>
+                <span className="flex items-center justify-center gap-1 rounded-lg bg-rose-500/10 p-2 text-sm text-rose-600">
+                  <CalendarRangeIcon className="h-5 w-5 2xl:h-6 2xl:w-6  " />
+                  <h3 className="text-[10px] 2xl:text-sm ">رزرو شده</h3>
+                  <span className="text-[10px]  2xl:text-sm">
+                    {moment(plan.start_datetime).format("HH:MM")} تا{" "}
+                    {moment(plan.end_datetime).format("HH:MM")}
+                  </span>
                 </span>
               )}
               {status === "AlreadyStarted" && (
-                <span className="flex items-center justify-center gap-2 rounded-lg  bg-amber-500/10 p-2 text-sm text-amber-600">
-                  <BanIcon className="h-5 w-5 md:h-6 md:w-6 " />
-                  <h3>در حال برگذاری</h3>
-                  <span>{moment(plan.start_datetime).format("HH:MM")}</span>
+                <span className="flex items-center justify-center gap-1 rounded-lg  bg-amber-500/10 p-2 text-sm text-amber-600">
+                  <BanIcon className="h-5 w-5 2xl:h-6 2xl:w-6  " />
+                  <h3 className="text-[10px] 2xl:text-sm">در حال برگذاری</h3>
+                  <span className="text-[10px] 2xl:text-sm">
+                    {moment(plan.start_datetime).format("HH:MM")} تا{" "}
+                    {moment(plan.end_datetime).format("HH:MM")}
+                  </span>
                 </span>
               )}
             </div>
           </div>
         </div>
         <div className=" flex  flex-row  items-start justify-between  gap-2">
-          <div className=" flex w-40 flex-wrap  items-center justify-start  gap-2">
-            {[...Array(capicity).keys()].map((i) => {
-              return (
-                <>
-                  <PersonStandingIcon
-                    key={i}
-                    className={`  ${
-                      i <= filled ? "stroke-primbuttn" : "stroke-gray-400"
-                    }`}
-                    style={{
-                      animationDelay: `${i * 5}`,
-                      animationDuration: "1s",
-                    }}
-                  />
-                </>
-              );
-            })}
+          <div className="group relative ">
+            {/* make parent group relative to work :) */}
+            <ToolTip className="flex items-center justify-center gap-2">
+              <PersonStandingIcon className={`stroke-accent`} />
+              <span> ظرفیت {capicity} تا</span>
+            </ToolTip>
+            <div className=" flex w-40 flex-wrap  items-center justify-start  gap-2">
+              {[...Array(capicity).keys()].map((i) => {
+                return (
+                  <>
+                    <PersonStandingIcon
+                      key={i}
+                      className={`  ${
+                        i <= filled ? "stroke-primbuttn" : "stroke-gray-400"
+                      }`}
+                    />
+                  </>
+                );
+              })}
+            </div>
           </div>
           <div className="grid grid-cols-3 items-center justify-end gap-2">
             <PrinterIcon />
