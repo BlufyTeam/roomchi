@@ -112,7 +112,7 @@ export const planRouter = createTRPCRouter({
       return await ctx.prisma.plan.create({
         data: {
           title: input.title,
-          userId: input.userId,
+          userId: ctx.session.user.id,
           roomId: input.roomId,
           start_datetime: input.start_datetime,
           description: input.description,

@@ -19,18 +19,15 @@ export const planDateAndRoomSchema = z.object({
   end_datetime: z.date(),
 });
 export const planDateSchema = z.object({
-
   start_datetime: z.date(),
   end_datetime: z.date(),
 });
 
-
 export const createPlanSchema = z.object({
-  title: z.string({ required_error: "این فیلد اجباری است" }),
-  userId: z.string({ required_error: "این فیلد اجباری است" }),
-  roomId: z.string({ required_error: "این فیلد اجباری است" }),
+  room: z.any().optional(),
+  title: z.string({ required_error: "داشتن عنوان اجباری است " }),
+  roomId: z.string({ required_error: "انتخاب اتاق اجباری است " }),
   start_datetime: z.date({ required_error: "این فیلد اجباری است" }),
   end_datetime: z.date({ required_error: "این فیلد اجباری است" }),
   description: z.string().optional(),
- 
 });

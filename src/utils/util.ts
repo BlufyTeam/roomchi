@@ -13,3 +13,5 @@ export const reloadSession = () => {
   const event = new Event("visibilitychange");
   document.dispatchEvent(event);
 };
+
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

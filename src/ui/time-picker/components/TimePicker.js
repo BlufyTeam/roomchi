@@ -37,6 +37,8 @@ function TimePicker({
   };
 
   const handleFocus = () => {
+    if (!isOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "overlay";
     onFocus();
     onOpen();
   };
@@ -80,7 +82,14 @@ function TimePicker({
         <Portal>
           <div className="fixed inset-0  z-50 flex  items-end justify-center">
             <div className={`fixed inset-0 `} onClick={() => handleClick()} />
-            <TimePickerSelection {...params} />
+            <TimePickerSelection
+              {...params}
+              onSave={() => {
+                if (!isOpen) document.body.style.overflow = "hidden";
+                else document.body.style.overflow = "overlay";
+                onSave();
+              }}
+            />
           </div>
         </Portal>
       )}

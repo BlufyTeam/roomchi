@@ -2,7 +2,15 @@ import moment, { Moment } from "jalali-moment";
 import React, { useState, useLayoutEffect, useEffect } from "react";
 import { useToast } from "~/components/ui/toast/use-toast";
 import { TimePicker } from "~/ui/time-picker";
-export default function PickTimeView({ date }: { date: Moment }) {
+export default function PickTimeView({
+  value = moment(),
+  date,
+  onChange,
+}: {
+  value: Moment;
+  date: Moment;
+  onChange: (timeValue: Moment) => void;
+}) {
   const canUseDOM: boolean = !!(
     typeof window !== "undefined" &&
     typeof window.document !== "undefined" &&
@@ -14,7 +22,6 @@ export default function PickTimeView({ date }: { date: Moment }) {
   useIsomorphicLayoutEffect(() => {
     setIsMounted(true);
   }, []);
-  const [value, setValue] = useState("10:00");
 
   return (
     <div>
@@ -37,8 +44,9 @@ export default function PickTimeView({ date }: { date: Moment }) {
             })
             .locale("fa");
 
-          if (pickedTime.isAfter(now)) setValue(timeValue);
-          else {
+          if (pickedTime.isAfter(now)) {
+            onChange(pickedTime);
+          } else {
             toast({
               title: "خطای انتخاب زمان",
               description:
@@ -46,7 +54,7 @@ export default function PickTimeView({ date }: { date: Moment }) {
             });
           }
         }}
-        value={value}
+        value={value.format("HH:mm")}
       />
     </div>
   );
