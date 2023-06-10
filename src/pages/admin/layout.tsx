@@ -20,6 +20,10 @@ import AdminSkeleton from "~/pages/admin/loading";
 
 const menuList = [
   {
+    value: "تقویم",
+    link: "",
+  },
+  {
     value: "پروفایل",
     link: "profile",
   },
