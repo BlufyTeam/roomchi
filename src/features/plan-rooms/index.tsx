@@ -12,7 +12,12 @@ export default function PlanRooms({ date }: Props) {
   const getPlans = api.plan.getPlansByDate.useQuery({
     date: date.toDate(),
   });
-  if (getPlans.isLoading) return <RoomsListSkeleton />;
+  if (getPlans.isLoading)
+    return (
+      <div className="p-5">
+        <RoomsListSkeleton />
+      </div>
+    );
 
   const canPickTime = date.isSameOrAfter(moment(), "jDay");
   return (
