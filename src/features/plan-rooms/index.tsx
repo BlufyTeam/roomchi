@@ -8,7 +8,7 @@ import PlanListWithRoom from "~/features/plan-list-with-room";
 import RoomsList from "~/features/rooms-list";
 import { RoomsListSkeleton } from "~/features/rooms-list/loading";
 import { api } from "~/utils/api";
-import { Multi } from "./multi";
+
 import RoomForm from "~/pages/admin/rooms/form";
 import { ArrowRightIcon } from "lucide-react";
 import Button from "~/ui/buttons";
