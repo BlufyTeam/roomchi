@@ -105,7 +105,7 @@ export default function Calender({
                 )}
               >
                 {isItemToday && (
-                  <span className="absolute right-2  flex h-3 w-3 ">
+                  <span className="absolute flex  h-3 w-3 md:right-2 ">
                     <span className="relative inline-flex h-3 w-3 rounded-full bg-accent/30"></span>
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/75  "></span>
                   </span>
