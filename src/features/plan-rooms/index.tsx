@@ -17,7 +17,7 @@ export default function PlanRooms({ date }: Props) {
   return (
     <div className="p-5">
       <PlanListWithRoom plans={getPlans.data} />
-      {canPickTime && <PickTimeView />}
+      {canPickTime && <PickTimeView date={date} />}
     </div>
   );
 }
