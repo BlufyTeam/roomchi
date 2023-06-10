@@ -1,5 +1,11 @@
 import moment, { Moment } from "jalali-moment";
-import { ArrowLeftIcon, HourglassIcon, MoveLeftIcon } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  HourglassIcon,
+  Loader2Icon,
+  MonitorUpIcon,
+} from "lucide-react";
 import { ReplaceIcon } from "lucide-react";
 import React, { ElementRef, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -31,7 +37,7 @@ export default function PlanRooms({ date }: Props) {
     <div className="flex flex-col items-center justify-center gap-4 p-5">
       {getPlans.data.length > 0 && (
         <>
-          <h3 className="w-full px-2  text-right font-bold">
+          <h3 className="w-full px-2 text-right font-bold text-primary">
             اتاق های رزرو شده در تاریخ {date.locale("fa").format("D MMMM yyyy")}
           </h3>
 
@@ -72,12 +78,8 @@ export function ReserveRoom() {
           }}
           icons={[
             <ReplaceIcon className="stroke-inherit" />,
-            <ReplaceIcon className="stroke-inherit" />,
-            <ReplaceIcon className="stroke-inherit" />,
             <HourglassIcon className="stroke-inherit" />,
-            <HourglassIcon className="stroke-inherit" />,
-            <HourglassIcon className="stroke-inherit" />,
-            <HourglassIcon className="stroke-inherit" />,
+            <Loader2Icon className="stroke-inherit" />,
           ]}
           currentStep={step}
           steps={[
@@ -93,7 +95,7 @@ export function ReserveRoom() {
     </>
   );
 }
-const stepPercentages = [0, 22, 36, 50, 64, 78, 100];
+
 export function MultiStep({
   currentStep = 0,
   onStepClick = (step: number) => {},
@@ -104,58 +106,122 @@ export function MultiStep({
 }) {
   return (
     <div className="flex w-full flex-col items-center justify-center gap-5">
-      <div className="relative flex min-h-[50px] w-2/3 items-center justify-center gap-2 overflow-hidden ">
-        <div className="absolute z-0 h-[1px] w-10/12  bg-gradient-to-r from-transparent from-0% via-accent via-50% to-transparent to-100%"></div>
-        <Button
-          className={twMerge(
-            "group absolute left-5 rounded-full p-1 ring-1 ring-accent transition duration-500 hover:bg-accent/20 hover:ring-secondary",
-            currentStep === 0 ? "opacity-0" : "opacity-100"
+      <div className="relative flex min-h-[150px] w-full items-center justify-center gap-2 overflow-hidden md:w-2/3 ">
+        <div className="absolute z-0 h-[1px] w-11/12  bg-gradient-to-r from-transparent from-0% via-accent via-50% to-transparent to-100%">
+          {currentStep >= 2 && (
+            <div
+              style={{
+                left: `${Math.min(currentStep * 10, 100)}%`,
+              }}
+              className="absolute left-[50.5%] top-0 -z-10 hidden h-[28px] w-[40%] transition-all duration-300 sm:block"
+            >
+              <svg
+                className="translate-x-0 translate-y-0"
+                preserveAspectRatio="none"
+                height="28px"
+                width="100%"
+                viewBox="0 0 482 28"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M4 0.5H482" className="stroke-primary"></path>
+                <path
+                  d="M16 0.5H466"
+                  stroke="url(#kjhsdfg87346kjhs)"
+                  strokeDasharray="4 4"
+                ></path>
+                <path
+                  d="M0.5 0.5C29 0.5 20 27.5 49.5 27.5C49.5 27.5 400.5 27.5 433 27.5C465.5 27.5 448.5 0.5 482 0.5"
+                  pathLength="1"
+                  stroke="url(#klujyhsertd9087645uigh)"
+                  className="Onboarding_TrackBranchLine__UTQSQ "
+                ></path>
+                <defs>
+                  <linearGradient
+                    id="kjhsdfg87346kjhs"
+                    x1="0"
+                    y1="0"
+                    x2="482"
+                    y2="28"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="var(--accent)"></stop>
+                    <stop offset="1" stop-color="var(--accent)"></stop>
+                  </linearGradient>
+                  <linearGradient
+                    id="klujyhsertd9087645uigh"
+                    x1="0"
+                    y1="0"
+                    x2="482"
+                    y2="28"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0" stop-color="var(--accent)"></stop>
+                    <stop offset="0.1" stop-color="var(--bg-purple)"></stop>
+                    <stop offset="1" stop-color="var(--bg-primary)"></stop>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
           )}
-          onClick={() => {
-            if (currentStep - 1 >= 0) onPrevious();
-          }}
-        >
-          <ArrowLeftIcon className="h-4 w-4 group-hover:stroke-accent " />
-        </Button>
-        <Button
-          className={twMerge(
-            "group absolute right-5  rounded-full p-1 ring-1 ring-accent transition duration-500 hover:bg-accent/20 hover:ring-secondary",
-            currentStep === icons.length - 1 ? "opacity-0" : "opacity-100"
-          )}
-        >
-          <ArrowRightIcon
-            className="h-4 w-4 group-hover:stroke-accent "
+        </div>
+        <div className="absolute inset-0 flex w-full items-center justify-between  ">
+          <Button
+            className={twMerge(
+              "group absolute left-1 z-20 rounded-full p-1.5 ring-1 ring-accent transition duration-500 hover:bg-accent/20 hover:ring-secondary",
+              currentStep === 0 ? "opacity-0" : "opacity-100"
+            )}
+            onClick={() => {
+              if (currentStep - 1 >= 0) onPrevious();
+            }}
+          >
+            <ChevronLeft className="h-5 w-5 stroke-primbuttn group-hover:stroke-accent " />
+          </Button>
+          <Button
+            className={twMerge(
+              "group absolute right-1 z-20  rounded-full p-1.5 ring-1 ring-accent transition duration-500 hover:bg-accent/20 hover:ring-secondary",
+              currentStep === icons.length - 1 ? "opacity-0" : "opacity-100"
+            )}
             onClick={() => {
               if (currentStep + 1 <= icons.length - 1) onNext();
             }}
-          />
-        </Button>
-        <div className="relative flex w-full items-center justify-center gap-10  ">
+          >
+            <ChevronRight className="h-5 w-5 stroke-primbuttn group-hover:stroke-accent " />
+          </Button>
+        </div>
+        <div className="relative flex h-full w-full items-center justify-center gap-10  ">
           {icons.map((_, i) => {
             const currentLeft = 50 + i * 20;
+            const distance = Math.abs(currentStep - i);
+            const scale =
+              distance === 1 ? "100%" : distance === 2 ? "70%" : "0%";
             return (
               <button
+                onClick={() => {
+                  onStepClick(i);
+                }}
                 className={twMerge(
-                  "z-1 pointer-events-none absolute  flex -translate-x-1/2 scale-75 rounded-full  transition-all duration-300 sm:pointer-events-auto ",
-                  currentStep === i ? "opacity-100" : "opacity-60"
+                  "z-1 duration-2200  absolute flex -translate-x-1/2 scale-75  cursor-pointer rounded-full transition-all ",
+                  currentStep === i
+                    ? "bg-primary stroke-secbuttn  "
+                    : "bg-secondary stroke-accent opacity-0 sm:opacity-100",
+                  i == 2 || i == 3 || i == 4 ? "bottom-5" : ""
                 )}
                 style={{
                   left:
                     currentStep === i
                       ? `${50}%`
-                      : true
-                      ? `${currentLeft - currentStep * 20}%`
-                      : "100%",
-                  scale: currentStep === i ? "130%" : `${100 - i * 5}%`,
+                      : `${Math.min(currentLeft - currentStep * 20, 100)}%`,
+
+                  scale: currentStep === i ? "130%" : scale,
                 }}
               >
                 <span
-                  onClick={() => {
-                    onStepClick(i);
-                  }}
                   className={twMerge(
-                    `cursor-pointer  rounded-full border border-accent bg-secondary stroke-primary p-3  transition-all duration-500`,
-                    i === currentStep ? "stroke-accent " : ""
+                    `cursor-pointer  rounded-full border   stroke-inherit  p-3  transition-all duration-500`,
+                    currentStep === i
+                      ? "border-primary opacity-100"
+                      : "border-accent/50 bg-accent/20 opacity-50"
                   )}
                 >
                   <span>{icons[i]}</span>

@@ -205,4 +205,14 @@ input[type="number"] {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   animation: Onboarding_dash__rRBdq 0.75s 0.15s forwards;
+  @apply stroke-primary;
+}
+
+@keyframes Onboarding_dash__rRBdq {
+  0% {
+    stroke-dashoffset: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
