@@ -23,7 +23,7 @@ import React from "react";
 import { useRoom } from "~/context/room.context";
 import { RoomStatus } from "~/types";
 import ProjectorIcon from "~/ui/icons/projector";
-import { RouterOutputs, api } from "~/utils/api";
+import { api } from "~/utils/api";
 
 export default function RoomsList({ onClick = (room: Room) => {} }) {
   const { setSelectedRowRoom } = useRoom();
@@ -135,18 +135,80 @@ function RoomItem({
 
 function RoomsListSkeleton() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-10 ">
+    <div className=" grid gap-5 md:grid-cols-3 ">
       {[...Array(32).keys()].map((i) => {
         return (
           <>
-            <span
+            <div
               key={i}
-              className="inline-block h-28 w-28 animate-pulse   rounded-xl bg-accent opacity-30"
+              className="flex h-52 animate-pulse  flex-col   rounded-xl bg-primary/20 opacity-30"
               style={{
                 animationDelay: `${i * 5}`,
                 animationDuration: "1s",
               }}
-            />
+            >
+              <div className="flex">
+                <div className="mx-auto w-full max-w-sm rounded-md  p-4">
+                  <div className="flex animate-pulse gap-5">
+                    <div className="h-10 w-10 rounded-full bg-secondary"></div>
+                    <div className="flex-1 space-y-6 py-1">
+                      <div className="h-2 rounded bg-secondary"></div>
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="col-span-1 h-2 rounded bg-secondary"></div>
+                          <div className="col-span-2 h-2 rounded bg-secondary"></div>
+                        </div>
+                        <div className="h-2 rounded bg-secondary"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mx-auto w-full max-w-sm rounded-md  p-4">
+                  <div className="flex animate-pulse gap-5">
+                    <div className="flex-1 space-y-6 py-1">
+                      <div className="h-2 rounded "></div>
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="col-span-1 h-2 rounded bg-secondary"></div>
+                          <div className="col-span-2 h-2 rounded bg-secondary"></div>
+                        </div>
+                        <div className="h-2 rounded bg-secondary"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex">
+                <div className="mx-auto w-full max-w-sm rounded-md  p-4">
+                  <div className="flex animate-pulse gap-5">
+                    <div className="flex-1 space-y-6 py-1">
+                      <div className="h-2 rounded bg-secondary"></div>
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="col-span-2 h-2 rounded bg-secondary"></div>
+                          <div className="col-span-1 h-2 rounded bg-secondary"></div>
+                        </div>
+                        <div className="h-2 rounded bg-secondary"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mx-auto w-full max-w-sm rounded-md  p-4">
+                  <div className="flex animate-pulse gap-5">
+                    <div className="flex-1 space-y-6 py-1">
+                      <div className="h-2 rounded bg-secondary"></div>
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="col-span-2 h-2 rounded bg-secondary"></div>
+                          <div className="col-span-1 h-2 rounded bg-secondary"></div>
+                        </div>
+                        <div className="h-2 rounded bg-secondary"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </>
         );
       })}
