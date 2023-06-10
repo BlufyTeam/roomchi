@@ -19,6 +19,7 @@ CREATE TABLE "resources" (
 -- CreateTable
 CREATE TABLE "plans" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "title" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "roomId" TEXT NOT NULL,
     "start_datetime" DATETIME NOT NULL,
