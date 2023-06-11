@@ -42,7 +42,8 @@ const toastVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-secondary/60 backdrop-blur-md border border-primary/50",
+        default:
+          "bg-accent/20 backdrop-blur-md border text-primary border-accent/50",
         destructive:
           "group destructive border-destructive bg-accent text-destructive-foreground",
       },

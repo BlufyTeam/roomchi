@@ -87,7 +87,13 @@ function TimePicker({
               onSave={() => {
                 if (!isOpen) document.body.style.overflow = "hidden";
                 else document.body.style.overflow = "overlay";
+                setIsOpen(false);
                 onSave();
+              }}
+              onCancel={() => {
+                if (!isOpen) document.body.style.overflow = "hidden";
+                else document.body.style.overflow = "overlay";
+                setIsOpen(false);
               }}
             />
           </div>

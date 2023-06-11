@@ -18,15 +18,20 @@ import {
   CastIcon,
   CalendarCheckIcon,
 } from "lucide-react";
+import { Session } from "next-auth/core/types";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
-import { RoomStatus } from "~/types";
+import { RoomStatus, User } from "~/types";
+import Button from "~/ui/buttons";
 import ProjectorIcon from "~/ui/icons/projector";
 import ToolTip from "~/ui/tooltip";
 import { RouterOutputs, api } from "~/utils/api";
 
 type PlanWithRoom = RouterOutputs["plan"]["getPlansByDate"][number];
 export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
+  const session = useSession();
+
   // const getRooms = rooms ?? api.room.getReservedRoomsByDate.useQuery();
   // if (getRooms?.isLoading) return <RoomsListSkeleton />;
   // if (getRooms?.data.length <= 0)
@@ -42,6 +47,7 @@ export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
         return (
           <>
             <RoomItem
+              userId={session.data.user.id}
               plan={plan}
               status={plan.status}
               capicity={plan.room.capacity}
@@ -68,20 +74,27 @@ export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
 }
 
 function RoomItem({
+  userId,
   plan,
   status,
   capicity = 10,
   filled = 5,
 }: {
+  userId: string;
   plan: PlanWithRoom;
   status?: RoomStatus;
   capicity?: number;
   filled?: number;
 }) {
-  if (status === "Open") filled = -1;
+  const utils = api.useContext();
+  const deletePlan = api.plan.deletePlan.useMutation({
+    onSuccess: () => {
+      utils.plan.getPlansByDate.invalidate();
+    },
+  });
   return (
     <>
-      <div className="flex  cursor-pointer  flex-col gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary">
+      <div className="items-centercursor-pointer  flex flex-col  justify-center gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary">
         <div className="flex items-start justify-between gap-5">
           <div className="flex items-start justify-between gap-5">
             <div className="relative h-10 w-10">
@@ -160,7 +173,22 @@ function RoomItem({
             <ProjectorIcon />
           </div>
         </div>
-        <span>{plan.room.price} تومان</span>
+        <div className="flex items-center justify-between">
+          <span>{plan.room.price} تومان</span>
+
+          {userId === plan.userId && (
+            <Button
+              disabled={deletePlan.isLoading}
+              isLoading={deletePlan.isLoading}
+              onClick={() => {
+                deletePlan.mutate({ id: plan.id });
+              }}
+              className="bg-amber-500 text-black"
+            >
+              حذف
+            </Button>
+          )}
+        </div>
       </div>
     </>
   );

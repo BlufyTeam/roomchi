@@ -63,7 +63,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
     if (stepNumber >= 4 && createPlan.isLoading) return;
     if (stepNumber >= 3 && !formik.isValid) {
       toast({
-        title: "مرحله بعد",
+        title: "ثبت جلسه",
         description: (
           <pre className="font-iransans">
             {Object.values(formik.errors).map((a) => a + "\n")}
@@ -258,7 +258,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 }}
                 className="bg-accent/20 text-accent"
               >
-                مرحله بعد
+                ثبت جلسه
               </Button>
             </div>,
             <div
