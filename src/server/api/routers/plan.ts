@@ -114,7 +114,7 @@ export const planRouter = createTRPCRouter({
       if (input.end_datetime <= input.start_datetime)
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "زمان پایان نمی تواند مساوی با کمتر از زمان شروع باشد",
+          message: "زمان پایان نمی تواند مساوی یا کمتر از زمان شروع باشد",
         });
       const isExists = await ctx.prisma.plan
         .findMany({
