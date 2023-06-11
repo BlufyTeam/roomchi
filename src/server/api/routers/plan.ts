@@ -14,6 +14,9 @@ import {
 } from "~/server/validations/plan.validation";
 import { RoomStatus } from "~/types";
 
+export function $exists<T>(ts: T[]): boolean {
+  return ts.length > 0
+}
 export const planRouter = createTRPCRouter({
   getPlansByRoomId: protectedProcedure
     .input(z.object({ roomId: z.string().optional() }).optional())
@@ -109,16 +112,38 @@ export const planRouter = createTRPCRouter({
   createPlan: protectedProcedure
     .input(createPlanSchema)
     .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.plan.create({
-        data: {
-          title: input.title,
-          userId: ctx.session.user.id,
-          roomId: input.roomId,
-          start_datetime: input.start_datetime,
-          description: input.description,
-          end_datetime: input.end_datetime,
-        },
-      });
+   let isExists=await  ctx.prisma.plan.findMany({
+    where:{ OR: [
+      {
+        start_datetime: { lte: input?.end_datetime },
+        end_datetime: { gte: input?.start_datetime },
+      },
+      {
+        start_datetime: { gte: input?.start_datetime },
+        end_datetime: { lte: input?.end_datetime },
+      },
+    ]}
+    
+   }).then($exists)
+   
+ 
+  if(isExists){
+return {
+  code:409,
+  error:'جلسه ای در این زمان از قبل وجود دارد.'}
+  }else{
+    return await ctx.prisma.plan.create({
+      data: {
+        title: input.title,
+        userId: ctx.session.user.id,
+        roomId: input.roomId,
+        start_datetime: input.start_datetime,
+        description: input.description,
+        end_datetime: input.end_datetime,
+      },
+    });
+  }
+      
     }),
   updateUser: protectedProcedure
     .input(updatePlanSchema)
