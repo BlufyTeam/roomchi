@@ -125,23 +125,22 @@ export const planRouter = createTRPCRouter({
         })
         .then($exists);
 
-      if (isExists) 
+      if (isExists)
         return {
           code: 409,
           error: "جلسه ای در این زمان از قبل وجود دارد.",
         };
-    
-        return await ctx.prisma.plan.create({
-          data: {
-            title: input.title,
-            userId: ctx.session.user.id,
-            roomId: input.roomId,
-            start_datetime: input.start_datetime,
-            description: input.description,
-            end_datetime: input.end_datetime,
-          },
-        });
-      }
+
+      return await ctx.prisma.plan.create({
+        data: {
+          title: input.title,
+          userId: ctx.session.user.id,
+          roomId: input.roomId,
+          start_datetime: input.start_datetime,
+          description: input.description,
+          end_datetime: input.end_datetime,
+        },
+      });
     }),
   updateUser: protectedProcedure
     .input(updatePlanSchema)
