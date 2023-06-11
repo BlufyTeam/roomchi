@@ -42,13 +42,13 @@ export default function PlanRooms({ date }: Props) {
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 p-5">
       {getPlans.data.length > 0 && (
-        <>
-          <h3 className="w-full px-2 text-right font-bold text-primary">
+        <div className="flex w-full flex-col items-center justify-start  gap-3">
+          <h3 className="w-full px-2 text-center font-bold text-primary">
             اتاق های رزرو شده در تاریخ {date.locale("fa").format("D MMMM yyyy")}
           </h3>
 
           <PlanListWithRoom plans={getPlans.data} />
-        </>
+        </div>
       )}
       {getPlans.data.length > 0 && canPickTime && (
         <div className="h-0.5 w-full rounded-full bg-accent/50" />

@@ -4,6 +4,7 @@ import Button from "~/ui/buttons";
 
 export default function MultiStep({
   currentStep = 0,
+  isLoading = false,
   onStepClick = (step: number) => {},
   icons = [],
   steps = [],
@@ -74,6 +75,7 @@ export default function MultiStep({
         </div>
         <div className="absolute inset-0 flex w-full items-center justify-between  ">
           <Button
+            disabled={isLoading}
             className={twMerge(
               "group absolute left-1 z-20 rounded-full p-1.5 ring-1 ring-accent transition duration-500 hover:bg-accent/20 hover:ring-secondary",
               currentStep === 0 ? "opacity-0" : "opacity-100"
@@ -85,6 +87,7 @@ export default function MultiStep({
             <ChevronLeft className="h-5 w-5 stroke-primbuttn group-hover:stroke-accent " />
           </Button>
           <Button
+            disabled={isLoading}
             className={twMerge(
               "group absolute right-1 z-20  rounded-full p-1.5 ring-1 ring-accent transition duration-500 hover:bg-accent/20 hover:ring-secondary",
               currentStep === icons.length - 1 ? "opacity-0" : "opacity-100"
@@ -104,6 +107,7 @@ export default function MultiStep({
               distance === 1 ? "100%" : distance === 2 ? "70%" : "0%";
             return (
               <button
+                disabled={isLoading}
                 key={i}
                 onClick={() => {
                   onStepClick(i);

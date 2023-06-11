@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import moment from "jalali-moment";
 import { z } from "zod";
 import {
@@ -5,6 +6,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { $exists } from "~/server/helpers/exists";
 import {
   planIdSchema,
   createPlanSchema,
@@ -14,9 +16,6 @@ import {
 } from "~/server/validations/plan.validation";
 import { RoomStatus } from "~/types";
 
-export function $exists<T>(ts: T[]): boolean {
-  return ts.length > 0;
-}
 export const planRouter = createTRPCRouter({
   getPlansByRoomId: protectedProcedure
     .input(z.object({ roomId: z.string().optional() }).optional())
@@ -126,10 +125,10 @@ export const planRouter = createTRPCRouter({
         .then($exists);
 
       if (isExists)
-        return {
-          code: 409,
-          error: "جلسه ای در این زمان از قبل وجود دارد.",
-        };
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "جلسه ای در این زمان از قبل وجود دارد.",
+        });
 
       return await ctx.prisma.plan.create({
         data: {

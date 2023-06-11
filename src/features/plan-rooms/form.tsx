@@ -8,7 +8,7 @@ import {
   StickyNoteIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { object } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { toast } from "~/components/ui/toast/use-toast";
@@ -26,20 +26,36 @@ import { delay } from "~/utils/util";
 
 const TextFieldWithLable = withLabel(TextField);
 
+const icons = [
+  <ReplaceIcon key={1} className="stroke-inherit" />,
+  <HourglassIcon key={2} className="stroke-inherit" />,
+  <StickyNoteIcon key={3} className="stroke-inherit" />,
+  <Loader2Icon key={4} className="stroke-inherit" />,
+  <CheckIcon key={4} className="stroke-inherit" />,
+];
+
 export function ReserveRoom({ date }: { date: Moment }) {
   const [step, setStep] = useState(0);
+  const utils = api.useContext();
   const createPlan = api.plan.createPlan.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await delay(2000);
       setStep(4);
+      utils.plan.getPlansByDate.invalidate();
     },
-    onError: () => {
-      setStep(3);
+    onError: async (error) => {
+      await delay(2000);
+      toast({
+        title: "خطای رزرو اتاق",
+        description: error.message,
+      });
+      setStep(1);
     },
   });
 
-  function handleNextStep(stepNumber?: number) {
-    if (step + 1 === 4) return;
-    if (step + 1 >= 3 && !formik.isValid) {
+  async function handleNextStep(stepNumber?: number) {
+    if (step + 1 === 4 || stepNumber === 4) return;
+    if ((step + 1 >= 3 || stepNumber >= 4) && !formik.isValid) {
       toast({
         title: "مرحله بعد",
         description: (
@@ -54,6 +70,20 @@ export function ReserveRoom({ date }: { date: Moment }) {
     if (stepNumber >= 0) return setStep((prev) => stepNumber);
     else return setStep((prev) => prev + 1);
   }
+
+  useEffect(() => {
+    if (step === icons.length - 2) {
+      new Promise(async (resolve) => {
+        createPlan.mutate({
+          roomId: formik.values.roomId,
+          title: formik.values.title,
+          start_datetime: formik.values.start_datetime,
+          end_datetime: formik.values.end_datetime,
+          description: formik.values.description,
+        });
+      });
+    }
+  }, [step]);
   const formik = useFormik({
     initialValues: {
       room: undefined,
@@ -87,6 +117,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
     <>
       <div className="flex  w-full overflow-hidden">
         <MultiStep
+          isLoading={createPlan.isLoading}
           onStepClick={(stepNumber) => {
             console.log({ stepNumber });
             handleNextStep(stepNumber);
@@ -97,13 +128,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
           onNext={() => {
             handleNextStep();
           }}
-          icons={[
-            <ReplaceIcon key={1} className="stroke-inherit" />,
-            <HourglassIcon key={2} className="stroke-inherit" />,
-            <StickyNoteIcon key={3} className="stroke-inherit" />,
-            <Loader2Icon key={4} className="stroke-inherit" />,
-            <CheckIcon key={4} className="stroke-inherit" />,
-          ]}
+          icons={icons}
           currentStep={step}
           steps={[
             <div
@@ -164,6 +189,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 </div>
               </div>
               <Button
+                disabled={createPlan.isLoading}
                 key={2}
                 onClick={(room) => {
                   setStep((prev) => prev + 1);
@@ -186,16 +212,9 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 {...formik.getFieldProps("description")}
               />
               <Button
+                disabled={createPlan.isLoading}
                 onClick={async () => {
                   handleNextStep();
-                  await delay(2000);
-                  createPlan.mutate({
-                    roomId: formik.values.roomId,
-                    title: formik.values.title,
-                    start_datetime: formik.values.start_datetime,
-                    end_datetime: formik.values.end_datetime,
-                    description: formik.values.description,
-                  });
                 }}
                 className="bg-accent/20 text-accent"
               >

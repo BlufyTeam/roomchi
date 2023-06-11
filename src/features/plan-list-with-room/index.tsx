@@ -37,7 +37,7 @@ export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
   //   );
 
   return (
-    <div className=" grid gap-5 md:grid-cols-3 ">
+    <div className="grid gap-5 md:grid-cols-3 ">
       {plans.map((plan) => {
         return (
           <>
