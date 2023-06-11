@@ -111,15 +111,21 @@ export const planRouter = createTRPCRouter({
   createPlan: protectedProcedure
     .input(createPlanSchema)
     .mutation(async ({ input, ctx }) => {
+      if (input.end_datetime <= input.start_datetime)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "زمان پایان نمی تواند مساوی با کمتر از زمان شروع باشد",
+        });
       const isExists = await ctx.prisma.plan
         .findMany({
           where: {
-            OR: [
-              {
-                start_datetime: { gte: input?.start_datetime },
-                end_datetime: { lte: input?.end_datetime },
-              },
-            ],
+            start_datetime: {
+              gte: moment(input.start_datetime).toISOString(),
+            },
+            end_datetime: {
+              lte: moment(input.end_datetime).toISOString(),
+            },
+            roomId: input.roomId,
           },
         })
         .then($exists);

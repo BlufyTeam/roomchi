@@ -41,6 +41,9 @@ export default function PlanRooms({ date }: Props) {
   const canPickTime = date.isSameOrAfter(moment(), "jDay");
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 p-5">
+      {moment("2023-06-17T07:30:00.000Z")
+        .locale("fa")
+        .format("yyyy MMMM D HH:mm")}
       {getPlans.data.length > 0 && (
         <div className="flex w-full flex-col items-center justify-start  gap-3">
           <h3 className="w-full px-2 text-center font-bold text-primary">

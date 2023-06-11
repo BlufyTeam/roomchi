@@ -104,8 +104,8 @@ function RoomItem({
                   <CalendarCheckIcon className="h-5 w-5 2xl:h-6 2xl:w-6 " />
                   <h3 className="text-[10px]  2xl:text-sm">تمام شده</h3>
                   <span className="text-[10px]  2xl:text-sm">
-                    {moment(plan.start_datetime).format("HH:MM")} تا{" "}
-                    {moment(plan.end_datetime).format("HH:MM")}
+                    {moment(plan.start_datetime).locale("fa").format("HH:mm")}{" "}
+                    تا {moment(plan.end_datetime).locale("fa").format("HH:mm")}
                   </span>
                 </span>
               )}
@@ -114,8 +114,8 @@ function RoomItem({
                   <CalendarRangeIcon className="h-5 w-5 2xl:h-6 2xl:w-6  " />
                   <h3 className="text-[10px] 2xl:text-sm ">رزرو شده</h3>
                   <span className="text-[10px]  2xl:text-sm">
-                    {moment(plan.start_datetime).format("HH:MM")} تا{" "}
-                    {moment(plan.end_datetime).format("HH:MM")}
+                    {moment(plan.start_datetime).locale("fa").format("HH:mm")}{" "}
+                    تا {moment(plan.end_datetime).locale("fa").format("HH:mm")}
                   </span>
                 </span>
               )}
@@ -124,8 +124,8 @@ function RoomItem({
                   <BanIcon className="h-5 w-5 2xl:h-6 2xl:w-6  " />
                   <h3 className="text-[10px] 2xl:text-sm">در حال برگذاری</h3>
                   <span className="text-[10px] 2xl:text-sm">
-                    {moment(plan.start_datetime).format("HH:MM")} تا{" "}
-                    {moment(plan.end_datetime).format("HH:MM")}
+                    {moment(plan.start_datetime).locale("fa").format("HH:mm")}{" "}
+                    تا {moment(plan.end_datetime).locale("fa").format("HH:m")}
                   </span>
                 </span>
               )}

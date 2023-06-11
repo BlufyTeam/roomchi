@@ -53,9 +53,15 @@ export function ReserveRoom({ date }: { date: Moment }) {
     },
   });
 
-  async function handleNextStep(stepNumber?: number) {
-    if (step + 1 === 4 || stepNumber === 4) return;
-    if ((step + 1 >= 3 || stepNumber >= 4) && !formik.isValid) {
+  async function goTo(stepNumber?: number) {
+    if (stepNumber >= 4)
+      if (formik.values.end_datetime <= formik.values.start_datetime)
+        return toast({
+          title: "خطای انتخاب زمان",
+          description: "زمان پایان نمی تواند مساوی با کمتر از زمان شروع باشد",
+        });
+    if (stepNumber >= 4 && createPlan.isLoading) return;
+    if (stepNumber >= 3 && !formik.isValid) {
       toast({
         title: "مرحله بعد",
         description: (
@@ -66,9 +72,8 @@ export function ReserveRoom({ date }: { date: Moment }) {
       });
       return;
     }
-    if (step === 2 && !formik.values.title) return;
-    if (stepNumber >= 0) return setStep((prev) => stepNumber);
-    else return setStep((prev) => prev + 1);
+
+    return setStep(stepNumber);
   }
 
   useEffect(() => {
@@ -119,14 +124,13 @@ export function ReserveRoom({ date }: { date: Moment }) {
         <MultiStep
           isLoading={createPlan.isLoading}
           onStepClick={(stepNumber) => {
-            console.log({ stepNumber });
-            handleNextStep(stepNumber);
+            goTo(stepNumber);
           }}
           onPrevious={() => {
-            setStep((prev) => prev - 1);
+            goTo(step - 1);
           }}
           onNext={() => {
-            handleNextStep();
+            goTo(step + 1);
           }}
           icons={icons}
           currentStep={step}
@@ -147,7 +151,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                       room: room,
                     };
                   });
-                  setStep((prev) => prev + 1);
+                  goTo(step + 1);
                 }}
               />
             </div>,
@@ -156,43 +160,53 @@ export function ReserveRoom({ date }: { date: Moment }) {
               key={2}
               className="flex flex-col items-center justify-center gap-4 text-accent"
             >
-              <div className="flex items-center justify-center gap-2">
-                <div>
-                  <h3 className="w-full py-5 text-center"> زمان شروع</h3>
-                  <PickTimeView
-                    value={moment(formik.values.start_datetime)}
-                    date={date}
-                    onChange={(time) => {
-                      formik.setValues((values) => {
-                        return {
-                          ...values,
-                          start_datetime: time.toDate(),
-                        };
-                      });
-                    }}
-                  />
-                </div>
-                <div>
-                  <h3 className="w-full py-5 text-center"> زمان پایان</h3>
-                  <PickTimeView
-                    value={moment(formik.values.end_datetime)}
-                    date={date}
-                    onChange={(time) => {
-                      formik.setValues((values) => {
-                        return {
-                          ...values,
-                          end_datetime: time.toDate(),
-                        };
-                      });
-                    }}
-                  />
+              <div className="flex flex-col items-center justify-center gap-2">
+                <p
+                  onClick={() => {
+                    goTo(0);
+                  }}
+                  className="cursor-pointer text-primary underline"
+                >
+                  {formik.values.room?.title}
+                </p>
+                <div className="flex items-center justify-center gap-4">
+                  <div>
+                    <h3 className="w-full py-5 text-center"> زمان شروع</h3>
+                    <PickTimeView
+                      value={moment(formik.values.start_datetime)}
+                      date={date}
+                      onChange={(time) => {
+                        formik.setValues((values) => {
+                          return {
+                            ...values,
+                            start_datetime: time.toDate(),
+                          };
+                        });
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <h3 className="w-full py-5 text-center"> زمان پایان</h3>
+                    <PickTimeView
+                      value={moment(formik.values.end_datetime)}
+                      date={date}
+                      onChange={(time) => {
+                        formik.setValues((values) => {
+                          return {
+                            ...values,
+                            end_datetime: time.toDate(),
+                          };
+                        });
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
               <Button
                 disabled={createPlan.isLoading}
                 key={2}
                 onClick={(room) => {
-                  setStep((prev) => prev + 1);
+                  goTo(step + 1);
                 }}
                 className="bg-accent/20 text-accent"
               >
@@ -203,6 +217,32 @@ export function ReserveRoom({ date }: { date: Moment }) {
               key={3}
               className="flex flex-col items-center justify-center gap-4 "
             >
+              <p
+                onClick={() => {
+                  goTo(0);
+                }}
+                className="cursor-pointer text-primary underline"
+              >
+                {formik.values.room?.title}
+              </p>
+              <p
+                onClick={() => {
+                  goTo(1);
+                }}
+                className="cursor-pointer text-primary underline"
+              >
+                {moment(formik.values.start_datetime)
+                  .locale("fa")
+                  .format("D MMMM yyyy")}{" "}
+                ساعت{" "}
+                {moment(formik.values.start_datetime)
+                  .locale("fa")
+                  .format("HH:mm")}{" "}
+                تا{" "}
+                {moment(formik.values.end_datetime)
+                  .locale("fa")
+                  .format("HH:mm")}
+              </p>
               <TextFieldWithLable
                 label="عنوان"
                 {...formik.getFieldProps("title")}
@@ -214,7 +254,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
               <Button
                 disabled={createPlan.isLoading}
                 onClick={async () => {
-                  handleNextStep();
+                  goTo(3);
                 }}
                 className="bg-accent/20 text-accent"
               >
@@ -240,6 +280,10 @@ export function ReserveRoom({ date }: { date: Moment }) {
                   .locale("fa")
                   .format("HH:mm")}
               </p>
+              <p>با عنوان {formik.values.title}</p>
+              {formik.values.description && (
+                <p>با توضیحات {formik.values.description}</p>
+              )}
             </div>,
             <div className="flex flex-col items-center justify-center gap-5 ">
               <p className="text-primary"> اتاق با موفقیت رزرو شد</p>
