@@ -117,10 +117,6 @@ export const planRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                start_datetime: { lte: input?.end_datetime },
-                end_datetime: { gte: input?.start_datetime },
-              },
-              {
                 start_datetime: { gte: input?.start_datetime },
                 end_datetime: { lte: input?.end_datetime },
               },
@@ -129,12 +125,12 @@ export const planRouter = createTRPCRouter({
         })
         .then($exists);
 
-      if (isExists) {
+      if (isExists) 
         return {
           code: 409,
           error: "جلسه ای در این زمان از قبل وجود دارد.",
         };
-      } else {
+    
         return await ctx.prisma.plan.create({
           data: {
             title: input.title,
