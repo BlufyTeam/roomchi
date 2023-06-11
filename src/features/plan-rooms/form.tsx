@@ -224,7 +224,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
             </div>,
             <div className="flex flex-col items-center justify-center gap-5 ">
               <p className="text-primary"> اتاق با موفقیت رزرو شد</p>
-              <Link className="text-accent" href={"/admin"}>
+              <Link className="text-accent " href={"/admin"}>
                 بازگشت به تقویم
               </Link>
             </div>,
