@@ -185,7 +185,7 @@ function RoomItem({
               }}
               className="bg-amber-500 text-black"
             >
-              حذف
+              لغو جلسه
             </Button>
           )}
         </div>
