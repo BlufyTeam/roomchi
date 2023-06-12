@@ -36,14 +36,14 @@ export const planRouter = createTRPCRouter({
         },
       });
     }),
-  getPlansByDateAndRoom: publicProcedure // will be tablet or roomProcedure in the future
+  getPlansByDateAndRoom: protectedProcedure // will be tablet or roomProcedure in the future
     .input(planDateAndRoomSchema)
     .query(async ({ ctx, input }) => {
       const plans = await ctx.prisma.plan.findMany({
         where: {
           roomId: input.roomId,
           start_datetime: {
-            gte: moment(input.date).locale("fa").startOf("day").toDate(),
+            gte: input.date,
             lt: moment(input.date).locale("fa").endOf("day").toDate(),
           },
         },
@@ -81,7 +81,7 @@ export const planRouter = createTRPCRouter({
         orderBy: { start_datetime: "desc" },
       });
     }),
-  getPlansByDate: protectedProcedure
+  getPlansByDate: publicProcedure
     .input(z.object({ date: z.date().optional() }).optional())
     .query(async ({ ctx, input }) => {
       const plans = await ctx.prisma.plan.findMany({

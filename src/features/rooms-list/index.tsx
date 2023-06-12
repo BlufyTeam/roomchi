@@ -42,10 +42,11 @@ export default function RoomsList({ onClick = (room: Room) => {} }) {
 
   return (
     <div className=" grid gap-5 md:grid-cols-3 ">
-      {getRooms.data.map((room) => {
+      {getRooms.data.map((room, i) => {
         return (
           <>
             <RoomItem
+              key={i}
               room={room}
               capicity={room.capacity}
               onClick={(room) => {

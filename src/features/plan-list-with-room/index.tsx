@@ -31,7 +31,12 @@ import { RouterOutputs, api } from "~/utils/api";
 type PlanWithRoom = RouterOutputs["plan"]["getPlansByDate"][number];
 export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
   const session = useSession();
-
+  if (session.status !== "authenticated")
+    return (
+      <>
+        <RoomsListSkeleton />
+      </>
+    );
   // const getRooms = rooms ?? api.room.getReservedRoomsByDate.useQuery();
   // if (getRooms?.isLoading) return <RoomsListSkeleton />;
   // if (getRooms?.data.length <= 0)

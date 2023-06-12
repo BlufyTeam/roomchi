@@ -18,6 +18,8 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import UploadImage from "~/features/uplaod-image-base64";
+import moment from "jalali-moment";
+import { api } from "~/utils/api";
 
 const frameworks = [
   {
@@ -43,7 +45,16 @@ const frameworks = [
 ];
 
 export default function TestPage() {
-  return <></>;
+  // const plans = api.plan.getPlansByDate.useQuery({
+  //   // roomId: router.query.id as string,
+  //   date: moment("2023-06-13").toDate(),
+  // });
+  // if (plans.isLoading) return <>loading</>;
+  return (
+    <>
+      <br />
+    </>
+  );
 }
 
 export function ComboBox({
