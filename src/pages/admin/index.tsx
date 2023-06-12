@@ -135,6 +135,8 @@ export default function AdminPage() {
         center
         title={moment(router.query.plan).locale("fa").format("D MMMM yyyy")}
         onClose={() => {
+          utils.plan.getPlansBetWeenDates.invalidate();
+          //router.push("/admin", undefined, { shallow: true });
           router.replace("/admin", undefined, { shallow: true });
         }}
       >

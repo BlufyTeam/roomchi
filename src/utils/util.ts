@@ -1,3 +1,5 @@
+import { RoomStatus } from "~/types";
+
 export function getPathName(path) {
   return path?.substring(path.lastIndexOf("/") + 1);
 }
@@ -15,3 +17,16 @@ export const reloadSession = () => {
 };
 
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export function TranslateRoomStatus(status: RoomStatus) {
+  switch (status) {
+    case "AlreadyStarted":
+      return "در حال برگذاری";
+    case "Done":
+      return "تمام شده";
+    case "Open":
+      return "باز است";
+    case "Reserved":
+      return "رزرو شده";
+  }
+}
