@@ -27,10 +27,7 @@ const menuList = [
     value: "پروفایل",
     link: "profile",
   },
-  {
-    value: "تنظیمات",
-    link: "settings",
-  },
+ 
   {
     value: "اتاق ها",
     link: "rooms",
@@ -43,8 +40,8 @@ const menuList = [
   },
 
   {
-    value: "رنگ",
-    link: "theme",
+    value: "تنظیمات",
+    link: "settings",
   },
 ];
 
