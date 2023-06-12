@@ -121,8 +121,8 @@ export default function MultiStep({
                 )}
                 style={{
                   left:
-                    currentStep === i
-                      ? `${50}%`
+                    currentStep === i // this is not neccessary
+                      ? `${50}%` // this is not neccessary
                       : `${Math.min(currentLeft - currentStep * 20, 100)}%`,
 
                   scale: currentStep === i ? "130%" : scale,
