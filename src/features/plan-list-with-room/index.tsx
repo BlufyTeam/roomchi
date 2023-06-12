@@ -31,12 +31,7 @@ import { RouterOutputs, api } from "~/utils/api";
 type PlanWithRoom = RouterOutputs["plan"]["getPlansByDate"][number];
 export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
   const session = useSession();
-  if (session.status !== "authenticated")
-    return (
-      <>
-        <RoomsListSkeleton />
-      </>
-    );
+  if (session.status !== "authenticated") return <></>;
   // const getRooms = rooms ?? api.room.getReservedRoomsByDate.useQuery();
   // if (getRooms?.isLoading) return <RoomsListSkeleton />;
   // if (getRooms?.data.length <= 0)
@@ -47,7 +42,7 @@ export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
   //   );
 
   return (
-    <div className="grid gap-5 md:grid-cols-3 ">
+    <div className="grid gap-5 md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 ">
       {plans.map((plan) => {
         return (
           <>
