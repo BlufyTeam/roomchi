@@ -54,6 +54,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
   });
 
   async function goTo(stepNumber?: number) {
+    formik.validateForm();
     if (stepNumber >= 4)
       if (formik.values.end_datetime <= formik.values.start_datetime)
         return toast({

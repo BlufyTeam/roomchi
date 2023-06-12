@@ -24,7 +24,7 @@ export const planDateSchema = z.object({
 });
 
 export const createPlanSchema = z.object({
-  room: z.any().optional(),
+  room: z.any({ required_error: "انتخاب اتاق ضروری است" }),
   title: z.string({ required_error: "داشتن عنوان اجباری است " }),
   roomId: z.string({ required_error: "انتخاب اتاق اجباری است " }),
   start_datetime: z.date({ required_error: "این فیلد اجباری است" }),
