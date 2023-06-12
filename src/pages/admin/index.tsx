@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { twMerge } from "tailwind-merge";
 
@@ -37,6 +37,7 @@ const calendar: Moment[] = calendarTemp.map((a) => a.days).flat(1);
 
 export default function AdminPage() {
   const session = useSession();
+
   const getPlansBetWeenDates = api.plan.getPlansBetWeenDates.useQuery(
     {
       start_datetime: calendar.at(0).toDate(),
@@ -48,6 +49,19 @@ export default function AdminPage() {
   );
   const utils = api.useContext();
   const router = useRouter();
+  useEffect(() => {
+    router.events.on("routeChangeComplete", (route) => {
+      if (router.asPath === "/admin")
+        utils.plan.getPlansBetWeenDates.invalidate();
+    });
+
+    return () => {
+      return router.events.on("routeChangeComplete", (route) => {
+        if (router.asPath === "/admin")
+          utils.plan.getPlansBetWeenDates.invalidate();
+      });
+    };
+  }, []);
   if (session.status === "unauthenticated") return router.replace("/login");
   if (session.status === "loading" || !getPlansBetWeenDates.data)
     return <AdminSkeleton />;
@@ -135,7 +149,6 @@ export default function AdminPage() {
         center
         title={moment(router.query.plan).locale("fa").format("D MMMM yyyy")}
         onClose={() => {
-          utils.plan.getPlansBetWeenDates.invalidate();
           //router.push("/admin", undefined, { shallow: true });
           router.replace("/admin", undefined, { shallow: true });
         }}

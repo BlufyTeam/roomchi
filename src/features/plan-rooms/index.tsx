@@ -38,7 +38,7 @@ export default function PlanRooms({ date }: Props) {
       </div>
     );
 
-  const canPickTime = date.isSameOrAfter(moment(), "jDay");
+  const canReserveRoom = date.isSameOrAfter(moment(), "jDay");
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 p-5">
       {moment("2023-06-17T07:30:00.000Z")
@@ -53,10 +53,10 @@ export default function PlanRooms({ date }: Props) {
           <PlanListWithRoom plans={getPlans.data} />
         </div>
       )}
-      {getPlans.data.length > 0 && canPickTime && (
+      {getPlans.data.length > 0 && canReserveRoom && (
         <div className="h-0.5 w-full rounded-full bg-accent/50" />
       )}
-      {canPickTime && (
+      {canReserveRoom && (
         <>
           <ReserveRoom date={date} />
         </>

@@ -17,21 +17,23 @@ import {
   PersonStandingIcon,
   CastIcon,
   CalendarCheckIcon,
+  ExternalLinkIcon,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { useRoom } from "~/context/room.context";
 import { RoomsListSkeleton } from "~/features/rooms-list/loading";
 import { RoomStatus } from "~/types";
+import Button from "~/ui/buttons";
 import ProjectorIcon from "~/ui/icons/projector";
 import ToolTip from "~/ui/tooltip";
 import { api } from "~/utils/api";
 
 export default function RoomsList({ onClick = (room: Room) => {} }) {
-  const { setSelectedRowRoom } = useRoom();
   const getRooms = api.room.getRoomsByCompanyId.useQuery();
   if (getRooms?.isLoading) return <RoomsListSkeleton />;
-  if (getRooms?.data.length <= 0)
+  if (getRooms?.data?.length <= 0)
     return (
       <div className="flex flex-wrap items-center justify-center  ">
         اتاقی ساخته نشده است
@@ -87,7 +89,7 @@ function RoomItem({
         onClick={() => {
           onClick(room);
         }}
-        className="flex  cursor-pointer  flex-col gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary"
+        className="flex  cursor-pointer flex-col  justify-between gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary"
       >
         <div className="flex items-start justify-between gap-5">
           <div className="flex items-start justify-between gap-5">
@@ -130,7 +132,14 @@ function RoomItem({
             <ProjectorIcon />
           </div>
         </div>
-        <span>{room.price} تومان</span>
+        <div className="flex items-center justify-between">
+          <span>{room.price} تومان</span>
+          <Button>
+            <Link href={`/rooms/${room.id}`}>
+              <ExternalLinkIcon />
+            </Link>
+          </Button>
+        </div>
       </div>
     </>
   );

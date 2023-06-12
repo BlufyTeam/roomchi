@@ -94,7 +94,7 @@ function RoomItem({
   });
   return (
     <>
-      <div className="items-centercursor-pointer  flex flex-col  justify-center gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary">
+      <div className="items-centercursor-pointer  flex flex-col  justify-between gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary">
         <div className="flex items-start justify-between gap-5">
           <div className="flex items-start justify-between gap-5">
             <div className="relative h-10 w-10">

@@ -36,24 +36,35 @@ export const planRouter = createTRPCRouter({
         },
       });
     }),
-  getPlansByDateAndRoom: protectedProcedure
+  getPlansByDateAndRoom: publicProcedure // will be tablet or roomProcedure in the future
     .input(planDateAndRoomSchema)
-    .query(({ ctx, input }) => {
-      return ctx.prisma.plan.findMany({
+    .query(async ({ ctx, input }) => {
+      const plans = await ctx.prisma.plan.findMany({
         where: {
           roomId: input.roomId,
-          OR: [
-            {
-              start_datetime: { lte: input?.end_datetime },
-              end_datetime: { gte: input?.start_datetime },
-            },
-            {
-              start_datetime: { gte: input?.start_datetime },
-              end_datetime: { lte: input?.end_datetime },
-            },
-          ],
+          start_datetime: {
+            gte: moment(input.date).locale("fa").startOf("day").toDate(),
+            lt: moment(input.date).locale("fa").endOf("day").toDate(),
+          },
+        },
+        include: {
+          room: true,
         },
         orderBy: { start_datetime: "desc" },
+      });
+
+      return plans.map((plan) => {
+        let status: RoomStatus = "Open";
+
+        if (moment().isBetween(plan.start_datetime, plan.end_datetime))
+          status = "AlreadyStarted";
+        if (moment().isAfter(plan.end_datetime)) status = "Done";
+        if (moment().isBefore(plan.start_datetime)) status = "Reserved";
+
+        return {
+          ...plan,
+          status,
+        };
       });
     }),
   getPlansBetWeenDates: protectedProcedure
@@ -61,16 +72,8 @@ export const planRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return ctx.prisma.plan.findMany({
         where: {
-          OR: [
-            {
-              start_datetime: { lte: input?.end_datetime },
-              end_datetime: { gte: input?.start_datetime },
-            },
-            {
-              start_datetime: { gte: input?.start_datetime },
-              end_datetime: { lte: input?.end_datetime },
-            },
-          ],
+          start_datetime: { gte: input?.start_datetime },
+          end_datetime: { lte: input?.end_datetime },
         },
         include: {
           room: true,
@@ -84,8 +87,8 @@ export const planRouter = createTRPCRouter({
       const plans = await ctx.prisma.plan.findMany({
         where: {
           start_datetime: {
-            gte: input.date,
-            lt: moment(input.date).endOf("day").toDate(),
+            gte: moment(input.date).locale("fa").startOf("day").toDate(),
+            lt: moment(input.date).locale("fa").endOf("day").toDate(),
           },
         },
         include: {

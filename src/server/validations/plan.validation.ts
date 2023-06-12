@@ -15,8 +15,7 @@ export const planIdSchema = z.object({
 });
 export const planDateAndRoomSchema = z.object({
   roomId: z.string({ required_error: "این فیلد اجباری است" }),
-  start_datetime: z.date(),
-  end_datetime: z.date(),
+  date: z.date(),
 });
 export const planDateSchema = z.object({
   start_datetime: z.date(),
