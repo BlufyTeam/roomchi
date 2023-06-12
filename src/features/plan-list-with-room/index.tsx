@@ -176,7 +176,7 @@ function RoomItem({
         <div className="flex items-center justify-between">
           <span>{plan.room.price} تومان</span>
 
-          {userId === plan.userId && (
+          {userId === plan.userId && plan.status !== "Done" && (
             <Button
               disabled={deletePlan.isLoading}
               isLoading={deletePlan.isLoading}
@@ -185,7 +185,7 @@ function RoomItem({
               }}
               className="bg-amber-500 text-black"
             >
-              لغو جلسه
+              {plan.status === "AlreadyStarted" ? "اتمام جلسه" : "لغو جلسه"}
             </Button>
           )}
         </div>
