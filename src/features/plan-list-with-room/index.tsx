@@ -22,6 +22,7 @@ import { Session } from "next-auth/core/types";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
+import { twMerge } from "tailwind-merge";
 import { RoomStatus, User } from "~/types";
 import Button from "~/ui/buttons";
 import ProjectorIcon from "~/ui/icons/projector";
@@ -51,8 +52,9 @@ export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
               plan={plan}
               status={plan.status}
               capicity={plan.room.capacity}
-              filled={5}
+              filled={plan.participants.length}
             />
+
             {/* <RoomItem room={room} status="Open" capicity={15} filled={2} />
             <RoomItem room={room} status="Reserved" capicity={6} filled={2} />
             <RoomItem room={room} status="Reserved" capicity={15} filled={15} />
@@ -92,6 +94,19 @@ function RoomItem({
       utils.plan.getPlansByDate.invalidate();
     },
   });
+
+  const joinPlan = api.plan.joinPlan.useMutation({
+    onSuccess: () => {
+      utils.plan.getPlansByDate.invalidate();
+    },
+  });
+  const exitPlan = api.plan.exitPlan.useMutation({
+    onSuccess: () => {
+      utils.plan.getPlansByDate.invalidate();
+    },
+  });
+
+  const hasAlreadyJoined = plan.participants.find((a) => a.userId === userId);
   return (
     <>
       <div className="items-centercursor-pointer  flex flex-col  justify-between gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary">
@@ -158,9 +173,12 @@ function RoomItem({
                   <>
                     <PersonStandingIcon
                       key={i}
-                      className={`  ${
-                        i <= filled ? "stroke-primbuttn" : "stroke-gray-400"
-                      }`}
+                      className={twMerge(
+                        "transition-all duration-300",
+                        i < filled
+                          ? "scale-125 rounded-full stroke-emerald-600 shadow-primbuttn"
+                          : "scale-90 stroke-gray-400"
+                      )}
                     />
                   </>
                 );
@@ -175,7 +193,6 @@ function RoomItem({
         </div>
         <div className="flex items-center justify-between">
           <span>{plan.room.price} تومان</span>
-
           {userId === plan.userId && plan.status !== "Done" && (
             <Button
               disabled={deletePlan.isLoading}
@@ -185,8 +202,31 @@ function RoomItem({
               }}
               className="bg-amber-500 text-black"
             >
-              {plan.status === "AlreadyStarted" ? "اتمام جلسه" : "لغو جلسه"}
+              {/* {plan.status === "AlreadyStarted" ? "اتمام جلسه" : "لغو جلسه"} */}
+              حذف جلسه
             </Button>
+          )}
+
+          {userId !== plan.userId && plan.status === "Reserved" && (
+            <>
+              <Button
+                disabled={joinPlan.isLoading || exitPlan.isLoading}
+                isLoading={joinPlan.isLoading || exitPlan.isLoading}
+                onClick={() => {
+                  if (hasAlreadyJoined) {
+                    exitPlan.mutate({ planId: plan.id, userId: userId });
+                  } else {
+                    joinPlan.mutate({ planId: plan.id, userId: userId });
+                  }
+                }}
+                className={twMerge(
+                  " px-5 text-black",
+                  hasAlreadyJoined ? "bg-amber-500" : "bg-teal-600"
+                )}
+              >
+                {hasAlreadyJoined ? "خروج" : "ورود"}
+              </Button>
+            </>
           )}
         </div>
       </div>

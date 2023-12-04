@@ -89,7 +89,7 @@ export async function getServerSideProps(context) {
   if (session) {
     return {
       redirect: {
-        destination: `/${session.user.role.toLocaleLowerCase()}`,
+        destination: `/${session.user?.role.toLocaleLowerCase()}`,
         permanent: false,
       },
     };

@@ -110,7 +110,7 @@ export default function Calender({
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/75  "></span>
                   </span>
                 )}
-                {onDate(item, calendar[16].jMonth())}
+                {onDate && onDate(item, calendar[16].jMonth())}
               </button>
             </>
           );

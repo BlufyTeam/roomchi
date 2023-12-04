@@ -62,7 +62,7 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (user)
-          if ((user?.password, credentials.password)) {
+          if (user?.password === credentials.password) {
             return user;
           } else {
             return { message: "user not found" };

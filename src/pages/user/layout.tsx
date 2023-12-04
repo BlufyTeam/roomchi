@@ -16,41 +16,21 @@ import Company from "~/features/company";
 import { api } from "~/utils/api";
 import useStatus from "~/hooks/useStatus";
 import { LayoutGroup } from "framer-motion";
-import AdminSkeleton from "~/pages/admin/loading";
+import UserSkeleton from "~/pages/user/loading";
 
 const menuList = [
   {
     value: "تقویم",
     link: "",
   },
-  {
-    value: "پروفایل",
-    link: "profile",
-  },
-
-  {
-    value: "اتاق ها",
-    link: "rooms",
-  },
-  {
-    value: "کاربر ها",
-    link: "users",
-    description: `در این بخش می توانید کاربر های مد نظر خود را بسازید، ویرایش کنید و
-    یا حذف کنید و تنظیمات مربوط به آن ها را تغییر دهید`,
-  },
-
-  {
-    value: "تنظیمات",
-    link: "settings",
-  },
 ];
 
-export default function AdminMainLayout({ children }: any): any {
+export default function UserMainLayout({ children }: any): any {
   const router = useRouter();
   const session = useSession();
   const { isOnline, isDesktop } = useStatus();
 
-  if (session.status === "loading") return <AdminSkeleton />;
+  if (session.status === "loading") return <UserSkeleton />;
 
   const currentMenuItem = menuList.find(
     (a) => a.link == getPathName(router.asPath)
@@ -68,7 +48,7 @@ export default function AdminMainLayout({ children }: any): any {
           >
             <div className="flex flex-col  items-center justify-center gap-2 md:flex-row">
               <div>
-                <Link href={"/admin"} className="text-accent">
+                <Link href={"/user"} className="text-accent">
                   {isDesktop ? "💻" : "📱"} {session.data.user.name}
                 </Link>
                 <span className="text-accent/80">
@@ -105,7 +85,7 @@ export default function AdminMainLayout({ children }: any): any {
       <ContainerBottomBorder className=" sticky top-0 z-50 flex pt-2 backdrop-blur-lg">
         <Container className=" max2xl:w-full">
           <LayoutGroup id="main-menu">
-            <Menu rootPath={"/admin"} list={menuList} />
+            <Menu rootPath={"/user"} list={menuList} />
           </LayoutGroup>
         </Container>
       </ContainerBottomBorder>

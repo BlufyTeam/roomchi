@@ -2,23 +2,23 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["jsonProtocol"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
 }
 
 model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Necessary for Next auth
@@ -41,95 +41,108 @@ model Example {
 // }
 
 model Resource {
-    id          String  @id @default(cuid())
-    name        String
-    is_active   Boolean
-    number      Int
-    description String
-    room        Room    @relation(fields: [roomId], references: [id])
-    roomId      String
+  id          String  @id @default(cuid())
+  name        String
+  is_active   Boolean
+  number      Int
+  description String
+  room        Room    @relation(fields: [roomId], references: [id])
+  roomId      String
 
-    @@map("resources")
+  @@map("resources")
 }
 
 model Plan {
-    id             String   @id @default(cuid())
-    title          String
-    user           User     @relation(fields: [userId], references: [id])
-    userId         String
-    room           Room     @relation(fields: [roomId], references: [id])
-    roomId         String
-    start_datetime DateTime
-    end_datetime   DateTime
-    description    String
+  id             String         @id @default(cuid())
+  title          String
+  user           User           @relation(fields: [userId], references: [id])
+  userId         String
+  room           Room           @relation(fields: [roomId], references: [id])
+  roomId         String
+  start_datetime DateTime
+  end_datetime   DateTime
+  description    String
+  participants   Participants[]
 
-    @@map("plans")
+  @@map("plans")
+}
+
+model Participants {
+  plan       Plan     @relation(fields: [planId], references: [id])
+  planId     String // relation scalar field (used in the `@relation` attribute above)
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([planId, userId])
 }
 
 model Room {
-    id          String     @id @default(cuid())
-    company     Company    @relation(fields: [companyId], references: [id])
-    companyId   String
-    image       String?
-    description String
-    price       Int
-    capacity    Int
-    plans       Plan[]
-    resources   Resource[]
-    title       String
+  id          String     @id @default(cuid())
+  company     Company    @relation(fields: [companyId], references: [id])
+  companyId   String
+  image       String?
+  description String
+  price       Int
+  capacity    Int
+  plans       Plan[]
+  resources   Resource[]
+  title       String
 
-    @@map("rooms")
+  @@map("rooms")
 }
 
 model Company {
-    id          String   @id @default(cuid())
-    name        String
-    logo_base64 String?
-    description String
-    users       User[]
-    created_at  DateTime @default(now())
-    updated_at  DateTime @updatedAt()
-    rooms       Room[]
+  id          String   @id @default(cuid())
+  name        String
+  logo_base64 String?
+  description String
+  users       User[]
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt()
+  rooms       Room[]
 
-    @@map("companies")
+  @@map("companies")
 }
 
 model User {
-    id          String    @id @default(cuid())
-    name        String?
-    email       String?   @unique
-    username    String    @unique
-    password    String
-    description String?
-    is_active   Boolean   @default(true)
-    image_url   String?
-    company     Company?  @relation(fields: [companyId], references: [id])
-    companyId   String?
-    sessions    Session[]
-    role        String    @default("USER")
-    created_at  DateTime  @default(now())
-    updated_at  DateTime? @updatedAt()
-    plans       Plan[]
+  id          String         @id @default(cuid())
+  name        String?
+  email       String?        @unique
+  username    String         @unique
+  password    String
+  description String?
+  is_active   Boolean        @default(true)
+  image_url   String?
+  company     Company?       @relation(fields: [companyId], references: [id])
+  companyId   String?
+  sessions    Session[]
+  role        String         @default("USER")
+  created_at  DateTime       @default(now())
+  updated_at  DateTime?      @updatedAt()
+  Plan        Plan[]
+  plans       Participants[]
 
-    @@map("users")
+  @@map("users")
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@map("sessions")
+  @@map("sessions")
 }
 
 model VerificationToken {
-    id         String   @id @default(cuid())
-    identifier String
-    token      String   @unique
-    expires    DateTime
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-    @@unique([identifier, token])
-    @@map("verification_tokens")
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }

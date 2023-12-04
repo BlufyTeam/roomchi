@@ -24,21 +24,32 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { createPlanSchema } from "~/server/validations/plan.validation";
 import MultiStep from "~/features/multi-step";
 import { ReserveRoom } from "~/features/plan-rooms/form";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { redirect } from "next/navigation";
+import { ROLES } from "~/server/constants";
 type Props = {
   date: Moment;
 };
 export default function PlanRooms({ date }: Props) {
+  const session = useSession();
   const getPlans = api.plan.getPlansByDate.useQuery({
     date: date.toDate(),
   });
-  if (getPlans.isLoading)
+  const router = useRouter();
+  if (getPlans.isLoading || session.status === "loading")
     return (
       <div className="flex w-5/6 flex-col items-center justify-center gap-4 p-5">
         <RoomsListSkeleton />
       </div>
     );
 
-  const canReserveRoom = date.isSameOrAfter(moment(), "jDay");
+  if (session.status === "unauthenticated") {
+    redirect("/login");
+  }
+
+  const canReserveRoom =
+    date.isSameOrAfter(moment(), "jDay") && session.data.user.role === "ADMIN";
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 p-5">
       {moment("2023-06-17T07:30:00.000Z")

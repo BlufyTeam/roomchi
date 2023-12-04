@@ -100,7 +100,18 @@ export default function UsersList() {
             );
           },
         },
-
+        {
+          Header: "شرکت",
+          accessor: "user.company.name",
+          Cell: ({ row }) => {
+            const user: User = row.original;
+            return (
+              <div className="text-atysa-900 w-full cursor-pointer  rounded-full px-2 py-2  ">
+                {user?.company?.name}
+              </div>
+            );
+          },
+        },
         {
           Header: "نقش",
           accessor: "role",

@@ -19,6 +19,7 @@ export default function RoomStatusPage() {
     },
     {
       enabled: session.status === "authenticated",
+      refetchInterval: 60 * 60,
     }
   );
   if (getPlans.isLoading)

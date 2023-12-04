@@ -10,9 +10,11 @@ export async function middleware(req: NextRequest) {
   if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
+
   const user = token.user as User;
   if (req.nextUrl.pathname.startsWith("/admin")) {
     if (user.role !== "ADMIN") {
+      console.log({ token });
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
@@ -30,6 +32,7 @@ export const config = {
      * - favicon.ico (favicon file)
      */
     // "/((?!api|_next/static|_next/image|favicon.ico).*)",
+
     "/user/:path*",
     "/admin/:path*",
   ],

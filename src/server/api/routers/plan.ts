@@ -5,6 +5,7 @@ import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
+  AdminProcedure,
 } from "~/server/api/trpc";
 import { $exists } from "~/server/helpers/exists";
 import {
@@ -25,7 +26,12 @@ export const planRouter = createTRPCRouter({
       });
     }),
   getPlans: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.plan.findMany();
+    return ctx.prisma.plan.findMany({
+      include: {
+        room: true,
+        participants: true,
+      },
+    });
   }),
   getPlanById: protectedProcedure
     .input(planIdSchema)
@@ -49,6 +55,7 @@ export const planRouter = createTRPCRouter({
         },
         include: {
           room: true,
+          participants: true,
         },
         orderBy: { start_datetime: "desc" },
       });
@@ -74,14 +81,20 @@ export const planRouter = createTRPCRouter({
         where: {
           start_datetime: { gte: input?.start_datetime },
           end_datetime: { lte: input?.end_datetime },
+
+          room: {
+            companyId: ctx.session.user.companyId ?? "",
+          },
         },
         include: {
           room: true,
+          participants: true,
         },
+
         orderBy: { start_datetime: "desc" },
       });
     }),
-  getPlansByDate: publicProcedure
+  getPlansByDate: protectedProcedure
     .input(z.object({ date: z.date().optional() }).optional())
     .query(async ({ ctx, input }) => {
       const plans = await ctx.prisma.plan.findMany({
@@ -90,9 +103,13 @@ export const planRouter = createTRPCRouter({
             gte: moment(input.date).locale("fa").startOf("day").toDate(),
             lt: moment(input.date).locale("fa").endOf("day").toDate(),
           },
+          room: {
+            companyId: ctx.session.user.companyId,
+          },
         },
         include: {
           room: true,
+          participants: true,
         },
         orderBy: { start_datetime: "desc" },
       });
@@ -111,9 +128,8 @@ export const planRouter = createTRPCRouter({
         };
       });
     }),
-  createPlan: protectedProcedure
-    .input(createPlanSchema)
-    .mutation(async ({ input, ctx }) => {
+  createPlan: AdminProcedure.input(createPlanSchema).mutation(
+    async ({ input, ctx }) => {
       if (input.end_datetime <= input.start_datetime)
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -147,12 +163,24 @@ export const planRouter = createTRPCRouter({
           start_datetime: input.start_datetime,
           description: input.description,
           end_datetime: input.end_datetime,
+          participants: {
+            create: [
+              {
+                user: {
+                  connect: {
+                    id: ctx.session.user.id,
+                  },
+                },
+                assignedBy: ctx.session.user.id,
+              },
+            ],
+          },
         },
       });
-    }),
-  updateUser: protectedProcedure
-    .input(updatePlanSchema)
-    .mutation(async ({ input, ctx }) => {
+    }
+  ),
+  updatePlan: AdminProcedure.input(updatePlanSchema).mutation(
+    async ({ input, ctx }) => {
       return await ctx.prisma.plan.update({
         where: {
           id: input.id,
@@ -166,15 +194,47 @@ export const planRouter = createTRPCRouter({
           end_datetime: input.end_datetime,
         },
       });
-    }),
+    }
+  ),
+  deletePlan: AdminProcedure.input(planIdSchema).mutation(
+    async ({ input, ctx }) => {
+      await ctx.prisma.participants.deleteMany({
+        where: {
+          planId: input.id,
+        },
+      });
 
-  deletePlan: protectedProcedure
-    .input(planIdSchema)
-    .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.plan.delete({
         where: {
           id: input.id,
         },
       });
+    }
+  ),
+  joinPlan: protectedProcedure
+    .input(z.object({ userId: z.string(), planId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const { userId, planId } = input;
+      const participant = await ctx.prisma.participants.create({
+        data: {
+          userId,
+          planId,
+          assignedAt: new Date(),
+          assignedBy: userId, // You may replace this with the actual user who is performing the action
+        },
+      });
+      return participant;
+    }),
+  exitPlan: protectedProcedure
+    .input(z.object({ userId: z.string(), planId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const { userId, planId } = input;
+      const deletedParticipant = await ctx.prisma.participants.deleteMany({
+        where: {
+          userId,
+          planId,
+        },
+      });
+      return deletedParticipant;
     }),
 });
