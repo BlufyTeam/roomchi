@@ -12,7 +12,7 @@ export const createUserSchema = z.object({
     .string({ required_error: "این فیلد اجباری است" })
     .min(6, "پسورد نمیتواند کمتر از 6 حرف باشد."),
   description: z.string().optional(),
-  role: z.enum(["ADMIN", "USER"]),
+  role: z.enum(["ADMIN", "USER", "ROOM"]),
   companyId: z.string().optional(),
 });
 

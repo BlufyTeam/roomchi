@@ -119,7 +119,7 @@ export default function UsersList() {
             const user: User = row.original;
             return (
               <div className="text-atysa-900 w-full cursor-pointer  rounded-full px-2 py-2  ">
-                {ROLES.find((a) => a.value.key === user.role).value.name}
+                {ROLES.find((a) => a.value.key === user.role)?.value.name ?? ""}
               </div>
             );
           },

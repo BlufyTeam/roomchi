@@ -13,4 +13,11 @@ export const ROLES = [
       name: "ادمین",
     },
   },
+  {
+    id: 2,
+    value: {
+      key: "ROOM",
+      name: "اتاق",
+    },
+  },
 ];

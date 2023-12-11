@@ -48,6 +48,7 @@ export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
         return (
           <>
             <RoomItem
+              sessionData={session.data}
               userId={session.data.user.id}
               plan={plan}
               status={plan.status}
@@ -76,12 +77,14 @@ export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
 }
 
 function RoomItem({
+  sessionData,
   userId,
   plan,
   status,
   capicity = 10,
   filled = 5,
 }: {
+  sessionData: Session;
   userId: string;
   plan: PlanWithRoom;
   status?: RoomStatus;
@@ -207,27 +210,29 @@ function RoomItem({
             </Button>
           )}
 
-          {userId !== plan.userId && plan.status === "Reserved" && (
-            <>
-              <Button
-                disabled={joinPlan.isLoading || exitPlan.isLoading}
-                isLoading={joinPlan.isLoading || exitPlan.isLoading}
-                onClick={() => {
-                  if (hasAlreadyJoined) {
-                    exitPlan.mutate({ planId: plan.id, userId: userId });
-                  } else {
-                    joinPlan.mutate({ planId: plan.id, userId: userId });
-                  }
-                }}
-                className={twMerge(
-                  " px-5 text-black",
-                  hasAlreadyJoined ? "bg-amber-500" : "bg-teal-600"
-                )}
-              >
-                {hasAlreadyJoined ? "خروج" : "ورود"}
-              </Button>
-            </>
-          )}
+          {userId !== plan.userId &&
+            plan.status === "Reserved" &&
+            sessionData.user.role === "USER" && (
+              <>
+                <Button
+                  disabled={joinPlan.isLoading || exitPlan.isLoading}
+                  isLoading={joinPlan.isLoading || exitPlan.isLoading}
+                  onClick={() => {
+                    if (hasAlreadyJoined) {
+                      exitPlan.mutate({ planId: plan.id, userId: userId });
+                    } else {
+                      joinPlan.mutate({ planId: plan.id, userId: userId });
+                    }
+                  }}
+                  className={twMerge(
+                    " px-5 text-black",
+                    hasAlreadyJoined ? "bg-amber-500" : "bg-teal-600"
+                  )}
+                >
+                  {hasAlreadyJoined ? "خروج" : "ورود"}
+                </Button>
+              </>
+            )}
         </div>
       </div>
     </>

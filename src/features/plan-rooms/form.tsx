@@ -286,7 +286,10 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 <p>با توضیحات {formik.values.description}</p>
               )}
             </div>,
-            <div className="flex flex-col items-center justify-center gap-5 ">
+            <div
+              key={5}
+              className="flex flex-col items-center justify-center gap-5 "
+            >
               <p className="text-primary"> اتاق با موفقیت رزرو شد</p>
               <Link className="text-accent " href={"/admin"}>
                 بازگشت به تقویم

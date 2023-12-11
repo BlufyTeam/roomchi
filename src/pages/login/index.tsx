@@ -104,9 +104,10 @@ export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
 
   if (session) {
+    const role = session.user.role.toLocaleLowerCase();
     return {
       redirect: {
-        destination: `/${session.user.role.toLocaleLowerCase()}`,
+        destination: `/${role === "SUPER_ADMIN" ? "ADMIN" : role}`,
         permanent: false,
       },
     };

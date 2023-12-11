@@ -57,10 +57,18 @@ export const userRouter = createTRPCRouter({
   ).query(async ({ ctx, input }) => {
     const limit = input.limit ?? 50;
     const { cursor } = input;
+
+    const where =
+      ctx.session.user.role != "SUPER_ADMIN"
+        ? {
+            companyId: ctx.session.user.companyId,
+          }
+        : {};
     const items =
       (await ctx.prisma.user.findMany({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor
         cursor: cursor ? { id: cursor } : undefined,
+        where: where,
         include: {
           company: true,
         },

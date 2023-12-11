@@ -19,6 +19,7 @@ import {
   CalendarCheckIcon,
   ExternalLinkIcon,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -30,8 +31,14 @@ import ProjectorIcon from "~/ui/icons/projector";
 import ToolTip from "~/ui/tooltip";
 import { api } from "~/utils/api";
 
-export default function RoomsList({ onClick = (room: Room) => {} }) {
-  const getRooms = api.room.getRoomsByCompanyId.useQuery();
+export default function RoomsList({
+  onClick = (room: Room) => {},
+  companyId = undefined,
+  rootLink = "rooms",
+}) {
+  const getRooms = api.room.getRoomsByCompanyId.useQuery(
+    companyId ? { companyId } : {}
+  );
   if (getRooms?.isLoading) return <RoomsListSkeleton />;
   if (getRooms?.data?.length <= 0)
     return (
@@ -46,6 +53,7 @@ export default function RoomsList({ onClick = (room: Room) => {} }) {
         return (
           <>
             <RoomItem
+              rootLink={rootLink}
               key={i}
               room={room}
               capicity={room.capacity}
@@ -74,11 +82,13 @@ export default function RoomsList({ onClick = (room: Room) => {} }) {
 }
 
 function RoomItem({
+  rootLink = "rooms",
   room,
   status,
   capicity = 10,
   onClick,
 }: {
+  rootLink: string;
   room: Room;
   status?: RoomStatus;
   capicity?: number;
@@ -95,12 +105,7 @@ function RoomItem({
         <div className="flex items-start justify-between gap-5">
           <div className="flex items-start justify-between gap-5">
             <div className="relative h-10 w-10">
-              <Image
-                className=" rounded-full p-[2px] ring-1 ring-primary"
-                src={"/images/default-door.png"}
-                alt=""
-                fill
-              />
+              <DoorOpenIcon />
             </div>
             <div className="flex flex-col">
               <h3 className="font-bold">{room.title}</h3>
@@ -136,7 +141,7 @@ function RoomItem({
         <div className="flex items-center justify-between">
           <span>{room.price} تومان</span>
           <Button>
-            <Link href={`/rooms/${room.id}`}>
+            <Link href={`/${rootLink}/${room.id}`}>
               <ExternalLinkIcon />
             </Link>
           </Button>
