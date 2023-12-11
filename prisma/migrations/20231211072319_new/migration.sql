@@ -30,6 +30,18 @@ CREATE TABLE "plans" (
 );
 
 -- CreateTable
+CREATE TABLE "Participants" (
+    "planId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "assignedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "assignedBy" TEXT NOT NULL,
+
+    PRIMARY KEY ("planId", "userId"),
+    CONSTRAINT "Participants_planId_fkey" FOREIGN KEY ("planId") REFERENCES "plans" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Participants_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "rooms" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "companyId" TEXT NOT NULL,

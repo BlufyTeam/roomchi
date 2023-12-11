@@ -62,10 +62,11 @@ export function ComboBox({
                 className="bg-secondary text-primary aria-selected:bg-primbuttn aria-selected:text-secbuttn hover:bg-primbuttn hover:text-secbuttn"
                 key={item.value}
                 onSelect={(currentValue) => {
+                
                   const v = values.find(
-                    (item) => item.label === currentValue
+                    (item) => item.label.toLowerCase() === currentValue
                   ).value;
-                  onChange(v);
+                 onChange(v);
 
                   setOpen(false);
                 }}
