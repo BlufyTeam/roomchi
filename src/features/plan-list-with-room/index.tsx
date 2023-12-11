@@ -30,7 +30,13 @@ import ToolTip from "~/ui/tooltip";
 import { RouterOutputs, api } from "~/utils/api";
 
 type PlanWithRoom = RouterOutputs["plan"]["getPlansByDate"][number];
-export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
+export default function PlanListWithRoom({
+  plans,
+  onInvalidate,
+}: {
+  plans: PlanWithRoom[];
+  onInvalidate?: () => void;
+}) {
   const session = useSession();
   if (session.status !== "authenticated") return <></>;
   // const getRooms = rooms ?? api.room.getReservedRoomsByDate.useQuery();
@@ -50,6 +56,9 @@ export default function PlanListWithRoom({ plans }: { plans: PlanWithRoom[] }) {
             <RoomItem
               sessionData={session.data}
               userId={session.data.user.id}
+              onInvalidate={() => {
+                if (onInvalidate) onInvalidate();
+              }}
               plan={plan}
               status={plan.status}
               capicity={plan.room.capacity}
@@ -83,6 +92,7 @@ function RoomItem({
   status,
   capicity = 10,
   filled = 5,
+  onInvalidate = () => {},
 }: {
   sessionData: Session;
   userId: string;
@@ -90,6 +100,7 @@ function RoomItem({
   status?: RoomStatus;
   capicity?: number;
   filled?: number;
+  onInvalidate: () => void;
 }) {
   const utils = api.useContext();
   const deletePlan = api.plan.deletePlan.useMutation({
@@ -219,9 +230,13 @@ function RoomItem({
                   isLoading={joinPlan.isLoading || exitPlan.isLoading}
                   onClick={() => {
                     if (hasAlreadyJoined) {
-                      exitPlan.mutate({ planId: plan.id, userId: userId });
+                      exitPlan
+                        .mutateAsync({ planId: plan.id, userId: userId })
+                        .then(() => onInvalidate());
                     } else {
-                      joinPlan.mutate({ planId: plan.id, userId: userId });
+                      joinPlan
+                        .mutateAsync({ planId: plan.id, userId: userId })
+                        .then(() => onInvalidate());
                     }
                   }}
                   className={twMerge(

@@ -18,27 +18,12 @@ import useStatus from "~/hooks/useStatus";
 import { LayoutGroup } from "framer-motion";
 import UserSkeleton from "~/pages/user/loading";
 
-const menuList = [
-  {
-    value: "تقویم",
-    link: "",
-  },
-  {
-    value: "اتاق ها",
-    link: "/rooms",
-  },
-];
-
-export default function UserMainLayout({ children }: any): any {
+export default function RoomMainLayout({ children }: any): any {
   const router = useRouter();
   const session = useSession();
   const { isOnline, isDesktop } = useStatus();
 
   if (session.status === "loading") return <UserSkeleton />;
-
-  const currentMenuItem = menuList.find(
-    (a) => a.link == getPathName(router.asPath)
-  );
 
   return (
     <div className="m-auto flex min-h-screen w-full max-w-[1920px] flex-col items-center bg-secondary">
@@ -55,9 +40,6 @@ export default function UserMainLayout({ children }: any): any {
                 <Link href={"/user"} className="text-accent">
                   {isDesktop ? "💻" : "📱"} {session.data.user.name}
                 </Link>
-                <span className="text-accent/80">
-                  {currentMenuItem && " / " + currentMenuItem.value}
-                </span>
               </div>
               <ThemeBox />
             </div>
@@ -67,7 +49,12 @@ export default function UserMainLayout({ children }: any): any {
                 <NotificationIcon className="h-4 w-4  " />
               </Button>
               <Button
-                onClick={() => signOut()}
+                onClick={() =>
+                  signOut({
+                    callbackUrl: "/login",
+                    redirect: true,
+                  })
+                }
                 className="flex cursor-pointer items-center justify-center gap-2 rounded-full stroke-white p-1.5 text-primary  hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50"
               >
                 <ExitIcon className="h-4 w-4" />
@@ -86,16 +73,7 @@ export default function UserMainLayout({ children }: any): any {
           </div>
         </Container>
       </Container>
-      <ContainerBottomBorder className=" sticky top-0 z-50 flex pt-2 backdrop-blur-lg">
-        <Container className=" max2xl:w-full">
-          <LayoutGroup id="main-menu">
-            <Menu rootPath={"/user"} list={menuList} />
-          </LayoutGroup>
-        </Container>
-      </ContainerBottomBorder>
-      {currentMenuItem && (
-        <LayoutSubContainer currentMenuItem={currentMenuItem} />
-      )}
+
       <ContainerBottomBorder className="h-full items-start bg-accent/5 ">
         {children}
       </ContainerBottomBorder>

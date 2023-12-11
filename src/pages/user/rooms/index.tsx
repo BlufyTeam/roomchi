@@ -5,7 +5,7 @@ import React from "react";
 import PlanListWithRoom from "~/features/plan-list-with-room";
 import RoomsList from "~/features/rooms-list";
 import { RoomsListSkeleton } from "~/features/rooms-list/loading";
-import RoomMainLayout from "~/pages/room/layout";
+import UserMainLayout from "~/pages/user/layout";
 
 import BlurBackground from "~/ui/blur-backgrounds";
 import { Container } from "~/ui/containers";
@@ -16,11 +16,11 @@ export default function RoomPage() {
   if (session.status !== "authenticated") return;
   if (!session.data?.user?.companyId) return "شرکتی ندارد";
   return (
-    <RoomMainLayout>
+    <UserMainLayout>
       <BlurBackground />
       <div className=" flex  h-screen w-full items-center justify-center overflow-hidden overflow-y-auto rounded-lg   ">
-        <RoomsList companyId={session.data.user.companyId} rootLink="room" />
+        <RoomsList rootLink="user/rooms" />
       </div>
-    </RoomMainLayout>
+    </UserMainLayout>
   );
 }

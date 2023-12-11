@@ -5,7 +5,6 @@ import React from "react";
 import PlanListWithRoom from "~/features/plan-list-with-room";
 import RoomsList from "~/features/rooms-list";
 import { RoomsListSkeleton } from "~/features/rooms-list/loading";
-import RoomMainLayout from "~/pages/room/layout";
 
 import BlurBackground from "~/ui/blur-backgrounds";
 import { Container } from "~/ui/containers";
@@ -14,6 +13,7 @@ import { api } from "~/utils/api";
 export default function SingleRoomPage() {
   const router = useRouter();
   const session = useSession();
+  const utils = api.useContext();
   const getPlans = api.plan.getPlansByDateAndRoom.useQuery(
     {
       roomId: router.query.id as string,
@@ -26,26 +26,33 @@ export default function SingleRoomPage() {
   );
   if (getPlans.isLoading)
     return (
-      <RoomMainLayout>
-        <div className="m-auto flex min-h-screen w-8/12 max-w-[1920px] flex-col items-center bg-secondary p-5">
-          <Container className="flex w-full items-center justify-center ">
-            <BlurBackground />
-            <RoomsListSkeleton />
-          </Container>
-        </div>
-      </RoomMainLayout>
-    );
-  return (
-    <RoomMainLayout>
-      <div className="m-auto flex min-h-screen w-full max-w-[1920px] flex-col items-center bg-secondary p-5">
+      <div className="m-auto flex min-h-screen w-8/12 max-w-[1920px] flex-col items-center bg-secondary p-5">
         <Container className="flex w-full items-center justify-center ">
           <BlurBackground />
-
-          <br />
-          {/* {session.status === "authenticated" && <List plans={plans.data} />} */}
-          {getPlans.data && <PlanListWithRoom plans={getPlans.data} />}
+          <RoomsListSkeleton />
         </Container>
       </div>
-    </RoomMainLayout>
+    );
+  return (
+    <div className="m-auto flex min-h-screen w-full max-w-[1920px] flex-col items-center bg-secondary p-5">
+      <Container className="flex w-full items-center justify-center ">
+        <BlurBackground />
+
+        <br />
+        {/* {session.status === "authenticated" && <List plans={plans.data} />} */}
+        {getPlans.data && (
+          <PlanListWithRoom
+            plans={getPlans.data}
+            onInvalidate={() => {
+              console.log("hi");
+              utils.plan.getPlansByDateAndRoom.invalidate({
+                roomId: router.query.id as string,
+                date: moment(moment(Date.now()).format("yyyy MMMM D")).toDate(),
+              });
+            }}
+          />
+        )}
+      </Container>
+    </div>
   );
 }
