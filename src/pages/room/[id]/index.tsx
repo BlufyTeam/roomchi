@@ -24,12 +24,15 @@ export default function SingleRoomPage() {
       refetchInterval: 60 * 60,
     }
   );
+
+  
   if (getPlans.isLoading)
     return (
       <RoomMainLayout>
         <div className="m-auto flex min-h-screen w-8/12 max-w-[1920px] flex-col items-center bg-secondary p-5">
           <Container className="flex w-full items-center justify-center ">
             <BlurBackground />
+            
             <RoomsListSkeleton />
           </Container>
         </div>
@@ -43,8 +46,13 @@ export default function SingleRoomPage() {
 
           <br />
           {/* {session.status === "authenticated" && <List plans={plans.data} />} */}
-          {getPlans.data && <PlanListWithRoom plans={getPlans.data} />}
+          {getPlans.data.length == 0? <div style={{color:'black'}}>جلسه ای برای امروز وجود ندارد.</div>:
+          <PlanListWithRoom plans={getPlans.data} />
+          }
+        
+         
         </Container>
+   
       </div>
     </RoomMainLayout>
   );

@@ -75,6 +75,7 @@ export default function RoomMainLayout({ children }: any): any {
       </Container>
 
       <ContainerBottomBorder className="h-full items-start bg-accent/5 ">
+       
         {children}
       </ContainerBottomBorder>
     </div>
