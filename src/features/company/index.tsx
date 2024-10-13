@@ -24,14 +24,25 @@ export default function Company({ company }: { company: Company }) {
             className="flex items-center justify-center gap-5 text-primary"
           >
             <span className="text-sm">{company.name}</span>
-            <Image
-              //@ts-ignore
-              src={image}
-              alt="logo"
-              className="rounded-full object-fill ring-2 ring-primary"
-              width={45}
-              height={45}
-            />
+            {image ? (
+              <Image
+                //@ts-ignore
+                src={image}
+                alt="logo"
+                className=""
+                width={45}
+                height={45}
+              />
+            ) : (
+              <Image
+                //@ts-ignore
+                src={"/images/default.png"}
+                alt="logo"
+                className=""
+                width={45}
+                height={45}
+              />
+            )}
           </Button>
         </Link>
       </HoverCardTrigger>

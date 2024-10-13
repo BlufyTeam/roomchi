@@ -55,7 +55,7 @@ function MenuItem({
     <Link href={`${rootPath}/${link}`}>
       <div
         className={`relative z-0 rounded-sm px-5  pb-4 pt-2 text-sm ${
-          isActive ? activeClass : "text-primary/50  hover:text-primary"
+          isActive ? activeClass : "text-primary/50  hover:text-primary "
         } `}
       >
         {isHovered && (

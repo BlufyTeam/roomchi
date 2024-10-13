@@ -22,7 +22,7 @@ export default function RoomStatusPage() {
       refetchInterval: 60 * 60,
     }
   );
-  if (getPlans.isLoading)
+  if (getPlans.isLoading) {
     return (
       <div className="m-auto flex min-h-screen w-8/12 max-w-[1920px] flex-col items-center bg-secondary p-5">
         <Container className="flex w-full items-center justify-center ">
@@ -31,15 +31,17 @@ export default function RoomStatusPage() {
         </Container>
       </div>
     );
-  return (
-    <div className="m-auto flex min-h-screen w-full max-w-[1920px] flex-col items-center bg-secondary p-5">
-      <Container className="flex w-full items-center justify-center ">
-        <BlurBackground />
+  } else {
+    return (
+      <div className="m-auto flex min-h-screen w-full max-w-[1920px] flex-col items-center bg-secondary p-5">
+        <Container className="flex w-full items-center justify-center ">
+          <BlurBackground />
 
-        <br />
-        {/* {session.status === "authenticated" && <List plans={plans.data} />} */}
-        {getPlans.data && <PlanListWithRoom plans={getPlans.data} />}
-      </Container>
-    </div>
-  );
+          <br />
+          {/* {session.status === "authenticated" && <List plans={plans.data} />} */}
+          {getPlans.data && <PlanListWithRoom plans={getPlans.data} />}
+        </Container>
+      </div>
+    );
+  }
 }
