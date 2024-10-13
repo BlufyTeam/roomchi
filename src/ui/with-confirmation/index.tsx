@@ -52,7 +52,7 @@ export default function withConfirmation(Component) {
           </>
         )}
         {!isOpen && (
-          <div onClick={() => setIsOpen(true)}>
+          <div className="w-full" onClick={() => setIsOpen(true)}>
             <Component {...rest} />
           </div>
         )}

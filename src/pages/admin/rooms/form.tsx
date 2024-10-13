@@ -17,9 +17,12 @@ import { reloadSession } from "~/utils/util";
 import { createRoomSchema } from "~/server/validations/room.validation";
 import { ComboBox } from "~/features/shadui/ComboBox";
 import { useRoom } from "~/context/room.context";
+import withConfirmation from "~/ui/with-confirmation";
+
 const TextFieldWithLable = withLabel(TextField);
 const IntegerFieldWithLable = withLabel(IntegerField);
 
+const ButtonWithConfirmation = withConfirmation(Button);
 export default function RoomForm() {
   const { toast } = useToast();
 
@@ -184,7 +187,8 @@ export default function RoomForm() {
         {selectedRowRoom ? "ویرایش" : "ثبت"}
       </Button>
       {selectedRowRoom && (
-        <Button
+        <ButtonWithConfirmation
+          title="حذف اتاق"
           disabled={deleteRoom.isLoading}
           isLoading={deleteRoom.isLoading}
           type="button"
@@ -194,7 +198,7 @@ export default function RoomForm() {
           className="w-full rounded-xl bg-amber-500 text-black"
         >
           حذف
-        </Button>
+        </ButtonWithConfirmation>
       )}
     </form>
   );
