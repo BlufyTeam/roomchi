@@ -8,6 +8,8 @@ import { NextPage } from "next";
 import ProgressBar from "@badrap/bar-of-progress";
 import { useRouter } from "next/router";
 import { Toaster } from "~/components/ui/toast/toaster";
+import localFont from "next/font/local";
+
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   PageLayout?: (page: ReactElement) => ReactElement<any, any>;
 };
@@ -28,6 +30,58 @@ function matchColorSchemeToTheme(theme) {
   if (theme.search("dark"))
     document.querySelector("html").style.colorScheme = "dark";
 }
+
+const iranSans = localFont({
+  src: [
+    {
+      path: "../../public/fonts/IRANSansXFaNum-Thin.woff",
+      weight: "100",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/IRANSansXFaNum-UltraLight.woff",
+      weight: "200",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/IRANSansXFaNum-Light.woff",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/IRANSansXFaNum-Regular.woff",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/IRANSansXFaNum-Medium.woff",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/IRANSansXFaNum-DemiBold.woff",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/IRANSansXFaNum-Bold.woff",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/IRANSansXFaNum-ExtraBold.woff",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/IRANSansXFaNum-Black.woff",
+      weight: "900",
+      style: "normal",
+    },
+  ],
+  variable: "--font-iransans",
+  display: "swap",
+});
 function MyApp({
   Component,
   pageProps: { session, ...pageProps },
@@ -78,12 +132,10 @@ function MyApp({
   const getLayout = Component.PageLayout ?? ((page) => page);
 
   return Component.PageLayout ? (
-    <>
-      <SessionProvider session={session}>
-        <Component.PageLayout {...pageProps} />
-        <Toaster />
-      </SessionProvider>
-    </>
+    <SessionProvider session={session}>
+      <Component.PageLayout {...pageProps} />
+      <Toaster />
+    </SessionProvider>
   ) : (
     <SessionProvider session={session}>
       <Component {...pageProps} />

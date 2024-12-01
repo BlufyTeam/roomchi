@@ -1,5 +1,5 @@
 import { Html, Head, Main, NextScript } from "next/document";
-import Script from "next/script";
+import { Title } from "node_modules/@radix-ui/react-dialog/dist/index";
 
 export default function Document() {
   return (
@@ -7,6 +7,7 @@ export default function Document() {
       <Head>
         {/* <link rel="shortcut icon" href={favicon} /> */}
         {/* <link rel="shortcut icon" href="/icons/main/roomchi.svg" /> */}
+        <title>Rougine meeting</title>
       </Head>
 
       <body
@@ -32,7 +33,7 @@ export default function Document() {
             zIndex: "1000",
           }}
         ></div>
-        <dir id="toast"></dir>
+        <div id="toast"></div>
 
         <NextScript />
       </body>
