@@ -38,11 +38,6 @@ const menuList = [
     description: `در این بخش می توانید کاربر های مد نظر خود را بسازید، ویرایش کنید و
     یا حذف کنید و تنظیمات مربوط به آن ها را تغییر دهید`,
   },
-
-  {
-    value: "تنظیمات",
-    link: "settings",
-  },
 ];
 
 export default function AdminMainLayout({ children }: any): any {

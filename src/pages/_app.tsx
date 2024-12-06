@@ -9,6 +9,8 @@ import ProgressBar from "@badrap/bar-of-progress";
 import { useRouter } from "next/router";
 import { Toaster } from "~/components/ui/toast/toaster";
 import localFont from "next/font/local";
+import { LanguageProvider } from "~/context/language.context";
+import { LanguageSwitcher } from "~/components/main/language-switcher";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   PageLayout?: (page: ReactElement) => ReactElement<any, any>;
@@ -133,16 +135,32 @@ function MyApp({
 
   return Component.PageLayout ? (
     <SessionProvider session={session}>
-      <Component.PageLayout {...pageProps} />
-      <Toaster />
+      <LanguageProvider>
+        <TopHeader />
+        <Component.PageLayout {...pageProps} />
+        <Toaster />
+      </LanguageProvider>
     </SessionProvider>
   ) : (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
-      <Toaster />
+      <LanguageProvider>
+        <TopHeader />
+        <Component {...pageProps} />
+        <Toaster />
+      </LanguageProvider>
     </SessionProvider>
   );
 }
 
 //@ts-ignore
 export default api.withTRPC(MyApp);
+
+function TopHeader() {
+  return (
+    <>
+      <div className="flex items-center justify-between p-2 sm:px-20 sm:py-5">
+        <LanguageSwitcher />
+      </div>
+    </>
+  );
+}

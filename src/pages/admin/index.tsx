@@ -114,7 +114,7 @@ export default function AdminPage() {
               )}
             >
               {parseInt(date.format("M")) !== monthNumber + 1 ? (
-                <span className="text-sm">{date.format("D MMMM")}</span>
+                <span className="text-sm">{date.format("D MMM")}</span>
               ) : (
                 <span>{date.format("D")}</span>
               )}

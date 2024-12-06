@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { useState } from "react";
 import { InPageMenu } from "~/features/menu";
 import { LayoutGroup } from "framer-motion";
+import { useLanguage } from "~/context/language.context";
 function getMonthDays(moment: Moment): Moment[] {
   let calendarTemp = [];
 
@@ -43,6 +44,21 @@ const MONTHS = [
   "اسفند",
 ];
 
+const MONTHS_EN = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 type Props = {
   onDate?: (
     date: Moment,
@@ -57,17 +73,20 @@ export default function Calender({
   onMonthChange,
   onClick = () => {},
 }: Props) {
-  const [calendar, setCalender] = useState(getMonthDays(moment().locale("fa")));
+  const { language } = useLanguage();
+  const [calendar, setCalender] = useState(
+    getMonthDays(moment().locale(language))
+  );
   return (
     <div className="grid  max-w-7xl  gap-10 px-2 py-10">
       <LayoutGroup id="months-InPageMenu">
         <InPageMenu
           className="mx-auto rounded-xl bg-secbuttn px-5 pb-1 pt-2"
-          value={moment().locale("fa").month()}
-          list={MONTHS}
+          value={moment().locale(language).month()}
+          list={language === "fa" ? MONTHS : MONTHS_EN}
           onChange={(monthNumber) => {
             const newCalendar = getMonthDays(
-              moment().jMonth(monthNumber).locale("fa")
+              moment().jMonth(monthNumber).locale(language)
             );
             setCalender(newCalendar);
             onMonthChange(
@@ -79,19 +98,13 @@ export default function Calender({
       </LayoutGroup>
 
       <div className="grid grid-cols-7 text-center text-xs text-primary md:text-base">
-        <span>شنبه</span>
-        <span>یک شنبه</span>
-        <span>دو شنبه</span>
-        <span>سه شنبه</span>
-        <span>چهار شنبه</span>
-        <span>پنج شنبه</span>
-        <span>جمعه</span>
+        <MonthDays />
       </div>
       <div className="grid  grid-cols-7 gap-2">
         {calendar.map((item: Moment, i) => {
           const isItemToday =
-            moment().locale("fa").format("D MMMM yyyy") ===
-            item.locale("fa").format("D MMMM yyyy");
+            moment().locale(language).format("D MMMM yyyy") ===
+            item.locale(language).format("D MMMM yyyy");
           return (
             <>
               <button
@@ -99,7 +112,7 @@ export default function Calender({
                 key={i}
                 disabled={item
                   .clone()
-                  .isBefore(moment().locale("fa").subtract(1, "day"))}
+                  .isBefore(moment().locale(language).subtract(1, "day"))}
                 className={twMerge(
                   "text-centerd group relative flex cursor-pointer items-center justify-center"
                 )}
@@ -118,4 +131,32 @@ export default function Calender({
       </div>
     </div>
   );
+}
+
+function MonthDays() {
+  const { language } = useLanguage();
+  if (language === "fa")
+    return (
+      <>
+        <span>شنبه</span>
+        <span>یک شنبه</span>
+        <span>دو شنبه</span>
+        <span>سه شنبه</span>
+        <span>چهار شنبه</span>
+        <span>پنج شنبه</span>
+        <span>جمعه</span>
+      </>
+    );
+  else
+    return (
+      <>
+        <span>Sun</span>
+        <span>Mon</span>
+        <span>Tue</span>
+        <span>Wed</span>
+        <span>Thu</span>
+        <span>Fri</span>
+        <span>Sat</span>
+      </>
+    );
 }

@@ -28,10 +28,12 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { redirect } from "next/navigation";
 import { ROLES } from "~/server/constants";
+import { useLanguage } from "~/context/language.context";
 type Props = {
   date: Moment;
 };
 export default function PlanRooms({ date }: Props) {
+  const { language } = useLanguage();
   const session = useSession();
   const getPlans = api.plan.getPlansByDate.useQuery({
     date: date.toDate(),
@@ -52,13 +54,11 @@ export default function PlanRooms({ date }: Props) {
     date.isSameOrAfter(moment(), "jDay") && session.data.user.role === "ADMIN";
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 p-5">
-      {moment("2023-06-17T07:30:00.000Z")
-        .locale("fa")
-        .format("yyyy MMMM D HH:mm")}
       {getPlans.data.length > 0 && (
         <div className="flex w-full flex-col items-center justify-start  gap-3">
           <h3 className="w-full px-2 text-center font-bold text-primary">
-            اتاق های رزرو شده در تاریخ {date.locale("fa").format("D MMMM yyyy")}
+            اتاق های رزرو شده در تاریخ{" "}
+            {date.locale(language).format("D MMMM yyyy")}
           </h3>
 
           <PlanListWithRoom plans={getPlans.data} />

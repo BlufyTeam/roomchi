@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { motion } from "framer-motion";
@@ -94,7 +94,14 @@ export function InPageMenu({
       return { name: item, isActive: false };
     })
   );
-
+  useEffect(() => {
+    setItems(
+      list.map((item, i) => {
+        if (value == i) return { name: item, isActive: true };
+        return { name: item, isActive: false };
+      })
+    );
+  }, [list]);
   const activeMonth = items.find((a) => a.isActive == true)?.name;
 
   return (

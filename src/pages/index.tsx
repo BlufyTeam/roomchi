@@ -29,8 +29,6 @@ function LandingPage() {
         <Link className="flex items-center justify-center " href="#">
           <span className="sr-only">RoomReserve</span>
         </Link>
-
-        <LanguageSwitcher />
       </header>
       <main className="flex-1">
         <BlurBackground />
@@ -224,11 +222,7 @@ function LandingPage() {
 }
 
 export default function WrappedLandingPage() {
-  return (
-    <LanguageProvider>
-      <LandingPage />
-    </LanguageProvider>
-  );
+  return <LandingPage />;
 }
 
 function AuthShowcase() {

@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { object } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { toast } from "~/components/ui/toast/use-toast";
+import { useLanguage } from "~/context/language.context";
 import MultiStep from "~/features/multi-step";
 import PickTimeView from "~/features/pick-time-view";
 import RoomsList from "~/features/rooms-list";
@@ -35,6 +36,7 @@ const icons = [
 ];
 
 export function ReserveRoom({ date }: { date: Moment }) {
+  const { language } = useLanguage();
   const [step, setStep] = useState(0);
   const utils = api.useContext();
   const createPlan = api.plan.createPlan.useMutation({
@@ -233,15 +235,15 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 className="cursor-pointer text-primary underline"
               >
                 {moment(formik.values.start_datetime)
-                  .locale("fa")
+                  .locale(language)
                   .format("D MMMM yyyy")}{" "}
                 ساعت{" "}
                 {moment(formik.values.start_datetime)
-                  .locale("fa")
+                  .locale(language)
                   .format("HH:mm")}{" "}
                 تا{" "}
                 {moment(formik.values.end_datetime)
-                  .locale("fa")
+                  .locale(language)
                   .format("HH:mm")}
               </p>
               <TextFieldWithLable
@@ -270,15 +272,15 @@ export function ReserveRoom({ date }: { date: Moment }) {
               <p>{formik.values.room?.title}</p>
               <p>
                 {moment(formik.values.start_datetime)
-                  .locale("fa")
+                  .locale(language)
                   .format("D MMMM yyyy")}{" "}
                 ساعت{" "}
                 {moment(formik.values.start_datetime)
-                  .locale("fa")
+                  .locale(language)
                   .format("HH:mm")}{" "}
                 تا{" "}
                 {moment(formik.values.end_datetime)
-                  .locale("fa")
+                  .locale(language)
                   .format("HH:mm")}
               </p>
               <p>با عنوان {formik.values.title}</p>
