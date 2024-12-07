@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import PlanRooms from "~/features/plan-rooms";
 import AdminSkeleton from "~/pages/admin/loading";
 import PickTimeView from "~/features/pick-time-view";
+import { useLanguage } from "~/context/language.context";
 
 let calendarTemp = [];
 const today = moment(Date.now()).locale("fa");
@@ -37,7 +38,7 @@ const calendar: Moment[] = calendarTemp.map((a) => a.days).flat(1);
 
 export default function AdminPage() {
   const session = useSession();
-
+  const { language } = useLanguage();
   const getPlansBetWeenDates = api.plan.getPlansBetWeenDates.useQuery(
     {
       start_datetime: calendar.at(0).toDate(),
@@ -147,7 +148,7 @@ export default function AdminPage() {
       <Modal
         isOpen={!!router.query.plan}
         center
-        title={moment(router.query.plan).locale("fa").format("D MMMM yyyy")}
+        title={moment(router.query.plan).locale(language).format("D MMMM yyyy")}
         onClose={() => {
           //router.push("/admin", undefined, { shallow: true });
           router.replace("/admin", undefined, { shallow: true });
