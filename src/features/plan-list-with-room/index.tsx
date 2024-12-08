@@ -206,7 +206,8 @@ function RoomItem({
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <span>{plan.room.price} تومان</span>
+          {plan.room.price != 0 && <span>{plan.room.price} تومان</span>}
+
           {userId === plan.userId && plan.status !== "Done" && (
             <Button
               disabled={deletePlan.isLoading}
