@@ -11,7 +11,7 @@ export function LanguageSwitcher() {
   };
 
   return (
-    <Button onClick={toggleLanguage} variant="outline" size="sm">
+    <Button onClick={toggleLanguage} className="bg-primary text-secondary">
       {language === "fa" ? "English" : "فارسی"}
     </Button>
   );

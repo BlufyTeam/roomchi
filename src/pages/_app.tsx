@@ -11,6 +11,7 @@ import { Toaster } from "~/components/ui/toast/toaster";
 import localFont from "next/font/local";
 import { LanguageProvider } from "~/context/language.context";
 import { LanguageSwitcher } from "~/components/main/language-switcher";
+import { cn } from "~/lib/utils";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   PageLayout?: (page: ReactElement) => ReactElement<any, any>;
@@ -134,21 +135,25 @@ function MyApp({
   const getLayout = Component.PageLayout ?? ((page) => page);
 
   return Component.PageLayout ? (
-    <SessionProvider session={session}>
-      <LanguageProvider>
-        <TopHeader />
-        <Component.PageLayout {...pageProps} />
-        <Toaster />
-      </LanguageProvider>
-    </SessionProvider>
+    <main className={cn(iranSans.className)}>
+      <SessionProvider session={session}>
+        <LanguageProvider>
+          <TopHeader />
+          <Component.PageLayout {...pageProps} />
+          <Toaster />
+        </LanguageProvider>
+      </SessionProvider>{" "}
+    </main>
   ) : (
-    <SessionProvider session={session}>
-      <LanguageProvider>
-        <TopHeader />
-        <Component {...pageProps} />
-        <Toaster />
-      </LanguageProvider>
-    </SessionProvider>
+    <main className={cn(iranSans.className)}>
+      <SessionProvider session={session}>
+        <LanguageProvider>
+          <TopHeader />
+          <Component {...pageProps} />
+          <Toaster />
+        </LanguageProvider>
+      </SessionProvider>
+    </main>
   );
 }
 
