@@ -18,6 +18,8 @@ import { useUser } from "~/context/user.context";
 import { Command } from "~/components/ui/command";
 import { ComboBox } from "~/features/shadui/ComboBox";
 import { reloadSession } from "~/utils/util";
+import { useLanguage } from "~/context/language.context";
+import { translations } from "~/utils/translations";
 
 const TextFieldWithLable = withLabel(TextField);
 // const TextAreaWithLable = withLabel(TextAreaField);
@@ -36,7 +38,8 @@ export function UserForm({
   const { selectedRowUser, setSelectedRowUser } = useUser();
   const utils = api.useContext();
   const user = sessionUser ?? selectedRowUser ?? undefined;
-  console.log({ user });
+  const { language } = useLanguage();
+  const t = translations[language];
   const createUser = api.user.createUser.useMutation({
     async onSuccess(addedUser: User) {
       await utils.user.getUsers.invalidate();
@@ -140,15 +143,15 @@ export function UserForm({
             }}
             className="absolute -top-10  border border-accent/10 bg-secondary text-primbuttn hover:bg-accent hover:text-secbuttn"
           >
-            ساخت کاربر جدید +
+            {t.createNewUser} +
           </Button>
         )}
         <h3 className="w-full pb-2 text-accent">
-          {user ? "ویرایش کاربر" : "ساخت کاربر"}
+          {user ? t.editUser : t.createUser}
         </h3>
         <div className="w-full ">
           <TextFieldWithLable
-            label={"نام"}
+            label={t.name}
             name="name"
             id="name"
             {...formik.getFieldProps("name")}
@@ -158,7 +161,7 @@ export function UserForm({
         <div className="flex items-center justify-center gap-10 text-primary">
           <div>
             <TextFieldWithLable
-              label={"نام کاربری"}
+              label={t.username}
               name="username"
               id="username"
               {...formik.getFieldProps("username")}
@@ -167,7 +170,7 @@ export function UserForm({
           </div>
           <div className="relative">
             <PasswordField
-              label={"رمز عبور"}
+              label={t.password}
               name="password"
               id="password"
               type="password"
@@ -180,7 +183,7 @@ export function UserForm({
 
         <div className="w-full">
           <TextFieldWithLable
-            label={"ایمیل"}
+            label={t.email}
             name="email"
             id="email"
             {...formik.getFieldProps("email")}
@@ -189,7 +192,7 @@ export function UserForm({
         </div>
         <div className="w-full">
           <TextFieldWithLable
-            label={"توضیحات"}
+            label={t.description}
             name="description"
             id="description"
             {...formik.getFieldProps("description")}
@@ -212,7 +215,7 @@ export function UserForm({
                   };
                 });
               }}
-              placeHolder="جستجو شرکت ها"
+              placeHolder={t.searchCompanies}
             />
           )}
         </div>
@@ -231,7 +234,7 @@ export function UserForm({
                 };
               });
             }}
-            placeHolder="جستجو نقش ها"
+            placeHolder={t.searchRoles}
           />
         </div>
 
@@ -241,7 +244,7 @@ export function UserForm({
           type="submit"
           className="w-full rounded-xl bg-primbuttn text-secondary"
         >
-          {user ? "ویرایش" : "ثبت"}
+          {user ? t.edit : t.done}
         </Button>
       </form>
     </>

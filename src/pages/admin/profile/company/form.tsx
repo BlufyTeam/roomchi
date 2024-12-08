@@ -13,16 +13,20 @@ import InputError from "~/ui/forms/input-error";
 import Button from "~/ui/buttons";
 import { useToast } from "~/components/ui/toast/use-toast";
 import { reloadSession } from "~/utils/util";
+import { useLanguage } from "~/context/language.context";
+import { translations } from "~/utils/translations";
 const TextFieldWithLable = withLabel(TextField);
 
 export default function CompanyForm({ company }: { company: Company }) {
   const { toast } = useToast();
   const utils = api.useContext();
+  const { language } = useLanguage();
+  const t = translations[language];
   const updateCompany = api.company.updateCompany.useMutation({
     onSuccess: () => {
       toast({
-        title: "ویرایش شرکت",
-        description: "ویرایش شد",
+        title: t.editCompany,
+        description: t.edited,
       });
       reloadSession();
     },
@@ -58,11 +62,11 @@ export default function CompanyForm({ company }: { company: Company }) {
       onSubmit={formik.handleSubmit}
       className="relative flex flex-col items-center justify-center gap-8"
     >
-      <h1 className="w-full pb-2 text-accent">ویرایش شرکت</h1>
+      <h1 className="w-full pb-2 text-accent">{t.editCompany}</h1>
 
       <div className="w-full ">
         <TextFieldWithLable
-          label={"نام"}
+          label={t.name}
           name="name"
           id="name"
           {...formik.getFieldProps("name")}
@@ -71,14 +75,14 @@ export default function CompanyForm({ company }: { company: Company }) {
       </div>
       <div className="w-full ">
         <TextFieldWithLable
-          label={"توضیحات"}
+          label={t.description}
           name="description"
           id="description"
           {...formik.getFieldProps("description")}
         />
         <InputError message={formik.errors.description} />
       </div>
-      <h3>لوگو شرکت</h3>
+      <h3>{t.logo}</h3>
       <UploadImageBase64
         images={
           formik.values.logo_base64?.length > 0
@@ -96,8 +100,8 @@ export default function CompanyForm({ company }: { company: Company }) {
         }}
         onError={(error) => {
           toast({
-            title: "خطای حجم عکس",
-            description: "حجم عکس نمی تواند بیشتر از 64 کیلوبایت باشد",
+            title: t.sizeError,
+            description: t.sizeErrorDes,
           });
         }}
       />
@@ -108,7 +112,7 @@ export default function CompanyForm({ company }: { company: Company }) {
         type="submit"
         className="w-full rounded-xl bg-primbuttn text-secondary"
       >
-        ویرایش
+        {t.edit}
       </Button>
     </form>
   );

@@ -23,6 +23,7 @@ import TextField from "~/ui/forms/text-field";
 import withLabel from "~/ui/forms/with-label";
 import ThreeDotsWave from "~/ui/loadings/three-dots-wave";
 import { api } from "~/utils/api";
+import { translations } from "~/utils/translations";
 import { delay } from "~/utils/util";
 
 const TextFieldWithLable = withLabel(TextField);
@@ -37,6 +38,7 @@ const icons = [
 
 export function ReserveRoom({ date }: { date: Moment }) {
   const { language } = useLanguage();
+  const t = translations[language];
   const [step, setStep] = useState(0);
   const utils = api.useContext();
   const createPlan = api.plan.createPlan.useMutation({
@@ -48,7 +50,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
     onError: async (error) => {
       await delay(2000);
       toast({
-        title: "خطای رزرو اتاق",
+        title: t.reserveError,
         description: error.message,
       });
       setStep(1);
@@ -60,13 +62,13 @@ export function ReserveRoom({ date }: { date: Moment }) {
     if (stepNumber >= 4)
       if (formik.values.end_datetime <= formik.values.start_datetime)
         return toast({
-          title: "خطای انتخاب زمان",
-          description: "زمان پایان نمی تواند مساوی با کمتر از زمان شروع باشد",
+          title: t.timeError,
+          description: t.EndTimeError,
         });
     if (stepNumber >= 4 && createPlan.isLoading) return;
     if (stepNumber >= 3 && !formik.isValid) {
       toast({
-        title: "ثبت جلسه",
+        title: t.done,
         description: (
           <pre className="font-iransans">
             {Object.values(formik.errors).map((a) => a + "\n")}
@@ -143,7 +145,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
               className="flex flex-col items-center justify-center gap-4"
             >
               <h3 className="w-full px-2  text-center text-accent">
-                برای رزرو اتاق انتخاب کنید
+                {t.reserveSelect}
               </h3>
               <RoomsList
                 onClick={(room) => {
@@ -174,7 +176,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 </p>
                 <div className="flex items-center justify-center gap-4">
                   <div>
-                    <h3 className="w-full py-5 text-center"> زمان شروع</h3>
+                    <h3 className="w-full py-5 text-center"> {t.startTime}</h3>
                     <PickTimeView
                       value={moment(formik.values.start_datetime)}
                       date={date}
@@ -189,7 +191,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                     />
                   </div>
                   <div>
-                    <h3 className="w-full py-5 text-center"> زمان پایان</h3>
+                    <h3 className="w-full py-5 text-center"> {t.endTime}</h3>
                     <PickTimeView
                       value={moment(formik.values.end_datetime)}
                       date={date}
@@ -213,7 +215,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 }}
                 className="bg-accent/20 text-accent"
               >
-                مرحله بعد
+                {t.next}
               </Button>
             </div>,
             <div
@@ -237,21 +239,20 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 {moment(formik.values.start_datetime)
                   .locale(language)
                   .format("D MMMM yyyy")}{" "}
-                ساعت{" "}
                 {moment(formik.values.start_datetime)
                   .locale(language)
                   .format("HH:mm")}{" "}
-                تا{" "}
+                {t.until}{" "}
                 {moment(formik.values.end_datetime)
                   .locale(language)
                   .format("HH:mm")}
               </p>
               <TextFieldWithLable
-                label="عنوان"
+                label={t.title}
                 {...formik.getFieldProps("title")}
               />
               <TextFieldWithLable
-                label="توضیحات"
+                label={t.description}
                 {...formik.getFieldProps("description")}
               />
               <Button
@@ -261,40 +262,46 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 }}
                 className="bg-accent/20 text-accent"
               >
-                ثبت جلسه
+                {t.done}{" "}
               </Button>
             </div>,
             <div
               key={4}
               className="flex flex-col items-center justify-center gap-2 text-center text-accent"
             >
-              <p>در حال رزرو...</p>
+              <p>{t.reserveInProgress}</p>
               <p>{formik.values.room?.title}</p>
               <p>
                 {moment(formik.values.start_datetime)
                   .locale(language)
                   .format("D MMMM yyyy")}{" "}
-                ساعت{" "}
+                {t.time}{" "}
                 {moment(formik.values.start_datetime)
                   .locale(language)
                   .format("HH:mm")}{" "}
-                تا{" "}
+                {t.until}{" "}
                 {moment(formik.values.end_datetime)
                   .locale(language)
                   .format("HH:mm")}
               </p>
-              <p>با عنوان {formik.values.title}</p>
+              <p>
+                {t.withTitle}
+                {formik.values.title}
+              </p>
               {formik.values.description && (
-                <p>با توضیحات {formik.values.description}</p>
+                <p>
+                  {t.withDescription}
+                  {formik.values.description}
+                </p>
               )}
             </div>,
             <div
               key={5}
               className="flex flex-col items-center justify-center gap-5 "
             >
-              <p className="text-primary"> اتاق با موفقیت رزرو شد</p>
+              <p className="text-primary"> {t.successRoom}</p>
               <Link className="text-accent " href={"/admin"}>
-                بازگشت به تقویم
+                {t.backToCalendar}
               </Link>
             </div>,
           ]}

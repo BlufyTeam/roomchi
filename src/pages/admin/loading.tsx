@@ -1,11 +1,15 @@
 import { signOut } from "next-auth/react";
+import { useLanguage } from "~/context/language.context";
 import BlurBackground from "~/ui/blur-backgrounds";
 import Button from "~/ui/buttons";
 import { Container, ContainerBottomBorder } from "~/ui/containers";
 import ExitIcon from "~/ui/icons/exits";
 import NotificationIcon from "~/ui/icons/notification";
+import { translations } from "~/utils/translations";
 
 export default function AdminSkeleton() {
+  const { language } = useLanguage();
+  const t = translations[language];
   return (
     <>
       <div className="m-auto flex min-h-screen w-full max-w-[1920px] flex-col items-center bg-secondary">
@@ -31,7 +35,7 @@ export default function AdminSkeleton() {
                 >
                   <ExitIcon className="h-4 w-4" />
                   <span className="hidden text-sm text-primary md:flex">
-                    خروج
+                    {t.exit}
                   </span>
                 </Button>
 

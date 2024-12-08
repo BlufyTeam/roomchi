@@ -17,33 +17,35 @@ import { api } from "~/utils/api";
 import useStatus from "~/hooks/useStatus";
 import { LayoutGroup } from "framer-motion";
 import AdminSkeleton from "~/pages/admin/loading";
-
-const menuList = [
-  {
-    value: "تقویم",
-    link: "",
-  },
-  {
-    value: "پروفایل",
-    link: "profile",
-  },
-
-  {
-    value: "اتاق ها",
-    link: "rooms",
-  },
-  {
-    value: "کاربر ها",
-    link: "users",
-    description: `در این بخش می توانید کاربر های مد نظر خود را بسازید، ویرایش کنید و
-    یا حذف کنید و تنظیمات مربوط به آن ها را تغییر دهید`,
-  },
-];
+import { useLanguage } from "~/context/language.context";
+import { translations } from "~/utils/translations";
 
 export default function AdminMainLayout({ children }: any): any {
   const router = useRouter();
   const session = useSession();
+  const { language } = useLanguage();
+  const t = translations[language];
   const { isOnline, isDesktop } = useStatus();
+  const menuList = [
+    {
+      value: t.calendar,
+      link: "",
+    },
+    {
+      value: t.profile,
+      link: "profile",
+    },
+
+    {
+      value: t.rooms,
+      link: "rooms",
+    },
+    {
+      value: t.users,
+      link: "users",
+      description: t.userDescriptions,
+    },
+  ];
 
   if (session.status === "loading") return <AdminSkeleton />;
 
@@ -83,7 +85,7 @@ export default function AdminMainLayout({ children }: any): any {
               >
                 <ExitIcon className="h-4 w-4" />
                 <span className="hidden text-sm text-primary md:flex">
-                  خروج
+                  {t.exit}
                 </span>
               </Button>
 

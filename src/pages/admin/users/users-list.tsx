@@ -9,6 +9,8 @@ import { ROLES } from "~/server/constants";
 import Button from "~/ui/buttons";
 import withConfirmation from "~/ui/with-confirmation";
 import { api } from "~/utils/api";
+import { useLanguage } from "~/context/language.context";
+import { translations } from "~/utils/translations";
 
 const ButtonWithConfirmation = withConfirmation(Button);
 
@@ -29,7 +31,8 @@ export default function UsersList() {
   }, [users]);
 
   const router = useRouter();
-
+  const { language } = useLanguage();
+  const t = translations[language];
   const utils = api.useContext();
   const deleteUser = api.user.deleteUser.useMutation({
     async onMutate(deletedUser: User) {
@@ -39,7 +42,7 @@ export default function UsersList() {
       // Get the data from the queryCache
       const prevData = utils.user.getUsers.getInfiniteData();
       const newItems = flatUsers?.filter((item) => item.id !== deletedUser.id);
-      console.log({ prevData });
+      //console.log({ prevData });
       // Optimistically update the data with our new comment
       utils.user.getUsers.setData(
         {},
@@ -77,7 +80,7 @@ export default function UsersList() {
           },
         },
         {
-          Header: "نام",
+          Header: t.name,
           accessor: "name",
           Cell: ({ row }) => {
             const user = row.original;
@@ -89,7 +92,7 @@ export default function UsersList() {
           },
         },
         {
-          Header: "نام کاربری",
+          Header: t.username,
           accessor: "first_nameAndlast_name",
           Cell: ({ row }) => {
             const user: User = row.original;
@@ -101,7 +104,7 @@ export default function UsersList() {
           },
         },
         {
-          Header: "شرکت",
+          Header: t.company,
           accessor: "user.company.name",
           Cell: ({ row }) => {
             const user: User = row.original;
@@ -113,7 +116,7 @@ export default function UsersList() {
           },
         },
         {
-          Header: "نقش",
+          Header: t.role,
           accessor: "role",
           Cell: ({ row }) => {
             const user: User = row.original;
@@ -125,7 +128,7 @@ export default function UsersList() {
           },
         },
         {
-          Header: "عملیات",
+          Header: t.options,
           accessor: "",
           Cell: ({ row }) => {
             const user: User = row.original;
@@ -152,15 +155,14 @@ export default function UsersList() {
                 <ButtonWithConfirmation
                   isLoading={deleteUser.isLoading || !user.id}
                   onClick={async () => {
-                    if (navigator && !navigator.onLine)
-                      return alert("شما آفلاین هستید");
+                    if (navigator && !navigator.onLine) return alert(t.offline);
                     await deleteUser.mutateAsync({ id: user.id });
                     router.replace(`/admin/users/`, `/admin/users/`);
                   }}
-                  title="حذف کاربر"
+                  title={t.delete + " " + t.user}
                   className="w-full cursor-pointer rounded-full bg-primary px-2 py-2 text-secbuttn"
                 >
-                  حذف
+                  {t.delete}
                 </ButtonWithConfirmation>
               </div>
             );
@@ -196,7 +198,7 @@ export default function UsersList() {
           }}
           className="w-fit cursor-pointer rounded-full bg-secbuttn px-4 py-2 text-primbuttn  "
         >
-          {users.hasNextPage ? "بیشتر" : "تمام"}
+          {users.hasNextPage ? t.more : t.end}
         </Button>
       </div>
     </>
