@@ -242,7 +242,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 {moment(formik.values.start_datetime)
                   .locale(language)
                   .format("HH:mm")}{" "}
-                {t.until}{" "}
+                {t.until}
                 {moment(formik.values.end_datetime)
                   .locale(language)
                   .format("HH:mm")}
