@@ -69,7 +69,7 @@ export function LoginForm() {
         className="flex flex-col items-center justify-center gap-5 rounded-3xl bg-accent/5 p-5 backdrop-blur-xl"
         onSubmit={formik.handleSubmit}
       >
-        <h1 className="text-primary">ورود</h1>
+        <h1 className="text-primary">{t.enter}</h1>
         <div className="w-full ">
           <TextFieldWithLable
             label={t.username}
@@ -97,7 +97,7 @@ export function LoginForm() {
           type="submit"
           className="w-full rounded-xl bg-primbuttn text-secondary"
         >
-          ورود
+          {t.enter}
         </Button>
       </form>
     </>

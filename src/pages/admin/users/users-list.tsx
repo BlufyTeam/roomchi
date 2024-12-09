@@ -150,7 +150,7 @@ export default function UsersList() {
                   }}
                   className="w-full cursor-pointer rounded-full bg-secbuttn px-2 py-2 text-primbuttn  "
                 >
-                  ورود
+                  {t.enter}
                 </Button>
                 <ButtonWithConfirmation
                   isLoading={deleteUser.isLoading || !user.id}
