@@ -17,23 +17,25 @@ import { api } from "~/utils/api";
 import useStatus from "~/hooks/useStatus";
 import { LayoutGroup } from "framer-motion";
 import UserSkeleton from "~/pages/user/loading";
-
-const menuList = [
-  {
-    value: "تقویم",
-    link: "",
-  },
-  {
-    value: "اتاق ها",
-    link: "/rooms",
-  },
-];
+import { useLanguage } from "~/context/language.context";
+import { translations } from "~/utils/translations";
 
 export default function UserMainLayout({ children }: any): any {
   const router = useRouter();
   const session = useSession();
+  const { language } = useLanguage();
+  const t = translations[language];
   const { isOnline, isDesktop } = useStatus();
-
+  const menuList = [
+    {
+      value: t.calendar,
+      link: "",
+    },
+    {
+      value: t.rooms,
+      link: "/rooms",
+    },
+  ];
   if (session.status === "loading") return <UserSkeleton />;
 
   const currentMenuItem = menuList.find(
@@ -72,7 +74,7 @@ export default function UserMainLayout({ children }: any): any {
               >
                 <ExitIcon className="h-4 w-4" />
                 <span className="hidden text-sm text-primary md:flex">
-                  خروج
+                  {t.exit}
                 </span>
               </Button>
 

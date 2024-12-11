@@ -1,26 +1,26 @@
 export const THEMESE = [
   {
-    label: "تم روشن 1",
+    label: "Light Theme 1",
     value: "theme-light-1",
   },
   {
-    label: "تم روشن 2",
+    label: "Light Theme 2",
     value: "theme-light-2",
   },
   {
-    label: "تم روشن 3",
+    label: "Light Theme 3",
     value: "theme-light-3",
   },
   {
-    label: "تم تیره 1",
+    label: "Dark Theme 1",
     value: "theme-dark-1",
   },
   {
-    label: "تم تیره 2",
+    label: "Dark Theme  2",
     value: "theme-dark-2",
   },
   {
-    label: "تم تیره 3",
+    label: "Dark Theme  3",
     value: "theme-dark-3",
   },
 ];

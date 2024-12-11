@@ -13,6 +13,8 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { userLoginSchema } from "~/server/validations/user.validation";
 import { useFormik } from "formik";
 import { signIn } from "next-auth/react";
+import { useLanguage } from "~/context/language.context";
+import { translations } from "~/utils/translations";
 
 const TextFieldWithLable = withLabel(TextField);
 export default function LoginPage() {
@@ -38,6 +40,8 @@ export default function LoginPage() {
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const { language } = useLanguage();
+  const t = translations[language];
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -65,10 +69,10 @@ export function LoginForm() {
         className="flex flex-col items-center justify-center gap-5 rounded-3xl bg-accent/5 p-5 backdrop-blur-xl"
         onSubmit={formik.handleSubmit}
       >
-        <h1 className="text-primary">ورود</h1>
+        <h1 className="text-primary">{t.enter}</h1>
         <div className="w-full ">
           <TextFieldWithLable
-            label={"نام کاربری"}
+            label={t.username}
             name="username"
             id="username"
             {...formik.getFieldProps("username")}
@@ -77,7 +81,7 @@ export function LoginForm() {
         </div>
         <div className="relative w-full">
           <PasswordField
-            label={"رمز عبور"}
+            label={t.password}
             name="password"
             id="password"
             type="password"
@@ -93,7 +97,7 @@ export function LoginForm() {
           type="submit"
           className="w-full rounded-xl bg-primbuttn text-secondary"
         >
-          ورود
+          {t.enter}
         </Button>
       </form>
     </>

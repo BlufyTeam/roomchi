@@ -17,10 +17,14 @@ import { api } from "~/utils/api";
 import useStatus from "~/hooks/useStatus";
 import { LayoutGroup } from "framer-motion";
 import UserSkeleton from "~/pages/user/loading";
+import { useLanguage } from "~/context/language.context";
+import { translations } from "~/utils/translations";
 
 export default function RoomMainLayout({ children }: any): any {
   const router = useRouter();
   const session = useSession();
+  const { language } = useLanguage();
+  const t = translations[language];
   const { isOnline, isDesktop } = useStatus();
 
   if (session.status === "loading") return <UserSkeleton />;
@@ -59,7 +63,7 @@ export default function RoomMainLayout({ children }: any): any {
               >
                 <ExitIcon className="h-4 w-4" />
                 <span className="hidden text-sm text-primary md:flex">
-                  خروج
+                  {t.exit}
                 </span>
               </Button>
 
@@ -75,7 +79,6 @@ export default function RoomMainLayout({ children }: any): any {
       </Container>
 
       <ContainerBottomBorder className="h-full items-start bg-accent/5 ">
-       
         {children}
       </ContainerBottomBorder>
     </div>

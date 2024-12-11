@@ -23,6 +23,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { useLanguage } from "~/context/language.context";
 import { useRoom } from "~/context/room.context";
 import { RoomsListSkeleton } from "~/features/rooms-list/loading";
 import { RoomStatus } from "~/types";
@@ -30,12 +31,15 @@ import Button from "~/ui/buttons";
 import ProjectorIcon from "~/ui/icons/projector";
 import ToolTip from "~/ui/tooltip";
 import { api } from "~/utils/api";
+import { translations } from "~/utils/translations";
 
 export default function RoomsList({
   onClick = (room: Room) => {},
   companyId = undefined,
   rootLink = "rooms",
 }) {
+  const { language } = useLanguage();
+  const t = translations[language];
   const getRooms = api.room.getRoomsByCompanyId.useQuery(
     companyId ? { companyId } : {}
   );
@@ -43,7 +47,7 @@ export default function RoomsList({
   if (getRooms?.data?.length <= 0)
     return (
       <div className="flex flex-wrap items-center justify-center  ">
-        اتاقی ساخته نشده است
+        {t.noRoom}
       </div>
     );
 
@@ -55,6 +59,7 @@ export default function RoomsList({
             <RoomItem
               rootLink={rootLink}
               key={i}
+              t={t}
               room={room}
               capicity={room.capacity}
               onClick={(room) => {
@@ -87,12 +92,14 @@ function RoomItem({
   status,
   capicity = 10,
   onClick,
+  t,
 }: {
   rootLink: string;
   room: Room;
   status?: RoomStatus;
   capicity?: number;
   onClick?: (room: Room) => void;
+  t: any;
 }) {
   return (
     <>
@@ -118,7 +125,10 @@ function RoomItem({
             {/* make parent group relative to work :) */}
             <ToolTip className="flex items-center justify-center gap-2">
               <PersonStandingIcon className={`stroke-accent`} />
-              <span> ظرفیت {capicity} تا</span>
+              <span>
+                {" "}
+                {t.capacity}:{capicity}
+              </span>
             </ToolTip>
 
             <div className="flex  w-40 flex-wrap items-center  justify-start gap-2">
@@ -139,7 +149,13 @@ function RoomItem({
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <span>{room.price} تومان</span>
+          {room.price != 0 && (
+            <span>
+              {" "}
+              {room.price} {t.toman}
+            </span>
+          )}
+
           <Button>
             <Link href={`/${rootLink}/${room.id}`}>
               <ExternalLinkIcon />

@@ -23,11 +23,13 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
 import { twMerge } from "tailwind-merge";
+import { useLanguage } from "~/context/language.context";
 import { RoomStatus, User } from "~/types";
 import Button from "~/ui/buttons";
 import ProjectorIcon from "~/ui/icons/projector";
 import ToolTip from "~/ui/tooltip";
 import { RouterOutputs, api } from "~/utils/api";
+import { translations } from "~/utils/translations";
 
 type PlanWithRoom = RouterOutputs["plan"]["getPlansByDate"][number];
 export default function PlanListWithRoom({
@@ -119,7 +121,8 @@ function RoomItem({
       utils.plan.getPlansByDate.invalidate();
     },
   });
-
+  const { language } = useLanguage();
+  const t = translations[language];
   const hasAlreadyJoined = plan.participants.find((a) => a.userId === userId);
   return (
     <>
@@ -144,27 +147,29 @@ function RoomItem({
               {status === "Done" && (
                 <span className="flex items-center justify-center gap-1 rounded-lg  bg-cyan-500/10 px-0.5 py-2 text-sm text-cyan-600  md:p-2 ">
                   <CalendarCheckIcon className="h-5 w-5 2xl:h-6 2xl:w-6 " />
-                  <h3 className="text-[10px]  2xl:text-sm">تمام شده</h3>
+                  <h3 className="text-[10px]  2xl:text-sm">{t.finished}</h3>
                   <span className="text-[10px]  2xl:text-sm">
-                    {moment(plan.start_datetime).locale("fa").format("HH:mm")}{" "}
-                    تا {moment(plan.end_datetime).locale("fa").format("HH:mm")}
+                    {moment(plan.start_datetime).locale("fa").format("HH:mm")}
+                    {t.until}
+                    {moment(plan.end_datetime).locale("fa").format("HH:mm")}
                   </span>
                 </span>
               )}
               {status === "Reserved" && (
                 <span className="flex items-center justify-center gap-1 rounded-lg bg-rose-500/10 p-2 text-sm text-rose-600">
                   <CalendarRangeIcon className="h-5 w-5 2xl:h-6 2xl:w-6  " />
-                  <h3 className="text-[10px] 2xl:text-sm ">رزرو شده</h3>
+                  <h3 className="text-[10px] 2xl:text-sm ">{t.reserved}</h3>
                   <span className="text-[10px]  2xl:text-sm">
-                    {moment(plan.start_datetime).locale("fa").format("HH:mm")}{" "}
-                    تا {moment(plan.end_datetime).locale("fa").format("HH:mm")}
+                    {moment(plan.start_datetime).locale("fa").format("HH:mm")}
+                    {t.until}{" "}
+                    {moment(plan.end_datetime).locale("fa").format("HH:mm")}
                   </span>
                 </span>
               )}
               {status === "AlreadyStarted" && (
                 <span className="flex items-center justify-center gap-1 rounded-lg  bg-amber-500/10 p-2 text-sm text-amber-600">
                   <BanIcon className="h-5 w-5 2xl:h-6 2xl:w-6  " />
-                  <h3 className="text-[10px] 2xl:text-sm">در حال برگذاری</h3>
+                  <h3 className="text-[10px] 2xl:text-sm">{t.inProgress}</h3>
                   <span className="text-[10px] 2xl:text-sm">
                     {moment(plan.start_datetime).locale("fa").format("HH:mm")}{" "}
                     تا {moment(plan.end_datetime).locale("fa").format("HH:m")}
@@ -179,7 +184,10 @@ function RoomItem({
             {/* make parent group relative to work :) */}
             <ToolTip className="flex items-center justify-center gap-2">
               <PersonStandingIcon className={`stroke-accent`} />
-              <span> ظرفیت {capicity} تا</span>
+              <span>
+                {" "}
+                {t.capacity}:{capicity}{" "}
+              </span>
             </ToolTip>
             <div className=" flex w-40 flex-wrap  items-center justify-start  gap-2">
               {[...Array(capicity).keys()].map((i) => {
@@ -218,7 +226,7 @@ function RoomItem({
               className="bg-amber-500 text-black"
             >
               {/* {plan.status === "AlreadyStarted" ? "اتمام جلسه" : "لغو جلسه"} */}
-              حذف جلسه
+              {t.delete + " " + t.session}
             </Button>
           )}
 
@@ -245,7 +253,7 @@ function RoomItem({
                     hasAlreadyJoined ? "bg-amber-500" : "bg-teal-600"
                   )}
                 >
-                  {hasAlreadyJoined ? "خروج" : "ورود"}
+                  {hasAlreadyJoined ? t.exit : t.enter}
                 </Button>
               </>
             )}

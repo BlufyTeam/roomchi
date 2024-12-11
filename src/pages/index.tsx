@@ -238,7 +238,11 @@ function AuthShowcase() {
     <div className="flex flex-row items-center justify-center gap-4">
       {" "}
       <p className="text-center text-2xl text-white">
-        {sessionData && <span>کاربر:{sessionData.user?.username}</span>}
+        {sessionData && (
+          <span>
+            {t.user}:{sessionData.user?.username}
+          </span>
+        )}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>{" "}
       <button

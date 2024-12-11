@@ -29,11 +29,13 @@ import { useRouter } from "next/router";
 import { redirect } from "next/navigation";
 import { ROLES } from "~/server/constants";
 import { useLanguage } from "~/context/language.context";
+import { translations } from "~/utils/translations";
 type Props = {
   date: Moment;
 };
 export default function PlanRooms({ date }: Props) {
   const { language } = useLanguage();
+  const t = translations[language];
   const session = useSession();
   const getPlans = api.plan.getPlansByDate.useQuery({
     date: date.toDate(),
@@ -57,7 +59,7 @@ export default function PlanRooms({ date }: Props) {
       {getPlans.data.length > 0 && (
         <div className="flex w-full flex-col items-center justify-start  gap-3">
           <h3 className="w-full px-2 text-center font-bold text-primary">
-            اتاق های رزرو شده در تاریخ{" "}
+            {t.roomResevedAt}
             {date.locale(language).format("D MMMM yyyy")}
           </h3>
 

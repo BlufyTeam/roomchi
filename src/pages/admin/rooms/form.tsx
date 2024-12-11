@@ -18,6 +18,8 @@ import { createRoomSchema } from "~/server/validations/room.validation";
 import { ComboBox } from "~/features/shadui/ComboBox";
 import { useRoom } from "~/context/room.context";
 import withConfirmation from "~/ui/with-confirmation";
+import { useLanguage } from "~/context/language.context";
+import { translations } from "~/utils/translations";
 
 const TextFieldWithLable = withLabel(TextField);
 const IntegerFieldWithLable = withLabel(IntegerField);
@@ -25,7 +27,8 @@ const IntegerFieldWithLable = withLabel(IntegerField);
 const ButtonWithConfirmation = withConfirmation(Button);
 export default function RoomForm() {
   const { toast } = useToast();
-
+  const { language } = useLanguage();
+  const t = translations[language];
   const getCompany = api.company.getAll.useQuery();
   const { selectedRowRoom, setSelectedRowRoom } = useRoom();
   const utils = api.useContext();
@@ -100,13 +103,13 @@ export default function RoomForm() {
           }}
           className="absolute -top-10  border border-accent/10 bg-secondary text-primbuttn hover:bg-accent hover:text-secbuttn"
         >
-          ساخت اتاق جدید +
+          {t.createNewRoom} +
         </Button>
       )}
 
       <div className="w-full ">
         <TextFieldWithLable
-          label={"عنوان"}
+          label={t.title}
           name="title"
           id="title"
           {...formik.getFieldProps("title")}
@@ -115,7 +118,7 @@ export default function RoomForm() {
       </div>
       <div className="w-full ">
         <TextFieldWithLable
-          label={"توضیحات"}
+          label={t.description}
           name="description"
           id="description"
           {...formik.getFieldProps("description")}
@@ -124,7 +127,7 @@ export default function RoomForm() {
       </div>
       <div className="w-full ">
         <IntegerFieldWithLable
-          label={"ظرفیت"}
+          label={t.capacity}
           isRtl
           name="capacity"
           id="capacity"
@@ -142,7 +145,7 @@ export default function RoomForm() {
       </div>
       <div className="w-full ">
         <IntegerFieldWithLable
-          label="قیمت ( تومان )"
+          label={t.price + " (" + t.toman + ")"}
           name="price"
           id="price"
           isRtl
@@ -174,7 +177,7 @@ export default function RoomForm() {
                 };
               });
             }}
-            placeHolder="جستجو شرکت ها"
+            placeHolder={t.searchCompanies}
           />
         )}
       </div>
@@ -184,11 +187,11 @@ export default function RoomForm() {
         type="submit"
         className="w-full rounded-xl bg-primbuttn text-secondary"
       >
-        {selectedRowRoom ? "ویرایش" : "ثبت"}
+        {selectedRowRoom ? t.edit : t.done}
       </Button>
       {selectedRowRoom && (
         <ButtonWithConfirmation
-          title="حذف اتاق"
+          title={t.delete + " " + t.room}
           disabled={deleteRoom.isLoading}
           isLoading={deleteRoom.isLoading}
           type="button"

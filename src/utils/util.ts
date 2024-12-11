@@ -1,4 +1,6 @@
+import { useLanguage } from "~/context/language.context";
 import { RoomStatus } from "~/types";
+import { translations } from "./translations";
 
 export function getPathName(path) {
   return path?.substring(path.lastIndexOf("/") + 1);
@@ -19,14 +21,16 @@ export const reloadSession = () => {
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function TranslateRoomStatus(status: RoomStatus) {
+  const { language } = useLanguage();
+  const t = translations[language];
   switch (status) {
     case "AlreadyStarted":
-      return "در حال برگذاری";
+      return t.inProgress;
     case "Done":
-      return "تمام شده";
+      return t.finished;
     case "Open":
-      return "باز است";
+      return t.isOpen;
     case "Reserved":
-      return "رزرو شده";
+      return t.reserved;
   }
 }
