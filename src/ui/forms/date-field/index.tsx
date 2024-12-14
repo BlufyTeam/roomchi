@@ -4,7 +4,7 @@ import { Calendar } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 
-import Button from "ui/buttons";
+import Button from "~/ui/buttons";
 
 export default function DateField({
   children,

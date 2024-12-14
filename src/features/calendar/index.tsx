@@ -68,13 +68,13 @@ type Props = {
   onClick?: (date: Moment) => unknown;
 };
 
-export default function Calender({
+export default function Calendar({
   onDate,
   onMonthChange,
   onClick = () => {},
 }: Props) {
   const { language } = useLanguage();
-  const [calendar, setCalender] = useState(
+  const [calendar, setCalendar] = useState(
     getMonthDays(moment().locale(language))
   );
   return (
@@ -88,7 +88,7 @@ export default function Calender({
             const newCalendar = getMonthDays(
               moment().month(monthNumber).locale(language)
             );
-            setCalender(newCalendar);
+            setCalendar(newCalendar);
             onMonthChange(
               newCalendar.at(0),
               newCalendar.at(newCalendar.length - 1)

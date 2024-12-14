@@ -7,7 +7,7 @@ import UserMainLayout from "~/pages/user/layout";
 import moment, { Moment } from "jalali-moment";
 import { api } from "~/utils/api";
 import { MegaphoneIcon } from "lucide-react";
-import Calender from "~/features/calender";
+import Calendar from "~/features/Calendar";
 import Modal from "~/ui/modals";
 import { useRouter } from "next/router";
 import PlanRooms from "~/features/plan-rooms";
@@ -69,7 +69,7 @@ export default function AdminPage() {
 
   return (
     <UserMainLayout>
-      <Calender
+      <Calendar
         onMonthChange={(startDate, endDate) => {
           utils.plan.getPlansBetWeenDates.invalidate({
             start_datetime: startDate.toDate(),
