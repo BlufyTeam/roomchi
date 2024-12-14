@@ -1,6 +1,7 @@
 export const translations = {
   en: {
     loginTo: "Login to your account",
+    goToDashboard: "Go to Dashboard",
     logout: "Logout",
     features: "Features",
     howItWorks: "How It Works",
@@ -115,6 +116,7 @@ export const translations = {
   },
   fa: {
     loginTo: "ورود به حساب کاربری",
+    goToDashboard: "ورود به داشبورد",
     logout: "خروج",
     features: "ویژگی‌ها",
     howItWorks: "نحوه کار",

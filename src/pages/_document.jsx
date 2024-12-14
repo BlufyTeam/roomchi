@@ -1,45 +1,47 @@
-import { Html, Head, Main, NextScript } from "next/document";
-import { Title } from "node_modules/@radix-ui/react-dialog/dist/index";
+import Document, { Html, Head, Main, NextScript } from "next/document";
 
-export default function Document() {
-  return (
-    <Html className=" h-full" dir="rtl">
-      <Head>
-        {/* <link rel="shortcut icon" href={favicon} /> */}
-        {/* <link rel="shortcut icon" href="/icons/main/roomchi.svg" /> */}
-        <title>Rougine meeting</title>
-      </Head>
+export default class MyDocument extends Document {
+  render() {
+    return (
+      <Html className=" h-full" dir="rtl">
+        <Head>
+          {/* <link rel="shortcut icon" href={favicon} /> */}
+          {/* <link rel="shortcut icon" href="/icons/main/roomchi.svg" /> */}
+          {/* <title>Rougine meeting</title> */}
+        </Head>
 
-      <body
-        className="theme-dark-3 scrollbar-track-[var(--accent)] h-full"
-        style={{
-          overflow: "overlay",
-        }}
-      >
-        <Main />
-        <div id="overlay"></div>
-        <div
-          id="portal"
+        <body
+          className="theme-dark-3 scrollbar-track-[var(--accent)] h-full"
           style={{
-            overflow: "hidden",
+            overflow: "overlay",
           }}
-        ></div>
-        <div
-          id="user-nav"
-          style={{
-            position: "sticky",
-            bottom: "25px",
-            marginTop: "25px",
-            zIndex: "1000",
-          }}
-        ></div>
-        <div id="toast"></div>
+        >
+          <Main />
+          <div id="overlay"></div>
+          <div
+            id="portal"
+            style={{
+              overflow: "hidden",
+            }}
+          ></div>
+          <div
+            id="user-nav"
+            style={{
+              position: "sticky",
+              bottom: "25px",
+              marginTop: "25px",
+              zIndex: "1000",
+            }}
+          ></div>
+          <div id="toast"></div>
 
-        <NextScript />
-      </body>
-    </Html>
-  );
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
 }
+
 /*
 
         <Scrollbar

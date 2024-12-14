@@ -231,24 +231,22 @@ function AuthShowcase() {
   const { data: sessionData } = useSession();
   const { language } = useLanguage();
   const t = translations[language];
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined }
-  );
 
   return (
     <div className="flex flex-row items-center justify-center gap-4">
       {" "}
-      <p className="text-center text-2xl text-white">
+      <p className="  text-center  text-xl text-primary">
         {sessionData && (
-          <span>
-            {t.user}:{sessionData.user?.username}
-          </span>
+          <Link
+            className="rounded-full bg-primary/10 p-2 px-4 text-primary"
+            href="/admin"
+          >
+            {t.goToDashboard}
+          </Link>
         )}
-        {secretMessage && <span> - {secretMessage}</span>}
       </p>{" "}
       <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+        className="rounded-full bg-rose-950/50 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
         {sessionData ? t.logout : t.loginTo}
@@ -257,19 +255,19 @@ function AuthShowcase() {
   );
 }
 
-export async function getServerSideProps(context) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+// export async function getServerSideProps(context) {
+//   const session = await getServerSession(context.req, context.res, authOptions);
 
-  if (session) {
-    return {
-      redirect: {
-        destination: `/${session.user?.role.toLocaleLowerCase()}`,
-        permanent: false,
-      },
-    };
-  }
+//   if (session) {
+//     return {
+//       redirect: {
+//         destination: `/${session.user?.role.toLocaleLowerCase()}`,
+//         permanent: false,
+//       },
+//     };
+//   }
 
-  return {
-    props: {},
-  };
-}
+//   return {
+//     props: {},
+//   };
+// }

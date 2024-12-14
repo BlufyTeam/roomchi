@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { getPathName } from "~/utils/util";
 import { twMerge } from "tailwind-merge";
+import { useLanguage } from "~/context/language.context";
 
 export default function Menu({ rootPath = "", list = [] }) {
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -88,6 +89,7 @@ export function InPageMenu({
   onChange = (value) => {},
 }) {
   const [activeIndex, setActiveIndex] = useState(value);
+  const { language } = useLanguage();
   const [items, setItems] = useState(
     list.map((item, i) => {
       if (value == i) return { name: item, isActive: true };
@@ -106,6 +108,7 @@ export function InPageMenu({
 
   return (
     <motion.div
+      dir={language === "fa" ? "rtl" : "ltr"}
       className={twMerge(
         "group flex w-full cursor-pointer items-end  gap-3 overflow-hidden overflow-x-auto scrollbar-none md:w-fit",
         className
