@@ -117,8 +117,10 @@ export const translations = {
     titleRequired: "Title is required",
     startDateRequired: "Start date is required",
     endDateRequired: "End date is required",
+    "این فیلد اجباری است": "This field is required",
   },
   fa: {
+    "این فیلد اجباری است": "این فیلد اجباری است",
     startDateRequired: "تاریخ شروع اجباری است",
     endDateRequired: "تاریخ پایان اجباری است",
     roomRequired: "انتخاب اتاق اجباری است",

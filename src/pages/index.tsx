@@ -228,30 +228,42 @@ export default function WrappedLandingPage() {
 }
 
 function AuthShowcase() {
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status } = useSession();
   const { language } = useLanguage();
   const t = translations[language];
 
+  if (status === "loading") {
+    return (
+      <>
+        <button className="rounded-full bg-rose-950/50 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20">
+          ...
+        </button>
+      </>
+    );
+  }
+  const role = sessionData?.user?.role.toLowerCase();
   return (
-    <div className="flex flex-row items-center justify-center gap-4">
-      {" "}
-      <p className="  text-center  text-xl text-primary">
-        {sessionData && (
-          <Link
-            className="rounded-full bg-primary/10 p-2 px-4 text-primary"
-            href="/admin"
-          >
-            {t.goToDashboard}
-          </Link>
-        )}
-      </p>{" "}
-      <button
-        className="rounded-full bg-rose-950/50 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? t.logout : t.loginTo}
-      </button>
-    </div>
+    <>
+      <div className="flex flex-row items-center justify-center gap-4">
+        {" "}
+        <p className="  text-center  text-xl text-primary">
+          {sessionData && (
+            <Link
+              className="rounded-full bg-primary/10 p-2 px-4 text-primary"
+              href={`/${role}`}
+            >
+              {t.goToDashboard}
+            </Link>
+          )}
+        </p>{" "}
+        <button
+          className="rounded-full bg-rose-950/50 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+          onClick={sessionData ? () => void signOut() : () => void signIn()}
+        >
+          {sessionData ? t.logout : t.loginTo}
+        </button>
+      </div>
+    </>
   );
 }
 

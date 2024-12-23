@@ -7,13 +7,14 @@ import UserMainLayout from "~/pages/user/layout";
 import moment, { Moment } from "jalali-moment";
 import { api } from "~/utils/api";
 import { MegaphoneIcon } from "lucide-react";
-import Calendar from "~/features/Calendar";
+
 import Modal from "~/ui/modals";
 import { useRouter } from "next/router";
 import PlanRooms from "~/features/plan-rooms";
 import UserSkeleton from "~/pages/user/loading";
 import PickTimeView from "~/features/pick-time-view";
 import { useLanguage } from "~/context/language.context";
+import Calendar from "~/features/calendar";
 
 let calendarTemp = [];
 const today = moment(Date.now()).locale("fa");
@@ -92,8 +93,8 @@ export default function AdminPage() {
           return (
             <Link
               key={date.toString()}
-              href={formattedDate ? `/user/?plan=${formattedDate}` : ""}
-              as={formattedDate ? `/user/${formattedDate}` : ""}
+              href={formattedDate ? `/admin/?plan=${formattedDate}` : ""}
+              as={formattedDate ? `/admin/${formattedDate}` : ""}
               shallow={true}
               className={twMerge(
                 `disabled:cursor-not-allowe relative flex  w-full flex-col items-center justify-center gap-2
@@ -115,7 +116,7 @@ export default function AdminPage() {
               )}
             >
               {parseInt(date.format("M")) !== monthNumber + 1 ? (
-                <span className="text-sm">{date.format("D MMMM")}</span>
+                <span className="text-sm">{date.format("D MMM")}</span>
               ) : (
                 <span>{date.format("D")}</span>
               )}

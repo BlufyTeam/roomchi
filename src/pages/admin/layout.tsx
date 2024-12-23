@@ -66,7 +66,7 @@ export default function AdminMainLayout({ children }: any): any {
             <div className="flex flex-col  items-center justify-center gap-2 md:flex-row">
               <div>
                 <Link href={"/admin"} className="text-accent">
-                  {isDesktop ? "💻" : "📱"} {session.data.user.name}
+                  {isDesktop ? "💻" : "📱"} {session?.data?.user?.name}
                 </Link>
                 <span className="text-accent/80">
                   {currentMenuItem && " / " + currentMenuItem.value}
@@ -80,7 +80,11 @@ export default function AdminMainLayout({ children }: any): any {
                 <NotificationIcon className="h-4 w-4  " />
               </Button>
               <Button
-                onClick={() => signOut()}
+                onClick={() =>
+                  signOut({
+                    callbackUrl: "/",
+                  })
+                }
                 className="flex cursor-pointer items-center justify-center gap-2 rounded-full stroke-white p-1.5 text-primary  hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50"
               >
                 <ExitIcon className="h-4 w-4" />
@@ -89,7 +93,7 @@ export default function AdminMainLayout({ children }: any): any {
                 </span>
               </Button>
 
-              {session.data.user.company && (
+              {session?.data?.user?.company && (
                 <>
                   <span className="text-primary">|</span>
                   <Company company={session.data.user.company} />

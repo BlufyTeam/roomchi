@@ -85,9 +85,15 @@ export default function Calendar({
           value={moment().locale(language).month()}
           list={language === "fa" ? MONTHS : MONTHS_EN}
           onChange={(monthNumber) => {
-            const newCalendar = getMonthDays(
-              moment().month(monthNumber).locale(language)
-            );
+            let newCalendar = undefined;
+            if (language === "en")
+              newCalendar = getMonthDays(
+                moment().month(monthNumber).locale(language)
+              );
+            if (language === "fa")
+              newCalendar = getMonthDays(
+                moment().jMonth(monthNumber).locale(language)
+              );
             setCalendar(newCalendar);
             onMonthChange(
               newCalendar.at(0),
