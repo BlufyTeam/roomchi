@@ -22,7 +22,7 @@ export const userRouter = createTRPCRouter({
         data: {
           name: input.name,
           email: input.email,
-          username: input.username,
+          username: input.username.toLowerCase(),
           password: input.password,
           description: input.description,
           role: input.role,
@@ -40,7 +40,7 @@ export const userRouter = createTRPCRouter({
         data: {
           name: input.name,
           email: input.email,
-          username: input.username,
+          username: input.username.toLowerCase(),
           password: input.password,
           description: input.description,
           role: input.role,
