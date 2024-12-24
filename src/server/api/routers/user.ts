@@ -18,10 +18,13 @@ export const userRouter = createTRPCRouter({
 
   createUser: AdminProcedure.input(createUserSchema).mutation(
     async ({ input, ctx }) => {
+      let email = input.email;
+      if (!email) email = null;
+
       return await ctx.prisma.user.create({
         data: {
           name: input.name,
-          email: input.email,
+          email: email,
           username: input.username.toLowerCase(),
           password: input.password,
           description: input.description,
@@ -33,13 +36,15 @@ export const userRouter = createTRPCRouter({
   ),
   updateUser: AdminProcedure.input(updateUserSchema).mutation(
     async ({ input, ctx }) => {
+      let email = input.email;
+      if (!email) email = null;
       return await ctx.prisma.user.update({
         where: {
           id: input.id,
         },
         data: {
           name: input.name,
-          email: input.email,
+          email: email,
           username: input.username.toLowerCase(),
           password: input.password,
           description: input.description,

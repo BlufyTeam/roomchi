@@ -1,6 +1,6 @@
 import moment from "jalali-moment";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React from "react";
 import PlanListWithRoom from "~/features/plan-list-with-room";
 import RoomsList from "~/features/rooms-list";

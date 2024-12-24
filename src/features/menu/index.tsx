@@ -3,16 +3,15 @@ import Link from "next/link";
 
 import { motion } from "framer-motion";
 
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { getPathName } from "~/utils/util";
 import { twMerge } from "tailwind-merge";
 import { useLanguage } from "~/context/language.context";
 
 export default function Menu({ rootPath = "", list = [] }) {
   const [activeIndex, setActiveIndex] = useState(-1);
-  const router = useRouter();
-  const pathName = getPathName(router.asPath);
 
+  const pathName = getPathName(usePathname());
   return (
     <motion.div
       className="group flex w-full cursor-pointer items-end  gap-3 overflow-hidden overflow-x-auto scrollbar-none md:w-fit"

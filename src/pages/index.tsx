@@ -241,7 +241,8 @@ function AuthShowcase() {
       </>
     );
   }
-  const role = sessionData?.user?.role.toLowerCase();
+  const role = sessionData?.user?.role;
+  const roleUrl = role === "SUPER_ADMIN" ? "admin" : role;
   return (
     <>
       <div className="flex flex-row items-center justify-center gap-4">
@@ -250,7 +251,7 @@ function AuthShowcase() {
           {sessionData && (
             <Link
               className="rounded-full bg-primary/10 p-2 px-4 text-primary"
-              href={`/${role}`}
+              href={`/${roleUrl.toLowerCase()}`}
             >
               {t.goToDashboard}
             </Link>

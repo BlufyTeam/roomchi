@@ -1,5 +1,7 @@
 import { LayoutGroup } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
+import { useRouter } from "next/router";
 import React from "react";
 import Menu from "~/features/menu";
 import AdminMainLayout from "~/pages/admin/layout";
@@ -14,10 +16,18 @@ const menuList = [
   },
 ];
 
-export default function ProfileLayout({ children }) {
-  const session = useSession();
-  if (session.status !== "authenticated") return <></>;
-  if (session.data.user.role !== "ADMIN")
+export default function ProfileLayout({
+  children = <></>,
+}: {
+  children: React.ReactNode;
+}) {
+  const { data, status } = useSession();
+  const router = useRouter();
+  if (status === "loading") return <></>;
+  if (status !== "authenticated") redirect("/login");
+  if (!data?.user) router.replace("/login");
+
+  if (data?.user?.role !== "ADMIN")
     menuList.filter((menu) => menu.link === "company");
   return (
     <AdminMainLayout>

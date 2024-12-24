@@ -25,7 +25,7 @@ import { createPlanSchema } from "~/server/validations/plan.validation";
 import MultiStep from "~/features/multi-step";
 import { ReserveRoom } from "~/features/plan-rooms/form";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { redirect } from "next/navigation";
 import { ROLES } from "~/server/constants";
 import { useLanguage } from "~/context/language.context";

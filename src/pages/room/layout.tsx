@@ -3,7 +3,7 @@ import Button from "~/ui/buttons";
 import Link from "next/link";
 
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { getPathName } from "~/utils/util";
 import { Container, ContainerBottomBorder } from "~/ui/containers";
 import NotificationIcon from "~/ui/icons/notification";

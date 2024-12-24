@@ -8,15 +8,26 @@ import { Container } from "~/ui/containers";
 
 export default function ProfilePage() {
   const session = useSession();
-  if (session.status !== "authenticated") return <>loading</>;
+  const { data, status, update } = session;
+  if (status !== "authenticated") return <>loading</>;
 
-  const user = session.data.user as User;
+  const user = data.user as User;
 
   return (
     <ProfileLayout>
       <Container className="flex flex-col-reverse items-stretch gap-10  2xl:flex-row ">
         <div className="sticky top-5 h-fit rounded-lg border border-accent/30 bg-secondary p-5 2xl:w-3/12">
-          <UserForm sessionUser={user} />
+          <UserForm
+            sessionUser={user}
+            onCreateSuccess={() => {
+              update({
+                ...session,
+                token: {
+                  ...user,
+                },
+              });
+            }}
+          />
         </div>
       </Container>
     </ProfileLayout>

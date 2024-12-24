@@ -106,8 +106,8 @@ export function LoginForm() {
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
-
-  if (session) {
+  console.log({ session });
+  if (session && session.user) {
     const role = session.user.role.toLocaleLowerCase();
     return {
       redirect: {

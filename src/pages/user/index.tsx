@@ -93,8 +93,8 @@ export default function AdminPage() {
           return (
             <Link
               key={date.toString()}
-              href={formattedDate ? `/admin/?plan=${formattedDate}` : ""}
-              as={formattedDate ? `/admin/${formattedDate}` : ""}
+              href={formattedDate ? `/user/?plan=${formattedDate}` : ""}
+              as={formattedDate ? `/user/${formattedDate}` : ""}
               shallow={true}
               className={twMerge(
                 `disabled:cursor-not-allowe relative flex  w-full flex-col items-center justify-center gap-2
@@ -151,7 +151,7 @@ export default function AdminPage() {
         center
         title={moment(router.query.plan).locale(language).format("D MMMM yyyy")}
         onClose={() => {
-          //router.push("/admin", undefined, { shallow: true });
+          //router.push("/user", undefined, { shallow: true });
           router.replace("/user", undefined, { shallow: true });
         }}
       >

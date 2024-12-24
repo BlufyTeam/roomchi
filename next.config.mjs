@@ -22,7 +22,7 @@ const config = {
     ignoreDuringBuilds: true,
   },
   compress: false,
-  output: "standalone",
+  // output: "standalone",
   images: {
     minimumCacheTTL: 31536000,
   },

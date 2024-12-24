@@ -4,7 +4,7 @@ export const createUserSchema = z.object({
   name: z
     .string({ required_error: "این فیلد اجباری است" })
     .min(3, "حداقل باید 3 کاراکتر باشد"),
-  email: z.string({ required_error: "این فیلد اجباری است" }).email(),
+  email: z.string().nullish(),
   username: z
     .string({ required_error: "این فیلد اجباری است" })
     .min(3, "یوزرنیم نمیتواند کمتر از 3 حرف باشد"),
@@ -13,7 +13,7 @@ export const createUserSchema = z.object({
     .min(6, "پسورد نمیتواند کمتر از 6 حرف باشد."),
   description: z.string().optional(),
   role: z.enum(["ADMIN", "USER", "ROOM"]),
-  companyId: z.string().optional(),
+  companyId: z.string(),
 });
 
 export const updateUserSchema = createUserSchema.extend({ id: z.string() });

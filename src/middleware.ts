@@ -3,15 +3,16 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { User } from "@prisma/client";
+
 const roleToPathMap = {
-  ADMIN: "/admin",
-  USER: "/user",
-  ROOM: "/room",
+  SUPER_ADMIN: ["/admin"],
+  ADMIN: ["/admin"],
+  USER: ["/user"],
+  ROOM: ["/room"],
 };
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.SECRET });
-  console.log("Token:", token);
 
   if (!token) {
     console.warn("No token found, redirecting to /login");
@@ -21,40 +22,20 @@ export async function middleware(req: NextRequest) {
   const user = token.user as User;
   const { pathname } = req.nextUrl;
 
-  console.log({
-    currentPath: pathname,
-    userRole: user.role,
-    expectedPath: roleToPathMap[user.role],
-  });
+  const allowedPaths = roleToPathMap[user.role] || [];
 
-  // Check if the current path matches any protected route
-  for (const [role, path] of Object.entries(roleToPathMap)) {
-    if (pathname.startsWith(path)) {
-      if (user.role !== role) {
-        console.warn(
-          `Unauthorized access: ${user.role} cannot access ${pathname}`
-        );
-        return NextResponse.redirect(new URL("/", req.url));
-      }
-    }
+  // Check if the current path matches any of the allowed paths for the user role
+  const isAuthorized = allowedPaths.some((path) => pathname.startsWith(path));
+
+  if (!isAuthorized) {
+    console.warn(`Unauthorized access: ${user.role} cannot access ${pathname}`);
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  console.log("Middleware passed successfully.");
-  return NextResponse.next(); // Allow the request if everything matches
+  // Allow the request if the user role matches the allowed path
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    // "/((?!api|_next/static|_next/image|favicon.ico).*)",
-    "/admin/:path*",
-    "/user/:path*",
-    "/room/:path*",
-  ],
+  matcher: ["/admin/:path*", "/user/:path*", "/room/:path*"],
 };

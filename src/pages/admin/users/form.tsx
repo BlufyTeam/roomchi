@@ -20,12 +20,15 @@ import { ComboBox } from "~/features/shadui/ComboBox";
 import { reloadSession } from "~/utils/util";
 import { useLanguage } from "~/context/language.context";
 import { translations } from "~/utils/translations";
+import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { getAssignableRoles } from "~/utils/permission";
 
 const TextFieldWithLable = withLabel(TextField);
 // const TextAreaWithLable = withLabel(TextAreaField);
 
 export function UserForm({
-  onCreateSuccess = (user: User) => {},
+  onCreateSuccess = (user: any) => {},
   onClearUser = () => {},
   sessionUser,
 }: {
@@ -34,6 +37,7 @@ export function UserForm({
   onCreateSuccess?: (user: User) => any;
   onClearUser?: () => any;
 }) {
+  const { data: userSession } = useSession();
   const getCompany = api.company.getAll.useQuery();
   const { selectedRowUser, setSelectedRowUser } = useUser();
   const utils = api.useContext();
@@ -71,7 +75,8 @@ export function UserForm({
 
   const updateUser = api.user.updateUser.useMutation({
     onSuccess: async (data) => {
-      reloadSession();
+      // reloadSession();
+      onCreateSuccess(data as any);
       await utils.user.getUsers.invalidate();
     },
   });
@@ -79,12 +84,12 @@ export function UserForm({
   const formik = useFormik({
     initialValues: {
       name: user?.name || "",
-      email: user?.email || "",
+      email: user?.email || undefined,
       username: user?.username || "",
       password: user?.password || "",
       description: user?.description || "",
       role: user?.role || "USER",
-      companyId: user?.companyId,
+      companyId: userSession.user.companyId,
     },
 
     validationSchema: toFormikValidationSchema(createUserSchema),
@@ -123,13 +128,15 @@ export function UserForm({
         password: user?.password || "",
         description: user?.description || "",
         role: user?.role || "USER",
-        companyId: user?.companyId,
+        companyId: userSession.user.companyId || undefined,
       };
     });
   }, [user, selectedRowUser]);
 
   return (
     <>
+      {" "}
+      {JSON.stringify(formik.errors, null, 2)}
       <form
         onSubmit={(e) => {
           formik.handleSubmit(e);
@@ -200,46 +207,47 @@ export function UserForm({
           />
           <InputError message={formik.errors.description} />
         </div>
-        <div className="z-30  flex w-full flex-col items-start justify-start gap-5">
-          {getCompany.data && (
-            <ComboBox
-              values={getCompany.data.map((company) => {
-                return { label: company.name, value: company.id };
-              })}
-              value={formik.values.companyId}
-              onChange={(value) => {
-                formik.setValues(() => {
-                  return {
-                    ...formik.values,
-                    companyId: value,
-                  };
-                });
-              }}
-              placeHolder={t.searchCompanies}
-            />
-          )}
-        </div>
+        {userSession.user.role === "SUPER_ADMIN" && (
+          <div className="z-30  flex w-full flex-col items-start justify-start gap-5">
+            {getCompany.data && (
+              <ComboBox
+                values={getCompany.data.map((company) => {
+                  return { label: company.name, value: company.id };
+                })}
+                value={formik.values.companyId}
+                onChange={(value) => {
+                  formik.setValues(() => {
+                    return {
+                      ...formik.values,
+                      companyId: value,
+                    };
+                  });
+                }}
+                placeHolder={t.searchCompanies}
+              />
+            )}
+          </div>
+        )}
 
         <div className="z-30  flex w-full flex-col items-start justify-start gap-5">
           <ComboBox
-            values={ROLES.map((role) => {
-              return { label: role.value.name, value: role.value.key };
-            })}
+            values={getAssignableRoles(userSession.user.role).map((role) => ({
+              label: role.name,
+              value: role.key,
+            }))}
             value={formik.values.role}
             onChange={(value) => {
-              formik.setValues(() => {
-                return {
-                  ...formik.values,
-                  role: value,
-                };
-              });
+              formik.setValues((prevValues) => ({
+                ...prevValues,
+                role: value,
+              }));
             }}
             placeHolder={t.searchRoles}
           />
         </div>
 
         <Button
-          disabled={createUser.isLoading || !formik.isValid}
+          disabled={!formik.isValid || !userSession?.user}
           isLoading={createUser.isLoading || updateUser.isLoading}
           type="submit"
           className="w-full rounded-xl bg-primbuttn text-secondary"

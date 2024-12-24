@@ -35,32 +35,32 @@ export default function UsersList() {
   const t = translations[language];
   const utils = api.useContext();
   const deleteUser = api.user.deleteUser.useMutation({
-    async onMutate(deletedUser: User) {
-      // Cancel outgoing fetches (so they don't overwrite our optimistic update)
-      await utils.user.getUsers.cancel();
+    // async onMutate(deletedUser: User) {
+    //   // Cancel outgoing fetches (so they don't overwrite our optimistic update)
+    //   await utils.user.getUsers.cancel();
 
-      // Get the data from the queryCache
-      const prevData = utils.user.getUsers.getInfiniteData();
-      const newItems = flatUsers?.filter((item) => item.id !== deletedUser.id);
-      //console.log({ prevData });
-      // Optimistically update the data with our new comment
-      utils.user.getUsers.setData(
-        {},
-        { items: [...newItems], nextCursor: undefined }
-      );
+    //   // Get the data from the queryCache
+    //   const prevData = utils.user.getUsers.getInfiniteData();
+    //   const newItems = flatUsers?.filter((item) => item.id !== deletedUser.id);
+    //   //console.log({ prevData });
+    //   // Optimistically update the data with our new comment
+    //   utils.user.getUsers.setData(
+    //     {},
+    //     { items: [...newItems], nextCursor: undefined }
+    //   );
 
-      // Return the previous data so we can revert if something goes wrong
-      return { prevData };
-    },
+    //   // Return the previous data so we can revert if something goes wrong
+    //   return { prevData };
+    // },
     onError(err, newPost, ctx) {
       // If the mutation fails, use the context-value from onMutate
-      //utils.user.getUsers.setData({}, ctx?.prevData);
     },
     onSettled() {
       // Sync with server once mutation has settled
-      // utils.user.getUserById.invalidate({id:ctx.});
+      //  utils.user.getUserById.invalidate();
     },
     onSuccess: () => {
+      utils.user.getUsers.invalidate();
       setSelectedRowUser(undefined);
     },
   });
