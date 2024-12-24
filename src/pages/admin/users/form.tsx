@@ -135,8 +135,6 @@ export function UserForm({
 
   return (
     <>
-      {" "}
-      {JSON.stringify(formik.errors, null, 2)}
       <form
         onSubmit={(e) => {
           formik.handleSubmit(e);
