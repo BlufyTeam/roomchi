@@ -146,3 +146,17 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
+
+model MailConfig {
+  id         String   @id @default(cuid())
+  smtpHost   String
+  smtpPort   Int
+  smtpSecure Boolean
+  smtpUser   String
+  smtpPass   String
+  emailFrom  String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("mail_configs")
+}

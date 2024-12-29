@@ -45,6 +45,11 @@ export default function AdminMainLayout({ children }: any): any {
       link: "users",
       description: t.userDescriptions,
     },
+    {
+      value: t.mail,
+      link: "mail",
+      description: t.mailDescription,
+    },
   ];
 
   if (session.status === "loading") return <AdminSkeleton />;

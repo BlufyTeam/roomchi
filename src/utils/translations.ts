@@ -118,8 +118,28 @@ export const translations = {
     startDateRequired: "Start date is required",
     endDateRequired: "End date is required",
     "این فیلد اجباری است": "This field is required",
+    save: "save",
+
+    mail: "Mail Server",
+
+    mailDescription: "In this section you can create or edit mail server",
+
+    RecipientEmail: "Recipient Email",
+    SendTestEmail: "Send test email",
+
+    Success: "Success",
+    NodemailerConfiguredSuccessfully:
+      "Nodemailer configuration updated successfully",
+    TestEmailSentSuccessfully: "Test email sent successfully",
   },
   fa: {
+    Success: "موفق بود",
+    NodemailerConfiguredSuccessfully: "کانفیگ Mail Server با موفقیت انجام شد",
+    TestEmailSentSuccessfully: "ایمیل تست با موفقت ارسال شد",
+    SendTestEmail: "ارسال ایمیل تست",
+    RecipientEmail: "دریافت کننده",
+    mail: "ایمیل سرور",
+    mailDescription: "در این بخش می توانید ایمیل را تغییر دهید.",
     "این فیلد اجباری است": "این فیلد اجباری است",
     startDateRequired: "تاریخ شروع اجباری است",
     endDateRequired: "تاریخ پایان اجباری است",
@@ -189,6 +209,7 @@ export const translations = {
     user: "کاربر",
     done: "ثبت",
     delete: "حذف",
+    save: "ذخیره",
     enter: "ورود",
     userDescriptions:
       "در این بخش می توانید کاربر های مد نظر خود را بسازید، ویرایش کنید و یا حذف کنید و تنظیمات مربوط به آن ها را تغییر دهید.",

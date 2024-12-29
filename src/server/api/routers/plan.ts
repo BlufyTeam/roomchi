@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import moment from "jalali-moment";
 import { z } from "zod";
+import { sendEmail } from "~/lib/mail/nodemailer-config";
 import {
   createTRPCRouter,
   publicProcedure,
@@ -8,6 +9,7 @@ import {
   AdminProcedure,
 } from "~/server/api/trpc";
 import { $exists } from "~/server/helpers/exists";
+import { sendPlanNotificationEmail } from "~/server/helpers/plan-notify";
 import {
   planIdSchema,
   createPlanSchema,
@@ -155,7 +157,7 @@ export const planRouter = createTRPCRouter({
           message: "جلسه ای در این زمان از قبل وجود دارد.",
         });
 
-      return await ctx.prisma.plan.create({
+      const plan = await ctx.prisma.plan.create({
         data: {
           title: input.title,
           userId: ctx.session.user.id,
@@ -176,12 +178,25 @@ export const planRouter = createTRPCRouter({
             ],
           },
         },
+        include: {
+          room: true,
+        },
       });
+
+      // Notify the users about the new plan
+
+      await sendPlanNotificationEmail(
+        ctx,
+        plan,
+        "یک جلسه تشکل شد",
+        "جزئیات جلسه"
+      );
+      return plan;
     }
   ),
   updatePlan: AdminProcedure.input(updatePlanSchema).mutation(
     async ({ input, ctx }) => {
-      return await ctx.prisma.plan.update({
+      const plan = await ctx.prisma.plan.update({
         where: {
           id: input.id,
         },
@@ -193,7 +208,18 @@ export const planRouter = createTRPCRouter({
           description: input.description,
           end_datetime: input.end_datetime,
         },
+        include: {
+          room: true,
+        },
       });
+
+      await sendPlanNotificationEmail(
+        ctx,
+        plan,
+        "جلسه ویرایش شد",
+        "جزئیات جلسه"
+      );
+      return plan;
     }
   ),
   deletePlan: AdminProcedure.input(planIdSchema).mutation(
@@ -204,11 +230,16 @@ export const planRouter = createTRPCRouter({
         },
       });
 
-      return await ctx.prisma.plan.delete({
+      const plan = await ctx.prisma.plan.delete({
         where: {
           id: input.id,
         },
+        include: {
+          room: true,
+        },
       });
+      await sendPlanNotificationEmail(ctx, plan, "جلسه لغو شد", "جزئیات جلسه");
+      return plan;
     }
   ),
   joinPlan: protectedProcedure
