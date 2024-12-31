@@ -1,4 +1,4 @@
-import Modal from "ui/modals";
+import Modal from "~/ui/modals";
 export default function withModal(Component) {
   return function WrappedwithModal({
     children,
@@ -18,9 +18,9 @@ export default function withModal(Component) {
         <Modal {...{ isOpen, center, size, title, onClose }}>
           <div
             dir="rtl"
-            className="flex flex-grow w-full h-full justify-center overflow-y-auto"
+            className="flex h-full w-full flex-grow justify-center overflow-y-auto"
           >
-            <div className="w-full h-full flex flex-1  px-10 flex-grow justify-center items-start">
+            <div className="flex h-full w-full flex-1  flex-grow items-start justify-center px-10">
               {children}
             </div>
           </div>

@@ -8,11 +8,17 @@ export const updatePlanSchema = z.object({
   start_datetime: z.date({ required_error: "این فیلد اجباری است" }),
   end_datetime: z.date({ required_error: "این فیلد اجباری است" }),
   description: z.string().optional(),
+  send_email: z.boolean().default(false),
 });
 
 export const planIdSchema = z.object({
   id: z.string({ required_error: "این فیلد اجباری است" }),
 });
+export const planDeleteSchema = z.object({
+  id: z.string({ required_error: "این فیلد اجباری است" }),
+  send_email: z.boolean().default(false),
+});
+
 export const planDateAndRoomSchema = z.object({
   roomId: z.string({ required_error: "این فیلد اجباری است" }),
   date: z.date(),
@@ -29,4 +35,5 @@ export const createPlanSchema = z.object({
   start_datetime: z.date({ required_error: "این فیلد اجباری است" }),
   end_datetime: z.date({ required_error: "این فیلد اجباری است" }),
   description: z.string().optional(),
+  send_email: z.boolean().default(false),
 });

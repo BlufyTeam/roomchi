@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import moment from "jalali-moment";
 import { z } from "zod";
-import { sendEmail } from "~/lib/mail/nodemailer-config";
 import {
   createTRPCRouter,
   publicProcedure,
@@ -16,6 +15,7 @@ import {
   updatePlanSchema,
   planDateSchema,
   planDateAndRoomSchema,
+  planDeleteSchema,
 } from "~/server/validations/plan.validation";
 import { RoomStatus } from "~/types";
 
@@ -132,30 +132,40 @@ export const planRouter = createTRPCRouter({
     }),
   createPlan: AdminProcedure.input(createPlanSchema).mutation(
     async ({ input, ctx }) => {
-      if (input.end_datetime <= input.start_datetime)
+      if (
+        moment(input.end_datetime).isSameOrBefore(moment(input.start_datetime))
+      ) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "زمان پایان نمی تواند مساوی یا کمتر از زمان شروع باشد",
         });
-      const isExists = await ctx.prisma.plan
-        .findMany({
-          where: {
-            start_datetime: {
-              gte: moment(input.start_datetime).toISOString(),
-            },
-            end_datetime: {
-              lte: moment(input.end_datetime).toISOString(),
-            },
-            roomId: input.roomId,
-          },
-        })
-        .then($exists);
+      }
 
-      if (isExists)
+      // Check for overlapping plans
+      const conflictingPlans = await ctx.prisma.plan.findMany({
+        where: {
+          roomId: input.roomId,
+          AND: [
+            {
+              start_datetime: {
+                lt: moment(input.end_datetime).toISOString(), // Existing plan starts before the new plan ends
+              },
+            },
+            {
+              end_datetime: {
+                gt: moment(input.start_datetime).toISOString(), // Existing plan ends after the new plan starts
+              },
+            },
+          ],
+        },
+      });
+
+      if (conflictingPlans.length > 0) {
         throw new TRPCError({
           code: "CONFLICT",
-          message: "جلسه ای در این زمان از قبل وجود دارد.",
+          message: "جلسه ای در این بازه زمانی از قبل وجود دارد.",
         });
+      }
 
       const plan = await ctx.prisma.plan.create({
         data: {
@@ -185,12 +195,14 @@ export const planRouter = createTRPCRouter({
 
       // Notify the users about the new plan
 
-      await sendPlanNotificationEmail(
-        ctx,
-        plan,
-        "یک جلسه تشکل شد",
-        "جزئیات جلسه"
-      );
+      if (input.send_email)
+        await sendPlanNotificationEmail(
+          ctx,
+          plan,
+          "یک جلسه تشکل شد",
+          "جزئیات جلسه",
+          "CREATE"
+        );
       return plan;
     }
   ),
@@ -213,16 +225,18 @@ export const planRouter = createTRPCRouter({
         },
       });
 
-      await sendPlanNotificationEmail(
-        ctx,
-        plan,
-        "جلسه ویرایش شد",
-        "جزئیات جلسه"
-      );
+      if (input.send_email)
+        await sendPlanNotificationEmail(
+          ctx,
+          plan,
+          "جلسه ویرایش شد",
+          "جزئیات جلسه",
+          "UPDATE"
+        );
       return plan;
     }
   ),
-  deletePlan: AdminProcedure.input(planIdSchema).mutation(
+  deletePlan: AdminProcedure.input(planDeleteSchema).mutation(
     async ({ input, ctx }) => {
       await ctx.prisma.participants.deleteMany({
         where: {
@@ -238,7 +252,16 @@ export const planRouter = createTRPCRouter({
           room: true,
         },
       });
-      await sendPlanNotificationEmail(ctx, plan, "جلسه لغو شد", "جزئیات جلسه");
+
+      if (input.send_email) {
+        await sendPlanNotificationEmail(
+          ctx,
+          plan,
+          "جلسه لغو شد",
+          "جزئیات جلسه",
+          "DELETE"
+        );
+      }
       return plan;
     }
   ),

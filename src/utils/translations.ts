@@ -87,7 +87,7 @@ export const translations = {
     reserveInProgress: "Reservation is in progress..",
     time: "time",
     withDescription: "With discription",
-    withTitle: "With Title",
+    withTitle: "Title : ",
     successRoom: "Room Reserved Successfully",
     roomResevedAt: "Reserve rooms at ",
     createNewRoom: "Create New Room",
@@ -131,8 +131,10 @@ export const translations = {
     NodemailerConfiguredSuccessfully:
       "Nodemailer configuration updated successfully",
     TestEmailSentSuccessfully: "Test email sent successfully",
+    NotifyUsers: "Notify users",
   },
   fa: {
+    NotifyUsers: "اطلاع رسانی به کاربر ها",
     Success: "موفق بود",
     NodemailerConfiguredSuccessfully: "کانفیگ Mail Server با موفقیت انجام شد",
     TestEmailSentSuccessfully: "ایمیل تست با موفقت ارسال شد",

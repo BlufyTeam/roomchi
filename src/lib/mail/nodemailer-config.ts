@@ -14,7 +14,7 @@ export async function getNodemailerTransport() {
     },
   };
 
-  console.log({ smtpConfig });
+  // console.log({ smtpConfig });
 
   return createTransport(smtpConfig);
 }

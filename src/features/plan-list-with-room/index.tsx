@@ -21,12 +21,16 @@ import {
 import { Session } from "next-auth/core/types";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { useLanguage } from "~/context/language.context";
+import { DeleteSession } from "~/features/plan-list-with-room/delete-session-view";
 import { RoomStatus, User } from "~/types";
 import Button from "~/ui/buttons";
+import ButtonCheckbox from "~/ui/forms/checkbox/checkbox";
 import ProjectorIcon from "~/ui/icons/projector";
+import withModal from "~/ui/modals/with-modal";
+import withModalState from "~/ui/modals/with-modal-state";
 import ToolTip from "~/ui/tooltip";
 import { RouterOutputs, api } from "~/utils/api";
 import { translations } from "~/utils/translations";
@@ -217,17 +221,7 @@ function RoomItem({
           {plan.room.price != 0 && <span>{plan.room.price} تومان</span>}
 
           {userId === plan.userId && plan.status !== "Done" && (
-            <Button
-              disabled={deletePlan.isLoading}
-              isLoading={deletePlan.isLoading}
-              onClick={() => {
-                deletePlan.mutate({ id: plan.id });
-              }}
-              className="bg-amber-500 text-black"
-            >
-              {/* {plan.status === "AlreadyStarted" ? "اتمام جلسه" : "لغو جلسه"} */}
-              {t.delete + " " + t.session}
-            </Button>
+            <DeleteSession id={plan.id} />
           )}
 
           {userId !== plan.userId &&

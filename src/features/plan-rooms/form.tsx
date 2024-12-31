@@ -11,14 +11,18 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { object } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import { Checkbox } from "~/components/shadcn/checkbox";
+import { Label } from "~/components/shadcn/label";
 import { toast } from "~/components/ui/toast/use-toast";
 import { useLanguage } from "~/context/language.context";
 import MultiStep from "~/features/multi-step";
 import PickTimeView from "~/features/pick-time-view";
 import RoomsList from "~/features/rooms-list";
+import { cn } from "~/lib/utils";
 import { createPlanSchema } from "~/server/validations/plan.validation";
 
 import Button from "~/ui/buttons";
+import ButtonCheckbox from "~/ui/forms/checkbox/checkbox";
 import TextField from "~/ui/forms/text-field";
 import withLabel from "~/ui/forms/with-label";
 import ThreeDotsWave from "~/ui/loadings/three-dots-wave";
@@ -86,6 +90,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
       new Promise(async (resolve) => {
         createPlan.mutate({
           roomId: formik.values.roomId,
+          send_email: formik.values.send_email,
           title: formik.values.title,
           start_datetime: formik.values.start_datetime,
           end_datetime: formik.values.end_datetime,
@@ -97,6 +102,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
   const formik = useFormik({
     initialValues: {
       room: undefined,
+      send_email: false,
       title: "",
       roomId: "",
       start_datetime: date
@@ -125,7 +131,15 @@ export function ReserveRoom({ date }: { date: Moment }) {
   });
   return (
     <>
-      <div className="flex  w-full overflow-hidden">
+      <div className="flex  w-full flex-col items-center justify-center overflow-hidden">
+        <ButtonCheckbox
+          checked={formik.values.send_email}
+          onClick={() => {
+            formik.setFieldValue("send_email", !formik.values.send_email);
+          }}
+          text={t.NotifyUsers}
+        />
+
         <MultiStep
           isLoading={createPlan.isLoading}
           onStepClick={(stepNumber) => {
@@ -285,8 +299,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                   .format("HH:mm")}
               </p>
               <p>
-                {t.withTitle}
-                {formik.values.title}
+                {t.withTitle} {formik.values.title}
               </p>
               {formik.values.description && (
                 <p>
