@@ -53,29 +53,31 @@ model Resource {
 }
 
 model Plan {
-  id             String         @id @default(cuid())
+  id             String        @id @default(cuid())
   title          String
-  user           User           @relation(fields: [userId], references: [id])
+  user           User          @relation(fields: [userId], references: [id])
   userId         String
-  room           Room           @relation(fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  room           Room          @relation(fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   roomId         String
   start_datetime DateTime
   end_datetime   DateTime
   description    String
-  participants   Participants[]
+  participants   Participant[]
 
   @@map("plans")
 }
 
-model Participants {
-  plan       Plan     @relation(fields: [planId], references: [id])
-  planId     String // relation scalar field (used in the `@relation` attribute above)
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String // relation scalar field (used in the `@relation` attribute above)
-  assignedAt DateTime @default(now())
-  assignedBy String
+model Participant {
+  plan        Plan     @relation(fields: [planId], references: [id])
+  planId      String // relation scalar field (used in the `@relation` attribute above)
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String // relation scalar field (used in the `@relation` attribute above)
+  hasAccepted Boolean? @default(false)
+  assignedAt  DateTime @default(now())
+  assignedBy  String
 
   @@id([planId, userId])
+  @@map("participant")
 }
 
 model Room {
@@ -107,22 +109,22 @@ model Company {
 }
 
 model User {
-  id          String         @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String?
-  email       String?        @unique
-  username    String         @unique
+  email       String?       @unique
+  username    String        @unique
   password    String
   description String?
-  is_active   Boolean        @default(true)
+  is_active   Boolean       @default(true)
   image_url   String?
-  company     Company?       @relation(fields: [companyId], references: [id])
+  company     Company?      @relation(fields: [companyId], references: [id])
   companyId   String?
   sessions    Session[]
-  role        String         @default("USER")
-  created_at  DateTime       @default(now())
-  updated_at  DateTime?      @updatedAt()
+  role        String        @default("USER")
+  created_at  DateTime      @default(now())
+  updated_at  DateTime?     @updatedAt()
   Plan        Plan[]
-  plans       Participants[]
+  plans       Participant[]
 
   @@map("users")
 }

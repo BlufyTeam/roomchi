@@ -1,4 +1,4 @@
-import { Plan, Room } from "@prisma/client";
+import { Participant, Plan, Room, User } from "@prisma/client";
 import { render } from "@react-email/components";
 import moment from "moment";
 import { z } from "zod";
@@ -7,22 +7,24 @@ import PlanDetailsEmail from "~/templates/notify-users-email";
 
 export const sendPlanNotificationEmail = async (
   ctx,
-  plan: Plan & { room?: Room },
+  plan: Plan & { room?: Room; participants: (Participant & { user: User })[] },
   subject: string,
   message: string,
   action: "CREATE" | "UPDATE" | "DELETE"
 ) => {
   // Fetch users for the specified company
-  const companiesUsers = await ctx.prisma.user.findMany({
-    where: {
-      companyId: ctx.session.user.companyId,
-      OR: [{ email: { not: null } }, { email: { not: "" } }],
-    },
-    select: { email: true },
-  });
+
+  // const companiesUsers = await ctx.prisma.user.findMany({
+  //   where: {
+  //     companyId: ctx.session.user.companyId,
+  //     OR: [{ email: { not: null } }, { email: { not: "" } }],
+  //   },
+  //   select: { email: true },
+  // });
 
   // Filter out invalid emails
-  const getValidEmails = companiesUsers
+  const getValidEmails = plan.participants
+    .map((a) => a.user)
     .filter((a) => z.string().email().safeParse(a.email).success)
     .map((a) => a.email);
 

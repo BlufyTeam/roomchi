@@ -77,7 +77,6 @@ export default function AdminMainLayout({ children }: any): any {
                   {currentMenuItem && " / " + currentMenuItem.value}
                 </span>
               </div>
-              <ThemeBox />
             </div>
 
             <div className="flex items-center justify-center gap-5 ">

@@ -7,7 +7,7 @@ export default class MyDocument extends Document {
         <Head>
           {/* <link rel="shortcut icon" href={favicon} /> */}
           {/* <link rel="shortcut icon" href="/icons/main/roomchi.svg" /> */}
-          {/* <title>Rougine meeting</title> */}
+          <title>Meet App</title>
         </Head>
 
         <body

@@ -109,11 +109,6 @@ function RoomItem({
   onInvalidate: () => void;
 }) {
   const utils = api.useContext();
-  const deletePlan = api.plan.deletePlan.useMutation({
-    onSuccess: () => {
-      utils.plan.getPlansByDate.invalidate();
-    },
-  });
 
   const joinPlan = api.plan.joinPlan.useMutation({
     onSuccess: () => {

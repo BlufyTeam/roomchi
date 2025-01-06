@@ -35,16 +35,22 @@ function LandingPage() {
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
-              <h1 className="text-3xl font-bold text-primary ">
-                Rougine meeting
+              <h1 className="sr-only text-3xl font-bold text-primary">
+                Meet App
               </h1>
+              <Image
+                src={"/meetapp-logo.svg"}
+                alt="meet app logo"
+                width={1920}
+                height={1080}
+              />
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter text-accent sm:text-4xl md:text-5xl lg:text-6xl/none">
                   {t.simplifyReservations}
                 </h1>
-                <p className="mx-auto max-w-[700px] text-primary  md:text-xl">
+                {/* <p className="mx-auto max-w-[700px] text-primary  md:text-xl">
                   {t.simplifyDescription}
-                </p>
+                </p> */}
               </div>
               <div className="flex items-center justify-center gap-2 space-x-4">
                 <AuthShowcase />

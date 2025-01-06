@@ -45,7 +45,6 @@ export default function RoomMainLayout({ children }: any): any {
                   {isDesktop ? "💻" : "📱"} {session.data.user.name}
                 </Link>
               </div>
-              <ThemeBox />
             </div>
 
             <div className="flex items-center justify-center gap-5 ">

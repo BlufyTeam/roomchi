@@ -35,5 +35,6 @@ export const createPlanSchema = z.object({
   start_datetime: z.date({ required_error: "این فیلد اجباری است" }),
   end_datetime: z.date({ required_error: "این فیلد اجباری است" }),
   description: z.string().optional(),
-  send_email: z.boolean().default(false),
+  // send_email: z.boolean().default(false),
+  participantsIds: z.array(z.string()),
 });

@@ -12,6 +12,7 @@ import localFont from "next/font/local";
 import { LanguageProvider } from "~/context/language.context";
 import { LanguageSwitcher } from "~/components/main/language-switcher";
 import { cn } from "~/lib/utils";
+import ThemeBox from "~/features/theme-box";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   PageLayout?: (page: ReactElement) => ReactElement<any, any>;
@@ -165,6 +166,7 @@ function TopHeader() {
     <>
       <div className="flex items-center justify-between p-2 sm:px-20 sm:py-5">
         <LanguageSwitcher />
+        <ThemeBox />
       </div>
     </>
   );

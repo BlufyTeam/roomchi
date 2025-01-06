@@ -91,6 +91,16 @@ export const userRouter = createTRPCRouter({
       nextCursor,
     };
   }),
+  getMyCompanyUsers: AdminProcedure.query(async ({ ctx }) => {
+    const users = await ctx.prisma.user.findMany({
+      where: {
+        company: {
+          id: ctx.session.user.companyId,
+        },
+      },
+    });
+    return users;
+  }),
   getUserById: AdminProcedure.input(userIdSchema).query(
     async ({ input, ctx }) => {
       return await ctx.prisma.user.findUnique({

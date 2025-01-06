@@ -8,9 +8,11 @@ import {
   StickyNoteIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { object } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import MultiSelector from "~/components/origin/multi-select";
 import { Checkbox } from "~/components/shadcn/checkbox";
 import { Label } from "~/components/shadcn/label";
 import { toast } from "~/components/ui/toast/use-toast";
@@ -25,6 +27,7 @@ import Button from "~/ui/buttons";
 import ButtonCheckbox from "~/ui/forms/checkbox/checkbox";
 import TextField from "~/ui/forms/text-field";
 import withLabel from "~/ui/forms/with-label";
+import NotificationIcon from "~/ui/icons/notification";
 import ThreeDotsWave from "~/ui/loadings/three-dots-wave";
 import { api } from "~/utils/api";
 import { translations } from "~/utils/translations";
@@ -36,8 +39,9 @@ const icons = [
   <ReplaceIcon key={1} className="stroke-inherit" />,
   <HourglassIcon key={2} className="stroke-inherit" />,
   <StickyNoteIcon key={3} className="stroke-inherit" />,
-  <Loader2Icon key={4} className="stroke-inherit" />,
-  <CheckIcon key={4} className="stroke-inherit" />,
+  <NotificationIcon key={4} className="stroke-inherit" />,
+  <Loader2Icon key={5} className="stroke-inherit" />,
+  <CheckIcon key={6} className="stroke-inherit" />,
 ];
 
 export function ReserveRoom({ date }: { date: Moment }) {
@@ -45,6 +49,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
   const t = translations[language];
   const [step, setStep] = useState(0);
   const utils = api.useContext();
+  const users = api.user.getMyCompanyUsers.useQuery();
   const createPlan = api.plan.createPlan.useMutation({
     onSuccess: async () => {
       await delay(2000);
@@ -63,14 +68,14 @@ export function ReserveRoom({ date }: { date: Moment }) {
 
   async function goTo(stepNumber?: number) {
     formik.validateForm();
-    if (stepNumber >= 4)
+    if (stepNumber >= 5)
       if (formik.values.end_datetime <= formik.values.start_datetime)
         return toast({
           title: t.timeError,
           description: t.EndTimeError,
         });
-    if (stepNumber >= 4 && createPlan.isLoading) return;
-    if (stepNumber >= 3 && !formik.isValid) {
+    if (stepNumber >= 5 && createPlan.isLoading) return;
+    if (stepNumber >= 4 && !formik.isValid) {
       toast({
         title: t.done,
         description: (
@@ -84,18 +89,23 @@ export function ReserveRoom({ date }: { date: Moment }) {
 
     return setStep(stepNumber);
   }
-
+  const router = useRouter();
   useEffect(() => {
     if (step === icons.length - 2) {
       new Promise(async (resolve) => {
-        createPlan.mutate({
-          roomId: formik.values.roomId,
-          send_email: formik.values.send_email,
-          title: formik.values.title,
-          start_datetime: formik.values.start_datetime,
-          end_datetime: formik.values.end_datetime,
-          description: formik.values.description,
-        });
+        try {
+          await createPlan.mutateAsync({
+            roomId: formik.values.roomId,
+            //send_email: formik.values.send_email,
+            title: formik.values.title,
+            start_datetime: formik.values.start_datetime,
+            end_datetime: formik.values.end_datetime,
+            description: formik.values.description,
+            participantsIds: formik.values.participants.map((a) => a.value),
+          });
+          goTo(0);
+          formik.resetForm();
+        } catch {}
       });
     }
   }, [step]);
@@ -124,6 +134,8 @@ export function ReserveRoom({ date }: { date: Moment }) {
         })
         .toDate(),
       description: "",
+      participantsIds: [],
+      participants: [],
     },
     validationSchema: toFormikValidationSchema(createPlanSchema),
     validateOnBlur: true,
@@ -131,14 +143,14 @@ export function ReserveRoom({ date }: { date: Moment }) {
   });
   return (
     <>
-      <div className="flex  w-full flex-col items-center justify-center overflow-hidden">
-        <ButtonCheckbox
+      <div className="flex  w-full flex-col items-center justify-center ">
+        {/* <ButtonCheckbox
           checked={formik.values.send_email}
           onClick={() => {
             formik.setFieldValue("send_email", !formik.values.send_email);
           }}
           text={t.NotifyUsers}
-        />
+        /> */}
 
         <MultiStep
           isLoading={createPlan.isLoading}
@@ -277,6 +289,36 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 className="bg-accent/20 text-accent"
               >
                 {t.done}{" "}
+              </Button>
+            </div>,
+            <div className="flex w-full flex-col items-center justify-center gap-5">
+              {users.isLoading ? (
+                "در حال دریافت کاربران برای انتخاب"
+              ) : (
+                <div className="mx-auto max-w-sm rounded-md bg-secondary p-5">
+                  <MultiSelector
+                    label="انتخاب کاربر"
+                    options={users.data.map((a) => {
+                      return {
+                        label: a.name,
+                        value: a.id,
+                      };
+                    })}
+                    onChange={(option) => {
+                      formik.setFieldValue("participants", option);
+                    }}
+                    value={formik.values.participants}
+                  />
+                </div>
+              )}
+              <Button
+                disabled={createPlan.isLoading}
+                onClick={async () => {
+                  goTo(4);
+                }}
+                className="bg-accent/20 text-accent"
+              >
+                {t.next}{" "}
               </Button>
             </div>,
             <div

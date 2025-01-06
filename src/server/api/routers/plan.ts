@@ -176,26 +176,29 @@ export const planRouter = createTRPCRouter({
           description: input.description,
           end_datetime: input.end_datetime,
           participants: {
-            create: [
-              {
-                user: {
-                  connect: {
-                    id: ctx.session.user.id,
-                  },
+            create: input.participantsIds.map((participantId) => ({
+              user: {
+                connect: {
+                  id: participantId, // Replace with the participant's user ID
                 },
-                assignedBy: ctx.session.user.id,
               },
-            ],
+              assignedBy: ctx.session.user.id,
+            })),
           },
         },
         include: {
           room: true,
+          participants: {
+            include: {
+              user: true,
+            },
+          },
         },
       });
 
       // Notify the users about the new plan
 
-      if (input.send_email)
+      if (input.participantsIds.length > 0)
         await sendPlanNotificationEmail(
           ctx,
           plan,
@@ -206,52 +209,59 @@ export const planRouter = createTRPCRouter({
       return plan;
     }
   ),
-  updatePlan: AdminProcedure.input(updatePlanSchema).mutation(
-    async ({ input, ctx }) => {
-      const plan = await ctx.prisma.plan.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          title: input.title,
-          userId: input.userId,
-          roomId: input.roomId,
-          start_datetime: input.start_datetime,
-          description: input.description,
-          end_datetime: input.end_datetime,
-        },
-        include: {
-          room: true,
-        },
-      });
+  // updatePlan: AdminProcedure.input(updatePlanSchema).mutation(
+  //   async ({ input, ctx }) => {
+  //     const plan = await ctx.prisma.plan.update({
+  //       where: {
+  //         id: input.id,
+  //       },
+  //       data: {
+  //         title: input.title,
+  //         userId: input.userId,
+  //         roomId: input.roomId,
+  //         start_datetime: input.start_datetime,
+  //         description: input.description,
+  //         end_datetime: input.end_datetime,
+  //       },
+  //       include: {
+  //         room: true,
+  //       },
+  //     });
 
-      if (input.send_email)
-        await sendPlanNotificationEmail(
-          ctx,
-          plan,
-          "جلسه ویرایش شد",
-          "جزئیات جلسه",
-          "UPDATE"
-        );
-      return plan;
-    }
-  ),
+  //     if (input.send_email)
+  //       await sendPlanNotificationEmail(
+  //         ctx,
+  //         plan,
+  //         "جلسه ویرایش شد",
+  //         "جزئیات جلسه",
+  //         "UPDATE"
+  //       );
+  //     return plan;
+  //   }
+  // ),
   deletePlan: AdminProcedure.input(planDeleteSchema).mutation(
     async ({ input, ctx }) => {
-      await ctx.prisma.participants.deleteMany({
-        where: {
-          planId: input.id,
-        },
-      });
+      const [participant, plan] = await ctx.prisma.$transaction(async (tx) => [
+        await ctx.prisma.participant.deleteMany({
+          where: {
+            planId: input.id,
+          },
+        }),
 
-      const plan = await ctx.prisma.plan.delete({
-        where: {
-          id: input.id,
-        },
-        include: {
-          room: true,
-        },
-      });
+        await ctx.prisma.plan.delete({
+          where: {
+            id: input.id,
+          },
+          include: {
+            room: true,
+            participants: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        }),
+      ]);
 
       if (input.send_email) {
         await sendPlanNotificationEmail(
@@ -269,26 +279,33 @@ export const planRouter = createTRPCRouter({
     .input(z.object({ userId: z.string(), planId: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const { userId, planId } = input;
-      const participant = await ctx.prisma.participants.create({
+
+      const participant = await ctx.prisma.participant.update({
+        where: {
+          planId_userId: {
+            planId: planId,
+            userId: userId,
+          },
+        },
         data: {
-          userId,
-          planId,
-          assignedAt: new Date(),
-          assignedBy: userId, // You may replace this with the actual user who is performing the action
+          hasAccepted: true,
         },
       });
-      return participant;
     }),
   exitPlan: protectedProcedure
     .input(z.object({ userId: z.string(), planId: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const { userId, planId } = input;
-      const deletedParticipant = await ctx.prisma.participants.deleteMany({
+      const participant = await ctx.prisma.participant.update({
         where: {
-          userId,
-          planId,
+          planId_userId: {
+            planId: planId,
+            userId: userId,
+          },
+        },
+        data: {
+          hasAccepted: false,
         },
       });
-      return deletedParticipant;
     }),
 });

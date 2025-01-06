@@ -93,10 +93,10 @@ export const PlanDetailsEmail = ({
                   {roomTitle}
                 </Text>
 
-                <Text style={paragraph}>
+                {/* <Text style={paragraph}>
                   اگر نیاز به تغییر در این برنامه دارید، لطفاً وارد حساب کاربری
                   خود شوید یا با تیم پشتیبانی ما تماس بگیرید.
-                </Text>
+                </Text> */}
               </Column>
             </Row>
             {withEnterButton && (
