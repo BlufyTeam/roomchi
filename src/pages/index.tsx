@@ -41,11 +41,11 @@ function LandingPage() {
               <Image
                 src={"/meetapp-logo.svg"}
                 alt="meet app logo"
-                width={1920}
-                height={1080}
+                width={720}
+                height={720}
               />
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter text-accent sm:text-4xl md:text-5xl lg:text-6xl/none">
+                <h1 className="text-lg font-bold tracking-tighter text-accent sm:text-4xl md:text-5xl lg:text-4xl/none">
                   {t.simplifyReservations}
                 </h1>
                 {/* <p className="mx-auto max-w-[700px] text-primary  md:text-xl">
