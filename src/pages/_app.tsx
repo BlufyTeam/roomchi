@@ -136,7 +136,7 @@ function MyApp({
   const getLayout = Component.PageLayout ?? ((page) => page);
 
   return Component.PageLayout ? (
-    <main className={cn(iranSans.className)}>
+    <main className={cn(iranSans.variable, "font-iransans")}>
       <SessionProvider session={session}>
         <LanguageProvider>
           <TopHeader />
@@ -146,7 +146,7 @@ function MyApp({
       </SessionProvider>{" "}
     </main>
   ) : (
-    <main className={cn(iranSans.className)}>
+    <main className={cn(iranSans.variable, "font-iransans")}>
       <SessionProvider session={session}>
         <LanguageProvider>
           <TopHeader />
