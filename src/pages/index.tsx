@@ -19,9 +19,7 @@ function LandingPage() {
 
   return (
     <div
-      className={`flex min-h-screen flex-col font-sans ${
-        language === "fa" ? "font-vazir" : ""
-      }`}
+      className={`flex min-h-screen flex-col `}
       dir={language === "fa" ? "rtl" : "ltr"}
       lang={language}
     >

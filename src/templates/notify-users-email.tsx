@@ -44,12 +44,7 @@ export const PlanDetailsEmail = ({
 
   return (
     <Html>
-      <Head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
+      <Head></Head>
       <Preview>جزئیات برنامه: {planTitle}</Preview>
       <Body style={main}>
         <Container>
