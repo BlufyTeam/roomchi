@@ -98,7 +98,7 @@ model Company {
   id          String   @id @default(cuid())
   name        String
   logo_base64 String?
-  description String
+  description String?
   users       User[]
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt()

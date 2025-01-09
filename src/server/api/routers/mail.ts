@@ -4,7 +4,7 @@ import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
-  AdminProcedure,
+  adminAndSuperAdminProcedure,
 } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import {
@@ -31,15 +31,16 @@ export interface AdminConfig {
 // };
 
 export const mailRouter = createTRPCRouter({
-  getAdminConfig: AdminProcedure.query(async ({ input, ctx }) => {
+  getAdminConfig: adminAndSuperAdminProcedure.query(async ({ input, ctx }) => {
     const config = await ctx.prisma.mailConfig.findFirst({
       orderBy: { created_at: "desc" },
     });
     return config;
   }),
 
-  setAdminConfig: AdminProcedure.input(nodemailerConfigSchema).mutation(
-    async ({ ctx, input }) => {
+  setAdminConfig: adminAndSuperAdminProcedure
+    .input(nodemailerConfigSchema)
+    .mutation(async ({ ctx, input }) => {
       const config = await ctx.prisma.mailConfig.findFirst({
         orderBy: { created_at: "desc" },
       });
@@ -68,10 +69,10 @@ export const mailRouter = createTRPCRouter({
           smtpUser: input.smtpUser,
         },
       });
-    }
-  ),
-  sendEmail: AdminProcedure.input(sendEmailSchema).mutation(
-    async ({ ctx, input }) => {
+    }),
+  sendEmail: adminAndSuperAdminProcedure
+    .input(sendEmailSchema)
+    .mutation(async ({ ctx, input }) => {
       try {
         const transporter = await getNodemailerTransport();
         const adminConfig = await ctx.prisma.mailConfig.findFirst({
@@ -90,8 +91,7 @@ export const mailRouter = createTRPCRouter({
         console.error("Error sending email:", error);
         throw error;
       }
-    }
-  ),
+    }),
 });
 
 export async function getAdminConfig(): Promise<AdminConfig> {

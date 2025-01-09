@@ -3,6 +3,8 @@ import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
+  adminAndSuperAdminProcedure,
+  superAdminProcedure,
 } from "~/server/api/trpc";
 import {
   createUserSchema,
@@ -11,6 +13,7 @@ import {
 } from "~/server/validations/user.validation";
 import {
   companyIdSchema,
+  createCompanySchema,
   updateCompanySchema,
 } from "~/server/validations/company.validation";
 
@@ -28,8 +31,18 @@ export const companyRouter = createTRPCRouter({
         },
       });
     }),
-
-  updateCompany: protectedProcedure
+  createcompany: superAdminProcedure
+    .input(createCompanySchema)
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.company.create({
+        data: {
+          name: input.name,
+          description: input.description,
+          logo_base64: input.logo_base64,
+        },
+      });
+    }),
+  updateCompany: adminAndSuperAdminProcedure
     .input(updateCompanySchema)
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.company.update({

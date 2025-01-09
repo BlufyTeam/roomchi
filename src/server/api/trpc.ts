@@ -123,19 +123,57 @@ const enforceUserIsAuthedAndAdmin = t.middleware(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
-  if (
-    ctx.session.user.role != "ADMIN" &&
-    ctx.session.user.role != "SUPER_ADMIN"
-  )
-    throw new TRPCError({ code: "FORBIDDEN" });
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
+  if (ctx.session.user.role == "ADMIN")
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  throw new TRPCError({ code: "FORBIDDEN" });
 });
-export const AdminProcedure = t.procedure.use(enforceUserIsAuthedAndAdmin);
+
+const enforceUserIsAuthedAndSuperAdmin = t.middleware(({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  if (ctx.session.user.role == "SUPER_ADMIN")
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+
+  throw new TRPCError({ code: "FORBIDDEN" });
+});
+
+const enforceUserIsAuthedAndIs_Admin_And_SuperAdmin = t.middleware(
+  ({ ctx, next }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    if (
+      ctx.session.user.role == "ADMIN" ||
+      ctx.session.user.role == "SUPER_ADMIN"
+    )
+      return next({
+        ctx: {
+          // infers the `session` as non-nullable
+          session: { ...ctx.session, user: ctx.session.user },
+        },
+      });
+
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+);
+export const adminAndSuperAdminProcedure = t.procedure.use(
+  enforceUserIsAuthedAndIs_Admin_And_SuperAdmin
+);
+export const adminProcedure = t.procedure.use(enforceUserIsAuthedAndAdmin);
+export const superAdminProcedure = t.procedure.use(
+  enforceUserIsAuthedAndSuperAdmin
+);
 /**
  * Protected (authenticated) procedure
  *

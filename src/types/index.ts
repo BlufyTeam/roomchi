@@ -5,3 +5,5 @@ export type User = (PrismaUser & { role: "ADMIN" | "USER" }) & {
 };
 
 export type RoomStatus = "AlreadyStarted" | "Reserved" | "Open" | "Done";
+
+export type Role = "USER" | "ROOM" | "ADMIN" | "SUPER_ADMIN";

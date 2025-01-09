@@ -3,24 +3,52 @@ import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
-  AdminProcedure,
+  adminAndSuperAdminProcedure,
 } from "~/server/api/trpc";
 import {
   createUserSchema,
   updateUserSchema,
   userIdSchema,
 } from "~/server/validations/user.validation";
+import { Role } from "~/types";
 
 export const userRouter = createTRPCRouter({
-  getUser: AdminProcedure.query(({ ctx }) => {
+  getUser: adminAndSuperAdminProcedure.query(({ ctx }) => {
     return ctx.session.user;
   }),
 
-  createUser: AdminProcedure.input(createUserSchema).mutation(
-    async ({ input, ctx }) => {
+  createUser: adminAndSuperAdminProcedure
+    .input(createUserSchema)
+    .mutation(async ({ input, ctx }) => {
       let email = input.email;
       if (!email) email = null;
 
+      if ((ctx.session.user.role as Role) === "SUPER_ADMIN") {
+        if ((input.role as Role) === "ADMIN") {
+          return await ctx.prisma.user.create({
+            data: {
+              name: input.name,
+              email: email,
+              username: input.username.toLowerCase(),
+              password: input.password,
+              description: input.description,
+              role: input.role,
+              // Handle company connection or creation logic
+              company: input.companyId
+                ? {
+                    connect: {
+                      id: input.companyId, // Connect the existing company
+                    },
+                  }
+                : {
+                    create: {
+                      name: "شرکت من", // Create a new company with a custom temporary name
+                    },
+                  },
+            },
+          });
+        }
+      }
       return await ctx.prisma.user.create({
         data: {
           name: input.name,
@@ -32,10 +60,10 @@ export const userRouter = createTRPCRouter({
           companyId: input.companyId,
         },
       });
-    }
-  ),
-  updateUser: AdminProcedure.input(updateUserSchema).mutation(
-    async ({ input, ctx }) => {
+    }),
+  updateUser: adminAndSuperAdminProcedure
+    .input(updateUserSchema)
+    .mutation(async ({ input, ctx }) => {
       let email = input.email;
       if (!email) email = null;
       return await ctx.prisma.user.update({
@@ -52,46 +80,55 @@ export const userRouter = createTRPCRouter({
           companyId: input.companyId,
         },
       });
-    }
-  ),
-  getUsers: AdminProcedure.input(
-    z.object({
-      limit: z.number().min(1).max(100).nullish().default(10),
-      cursor: z.string().nullish(),
-    })
-  ).query(async ({ ctx, input }) => {
-    const limit = input.limit ?? 50;
-    const { cursor } = input;
+    }),
+  getUsers: adminAndSuperAdminProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish().default(10),
+        cursor: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 50;
+      const { cursor } = input;
 
-    const where =
-      ctx.session.user.role != "SUPER_ADMIN"
-        ? {
-            companyId: ctx.session.user.companyId,
-          }
-        : {};
-    const items =
-      (await ctx.prisma.user.findMany({
-        take: limit + 1, // get an extra item at the end which we'll use as next cursor
-        cursor: cursor ? { id: cursor } : undefined,
-        where: where,
-        include: {
-          company: true,
-        },
-        orderBy: {
-          created_at: "desc",
-        },
-      })) || [];
-    let nextCursor: typeof cursor | undefined = undefined;
-    if (items.length > limit) {
-      const nextItem = items.pop();
-      nextCursor = nextItem!.id;
-    }
-    return {
-      items,
-      nextCursor,
-    };
-  }),
-  getMyCompanyUsers: AdminProcedure.query(async ({ ctx }) => {
+      // Build the 'where' filter
+      const where: any = {
+        // Exclude SUPER_ADMIN users
+        role: { not: "SUPER_ADMIN" },
+      };
+
+      // Admins can only see users in their company
+      if (ctx.session.user.role === "ADMIN") {
+        where.companyId = ctx.session.user.companyId;
+      }
+
+      // Fetch the users based on the built filter
+      const items =
+        (await ctx.prisma.user.findMany({
+          take: limit + 1, // get an extra item at the end to check for next cursor
+          cursor: cursor ? { id: cursor } : undefined,
+          where: where,
+          include: {
+            company: true,
+          },
+          orderBy: {
+            created_at: "desc",
+          },
+        })) || [];
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+  getMyCompanyUsers: adminAndSuperAdminProcedure.query(async ({ ctx }) => {
     const users = await ctx.prisma.user.findMany({
       where: {
         company: {
@@ -101,22 +138,22 @@ export const userRouter = createTRPCRouter({
     });
     return users;
   }),
-  getUserById: AdminProcedure.input(userIdSchema).query(
-    async ({ input, ctx }) => {
+  getUserById: adminAndSuperAdminProcedure
+    .input(userIdSchema)
+    .query(async ({ input, ctx }) => {
       return await ctx.prisma.user.findUnique({
         where: {
           id: input.id,
         },
       });
-    }
-  ),
-  deleteUser: AdminProcedure.input(userIdSchema).mutation(
-    async ({ input, ctx }) => {
+    }),
+  deleteUser: adminAndSuperAdminProcedure
+    .input(userIdSchema)
+    .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.user.delete({
         where: {
           id: input.id,
         },
       });
-    }
-  ),
+    }),
 });

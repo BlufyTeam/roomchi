@@ -56,7 +56,7 @@ export default function PlanRooms({ date }: Props) {
     date.isSameOrAfter(moment(), "jDay") && session.data.user.role === "ADMIN";
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 p-5">
-      {getPlans.data.length > 0 && (
+      {getPlans?.data?.length > 0 && (
         <div className="flex w-full flex-col items-center justify-start  gap-3">
           <h3 className="w-full px-2 text-center font-bold text-primary">
             {t.roomResevedAt}

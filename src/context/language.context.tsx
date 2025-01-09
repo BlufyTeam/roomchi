@@ -7,10 +7,12 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
+import { translations } from "~/utils/translations";
 
 type Language = "fa" | "en";
 
 interface LanguageContextType {
+  t: (typeof translations)["en" | "fa"];
   language: Language;
   setLanguage: (lang: Language) => void;
 }
@@ -23,7 +25,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [language, setLanguage] = useState<Language>("fa"); // Start with a default language
-
+  const t: (typeof translations)["en" | "fa"] = translations[language];
   useEffect(() => {
     // Only run on the client side
     const storedLanguage = localStorage.getItem("language") as Language;
@@ -38,7 +40,9 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage: changeLanguage }}>
+    <LanguageContext.Provider
+      value={{ t, language, setLanguage: changeLanguage }}
+    >
       {children}
     </LanguageContext.Provider>
   );

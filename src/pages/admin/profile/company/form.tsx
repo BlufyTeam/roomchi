@@ -31,16 +31,17 @@ export default function CompanyForm({ company }: { company: Company }) {
       reloadSession();
     },
   });
+
   const formik = useFormik({
     initialValues: {
-      id: company.id,
-      name: company.name,
-      //@ts-ignore
-      logo_base64: company.logo_base64,
-      description: company.description,
+      id: company?.id,
+      name: company?.name,
+      description: company?.description,
+      logo_base64: "",
     },
     validationSchema: toFormikValidationSchema(updateCompanySchema),
-    validateOnBlur: true,
+
+    validateOnMount: true,
     onSubmit: (values: typeof updateCompanySchema._type) => {
       updateCompany.mutate({
         id: values.id,
@@ -57,6 +58,7 @@ export default function CompanyForm({ company }: { company: Company }) {
       //  changes.length <= 0 ? "مقداری تغییر نکرد" : changes.join("\n"),
     },
   });
+
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -78,14 +80,17 @@ export default function CompanyForm({ company }: { company: Company }) {
           label={t.description}
           name="description"
           id="description"
-          {...formik.getFieldProps("description")}
+          value={formik.values?.description ?? ""}
+          onChange={(e) => {
+            formik.setFieldValue("description", e.target.value);
+          }}
         />
         <InputError message={formik.errors.description} />
       </div>
       <h3>{t.logo}</h3>
       <UploadImageBase64
         images={
-          formik.values.logo_base64?.length > 0
+          formik.values?.logo_base64?.length > 0
             ? [formik.values.logo_base64]
             : []
         }

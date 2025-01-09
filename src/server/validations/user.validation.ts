@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-export const createUserSchema = z.object({
+// Update the role enum to include "SUPER_ADMIN"
+const baseUserSchema = z.object({
   name: z
     .string({ required_error: "این فیلد اجباری است" })
     .min(3, "حداقل باید 3 کاراکتر باشد"),
@@ -12,11 +13,49 @@ export const createUserSchema = z.object({
     .string({ required_error: "این فیلد اجباری است" })
     .min(6, "پسورد نمیتواند کمتر از 6 حرف باشد."),
   description: z.string().optional(),
-  role: z.enum(["ADMIN", "USER", "ROOM"]),
-  companyId: z.string(),
+  // Add "SUPER_ADMIN" to the role enum
+  role: z.enum(["ADMIN", "USER", "ROOM", "SUPER_ADMIN"], {
+    required_error: "نقش کاربری اجباری است",
+  }),
+  companyId: z.string().optional(),
 });
 
-export const updateUserSchema = createUserSchema.extend({ id: z.string() });
+// Add the refinement logic (produces a ZodEffects)
+export const createUserSchema = baseUserSchema.superRefine((data, ctx) => {
+  // Only require companyId if the role is not ADMIN or SUPER_ADMIN
+  if (data.role !== "ADMIN" && data.role !== "SUPER_ADMIN" && !data.companyId) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["companyId"],
+      message: "companyId is required for non-ADMIN and non-SUPER_ADMIN roles.",
+    });
+  }
+});
+
+// Extend the base schema for the update schema
+export const updateUserSchema = baseUserSchema
+  .extend({
+    id: z.string(),
+  })
+  .superRefine((data, ctx) => {
+    // For updating, if the user is SUPER_ADMIN, no need for companyId
+    if (data.role === "SUPER_ADMIN" && data.companyId) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["companyId"],
+        message: "SUPER_ADMIN should not have a companyId.",
+      });
+    }
+
+    // If the role is not SUPER_ADMIN, companyId must be present
+    if (data.role !== "SUPER_ADMIN" && !data.companyId) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["companyId"],
+        message: "companyId is required for non-SUPER_ADMIN roles.",
+      });
+    }
+  });
 
 export const userIdSchema = z.object({
   id: z.string({ required_error: "این فیلد اجباری است" }),

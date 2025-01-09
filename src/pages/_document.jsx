@@ -1,17 +1,14 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import { cn } from "~/lib/utils";
+import { iranSans } from "~/pages/_app";
 
 export default class MyDocument extends Document {
   render() {
     return (
-      <Html className=" h-full" dir="rtl">
-        <Head>
-          {/* <link rel="shortcut icon" href={favicon} /> */}
-          {/* <link rel="shortcut icon" href="/icons/main/roomchi.svg" /> */}
-          <title>Meet App</title>
-        </Head>
-
+      <Html dir="rtl" className={cn(iranSans.variable, "h-full font-iransans")}>
+        <Head />
         <body
-          className="theme-dark-3 scrollbar-track-[var(--accent)] h-full"
+          className="theme-dark-3 scrollbar-track-[var(--accent)] h-full "
           style={{
             overflow: "overlay",
           }}

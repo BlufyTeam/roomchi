@@ -166,7 +166,7 @@ export default function Modal({
                 onClick={handleClose}
                 className={twMerge(
                   center ? "laptopMin:items-center" : "items-end",
-                  ` fixed  flex items-end justify-center overflow-hidden backdrop-blur-md ${zIndex} inset-0  `
+                  ` fixed  flex items-end justify-center overflow-hidden font-iransans backdrop-blur-md ${zIndex} inset-0  `
                 )}
               >
                 <motion.div

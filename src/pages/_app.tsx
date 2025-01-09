@@ -13,6 +13,7 @@ import { LanguageProvider } from "~/context/language.context";
 import { LanguageSwitcher } from "~/components/main/language-switcher";
 import { cn } from "~/lib/utils";
 import ThemeBox from "~/features/theme-box";
+import Head from "next/head";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   PageLayout?: (page: ReactElement) => ReactElement<any, any>;
@@ -35,7 +36,7 @@ function matchColorSchemeToTheme(theme) {
     document.querySelector("html").style.colorScheme = "dark";
 }
 
-const iranSans = localFont({
+export const iranSans = localFont({
   src: [
     {
       path: "../../public/fonts/IRANSansXFaNum-Thin.woff",
@@ -136,25 +137,39 @@ function MyApp({
   const getLayout = Component.PageLayout ?? ((page) => page);
 
   return Component.PageLayout ? (
-    <main className={cn(iranSans.variable, "font-iransans")}>
-      <SessionProvider session={session}>
-        <LanguageProvider>
-          <TopHeader />
-          <Component.PageLayout {...pageProps} />
-          <Toaster />
-        </LanguageProvider>
-      </SessionProvider>{" "}
-    </main>
+    <>
+      <Head>
+        {/* <link rel="shortcut icon" href={favicon} /> */}
+        {/* <link rel="shortcut icon" href="/icons/main/roomchi.svg" /> */}
+        <title>Meet App</title>
+      </Head>
+      <main>
+        <SessionProvider session={session}>
+          <LanguageProvider>
+            <TopHeader />
+            <Component.PageLayout {...pageProps} />
+            <Toaster />
+          </LanguageProvider>
+        </SessionProvider>{" "}
+      </main>
+    </>
   ) : (
-    <main className={cn(iranSans.variable, "font-iransans")}>
-      <SessionProvider session={session}>
-        <LanguageProvider>
-          <TopHeader />
-          <Component {...pageProps} />
-          <Toaster />
-        </LanguageProvider>
-      </SessionProvider>
-    </main>
+    <>
+      <Head>
+        {/* <link rel="shortcut icon" href={favicon} /> */}
+        {/* <link rel="shortcut icon" href="/icons/main/roomchi.svg" /> */}
+        <title>Meet App</title>
+      </Head>
+      <main>
+        <SessionProvider session={session}>
+          <LanguageProvider>
+            <TopHeader />
+            <Component {...pageProps} />
+            <Toaster />
+          </LanguageProvider>
+        </SessionProvider>
+      </main>
+    </>
   );
 }
 

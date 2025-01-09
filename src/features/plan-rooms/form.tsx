@@ -143,7 +143,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
   });
   return (
     <>
-      <div className="flex  w-full flex-col items-center justify-center ">
+      <div className="flex w-full flex-col items-center justify-center font-iransans ">
         {/* <ButtonCheckbox
           checked={formik.values.send_email}
           onClick={() => {

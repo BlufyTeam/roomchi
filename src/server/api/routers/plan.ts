@@ -5,7 +5,7 @@ import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
-  AdminProcedure,
+  adminAndSuperAdminProcedure,
 } from "~/server/api/trpc";
 import { $exists } from "~/server/helpers/exists";
 import { sendPlanNotificationEmail } from "~/server/helpers/plan-notify";
@@ -130,8 +130,9 @@ export const planRouter = createTRPCRouter({
         };
       });
     }),
-  createPlan: AdminProcedure.input(createPlanSchema).mutation(
-    async ({ input, ctx }) => {
+  createPlan: adminAndSuperAdminProcedure
+    .input(createPlanSchema)
+    .mutation(async ({ input, ctx }) => {
       if (
         moment(input.end_datetime).isSameOrBefore(moment(input.start_datetime))
       ) {
@@ -207,8 +208,7 @@ export const planRouter = createTRPCRouter({
           "CREATE"
         );
       return plan;
-    }
-  ),
+    }),
   // updatePlan: AdminProcedure.input(updatePlanSchema).mutation(
   //   async ({ input, ctx }) => {
   //     const plan = await ctx.prisma.plan.update({
@@ -239,8 +239,9 @@ export const planRouter = createTRPCRouter({
   //     return plan;
   //   }
   // ),
-  deletePlan: AdminProcedure.input(planDeleteSchema).mutation(
-    async ({ input, ctx }) => {
+  deletePlan: adminAndSuperAdminProcedure
+    .input(planDeleteSchema)
+    .mutation(async ({ input, ctx }) => {
       const [participant, plan] = await ctx.prisma.$transaction(async (tx) => [
         await ctx.prisma.participant.deleteMany({
           where: {
@@ -273,8 +274,7 @@ export const planRouter = createTRPCRouter({
         );
       }
       return plan;
-    }
-  ),
+    }),
   joinPlan: protectedProcedure
     .input(z.object({ userId: z.string(), planId: z.string() }))
     .mutation(async ({ input, ctx }) => {

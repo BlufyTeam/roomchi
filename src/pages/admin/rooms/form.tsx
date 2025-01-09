@@ -20,13 +20,15 @@ import { useRoom } from "~/context/room.context";
 import withConfirmation from "~/ui/with-confirmation";
 import { useLanguage } from "~/context/language.context";
 import { translations } from "~/utils/translations";
+import { useSession } from "next-auth/react";
 
 const TextFieldWithLable = withLabel(TextField);
 const IntegerFieldWithLable = withLabel(IntegerField);
 
 const ButtonWithConfirmation = withConfirmation(Button);
 export default function RoomForm() {
-  const { toast } = useToast();
+  const { data: userSession, status } = useSession();
+  if (status === "loading") return null;
   const { language } = useLanguage();
   const t = translations[language];
   const getCompany = api.company.getAll.useQuery();
@@ -53,7 +55,7 @@ export default function RoomForm() {
       return {
         title: selectedRowRoom?.title ?? "",
         capacity: selectedRowRoom?.capacity ?? 0,
-        companyId: selectedRowRoom?.companyId ?? undefined,
+        companyId: userSession.user.companyId,
         description: selectedRowRoom?.description ?? "",
         price: selectedRowRoom?.price ?? 0,
       };
@@ -63,7 +65,7 @@ export default function RoomForm() {
     initialValues: {
       title: "",
       capacity: 0,
-      companyId: undefined,
+      companyId: userSession.user.companyId,
       description: "",
       price: 0,
     },
@@ -162,25 +164,6 @@ export default function RoomForm() {
         <InputError message={formik.errors.price} />
       </div>
 
-      <div className="z-30  flex w-full flex-col items-start justify-start gap-5">
-        {getCompany.data && (
-          <ComboBox
-            values={getCompany.data.map((company) => {
-              return { label: company.name, value: company.id };
-            })}
-            value={formik.values.companyId}
-            onChange={(value) => {
-              formik.setValues(() => {
-                return {
-                  ...formik.values,
-                  companyId: value,
-                };
-              });
-            }}
-            placeHolder={t.searchCompanies}
-          />
-        )}
-      </div>
       <Button
         disabled={createRoom.isLoading || !formik.isValid}
         isLoading={createRoom.isLoading || updateRoom.isLoading}
