@@ -14,7 +14,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        iransans: "Iransans",
+        iransans: ["var(--font-iransans)"],
       },
       textColor: {
         primary: withOpacity("--primary"),
