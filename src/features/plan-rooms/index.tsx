@@ -66,7 +66,7 @@ export default function PlanRooms({ date }: Props) {
           <PlanListWithRoom plans={getPlans.data} />
         </div>
       )}
-      {getPlans.data.length > 0 && canReserveRoom && (
+      {getPlans?.data?.length > 0 && canReserveRoom && (
         <div className="h-0.5 w-full rounded-full bg-accent/50" />
       )}
       {canReserveRoom && (
