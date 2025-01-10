@@ -20,7 +20,7 @@ export default function SingleRoomPage() {
   const getPlans = api.plan.getPlansByDateAndRoom.useQuery(
     {
       roomId: router.query.id as string,
-      date: moment(moment(Date.now()).format("yyyy MMMM D")).toDate(),
+      date: moment(new Date().toLocaleDateString()).toDate(),
     },
     {
       enabled: session.status === "authenticated",
