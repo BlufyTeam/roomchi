@@ -32,15 +32,18 @@ import { useLanguage } from "~/context/language.context";
 import { translations } from "~/utils/translations";
 type Props = {
   date: Moment;
+  dateString?: string;
 };
-export default function PlanRooms({ date }: Props) {
+export default function PlanRooms({ date, dateString }: Props) {
   const { language } = useLanguage();
   const t = translations[language];
   const session = useSession();
+
+  const utcDate = date.locale("fa");
   const getPlans = api.plan.getPlansByDate.useQuery({
-    date: date.toDate(),
+    date: utcDate.toDate(),
   });
-  const router = useRouter();
+
   if (getPlans.isLoading || session.status === "loading")
     return (
       <div className="flex w-5/6 flex-col items-center justify-center gap-4 p-5">

@@ -154,7 +154,10 @@ export default function AdminPage() {
           router.replace("/admin", undefined, { shallow: true });
         }}
       >
-        <PlanRooms date={moment(router.query.plan)} />
+        <PlanRooms
+          date={moment(router.query.plan)}
+          dateString={router?.query?.plan?.toString()}
+        />
       </Modal>
     </AdminMainLayout>
   );

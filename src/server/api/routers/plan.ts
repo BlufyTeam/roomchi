@@ -133,6 +133,7 @@ export const planRouter = createTRPCRouter({
   createPlan: adminAndSuperAdminProcedure
     .input(createPlanSchema)
     .mutation(async ({ input, ctx }) => {
+      console.log({ input });
       if (
         moment(input.end_datetime).isSameOrBefore(moment(input.start_datetime))
       ) {
@@ -149,12 +150,12 @@ export const planRouter = createTRPCRouter({
           AND: [
             {
               start_datetime: {
-                lt: moment(input.end_datetime).toISOString(), // Existing plan starts before the new plan ends
+                lt: input.end_datetime, // Existing plan starts before the new plan ends
               },
             },
             {
               end_datetime: {
-                gt: moment(input.start_datetime).toISOString(), // Existing plan ends after the new plan starts
+                gt: input.start_datetime, // Existing plan ends after the new plan starts
               },
             },
           ],
