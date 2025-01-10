@@ -39,9 +39,8 @@ export default function PlanRooms({ date, dateString }: Props) {
   const t = translations[language];
   const session = useSession();
 
-  const utcDate = date.locale("fa");
   const getPlans = api.plan.getPlansByDate.useQuery({
-    date: utcDate.toDate(),
+    date: date.toDate(),
   });
 
   if (getPlans.isLoading || session.status === "loading")

@@ -88,7 +88,7 @@ export default function AdminPage() {
           const formattedDate =
             date.clone().add(1, "day").isBefore(moment()) && plans.length <= 0
               ? undefined
-              : date.toISOString();
+              : date.toLocaleString();
           return (
             <Link
               key={date.toString()}

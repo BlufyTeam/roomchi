@@ -99,7 +99,11 @@ export const planRouter = createTRPCRouter({
   getPlansByDate: protectedProcedure
     .input(z.object({ date: z.date().optional() }).optional())
     .query(async ({ ctx, input }) => {
-      console.log({ input });
+      console.log({
+        input,
+        start: moment(input.date).locale("fa").startOf("day").toDate(),
+      });
+
       const plans = await ctx.prisma.plan.findMany({
         where: {
           start_datetime: {
