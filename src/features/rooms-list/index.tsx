@@ -40,13 +40,19 @@ export default function RoomsList({
 }) {
   const { language } = useLanguage();
   const t = translations[language];
+  if (!companyId)
+    return (
+      <div className="flex flex-wrap items-center justify-center text-primary  ">
+        {t.noCompany}
+      </div>
+    );
   const getRooms = api.room.getRoomsByCompanyId.useQuery(
     companyId ? { companyId } : {}
   );
   if (getRooms?.isLoading) return <RoomsListSkeleton />;
   if (getRooms?.data?.length <= 0)
     return (
-      <div className="flex flex-wrap items-center justify-center  ">
+      <div className="flex flex-wrap items-center justify-center text-primary  ">
         {t.noRoom}
       </div>
     );

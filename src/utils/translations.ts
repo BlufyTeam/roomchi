@@ -132,8 +132,10 @@ export const translations = {
       "Nodemailer configuration updated successfully",
     TestEmailSentSuccessfully: "Test email sent successfully",
     NotifyUsers: "Notify users",
+    noCompany: "No company",
   },
   fa: {
+    noCompany: "شرکت ندارید",
     NotifyUsers: "اطلاع رسانی به کاربر ها",
     Success: "موفق بود",
     NodemailerConfiguredSuccessfully: "کانفیگ Mail Server با موفقیت انجام شد",
