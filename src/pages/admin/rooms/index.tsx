@@ -1,4 +1,5 @@
 import { Room } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import React from "react";
 import { RoomProvider, useRoom } from "~/context/room.context";
 import RoomsList from "~/features/rooms-list";
@@ -23,10 +24,12 @@ export default function RoomsPage() {
 }
 
 export function RoomListWithContext() {
+  const session = useSession();
   const { setSelectedRowRoom } = useRoom();
   return (
     <div className=" h-fit max-h-[42rem] w-full overflow-hidden overflow-y-auto rounded-lg 2xl:w-9/12 2xl:p-5 ">
       <RoomsList
+        companyId={session.data.user.companyId}
         onClick={(room) => {
           setSelectedRowRoom(room);
         }}
