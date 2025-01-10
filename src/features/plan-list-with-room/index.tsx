@@ -21,6 +21,7 @@ import {
 import { Session } from "next-auth/core/types";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { useLanguage } from "~/context/language.context";

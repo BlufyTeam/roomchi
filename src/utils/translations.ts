@@ -134,8 +134,10 @@ export const translations = {
     NotifyUsers: "Notify users",
     noCompany: "No company",
     chooseUsers: "Choose users",
+    noMeetingsToday: "No meetings today",
   },
   fa: {
+    noMeetingsToday: "جلسه ای برای امروز تشکل نشده است",
     chooseUsers: "انتخاب کاربر",
     noCompany: "شرکت ندارید",
     NotifyUsers: "اطلاع رسانی به کاربر ها",

@@ -59,7 +59,7 @@ export const planRouter = createTRPCRouter({
           room: true,
           participants: true,
         },
-        orderBy: { start_datetime: "desc" },
+        orderBy: { start_datetime: "asc" },
       });
 
       return plans.map((plan) => {
