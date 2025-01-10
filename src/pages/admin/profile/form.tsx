@@ -205,7 +205,7 @@ export function UserProfileForm({
           />
           <InputError message={formik.errors.description} />
         </div>
-        {userSession.user.role === "ADMIN" && (
+        {/* {userSession.user.role === "ADMIN" && (
           <div className="z-30  flex w-full flex-col items-start justify-start gap-5">
             {getCompany.data && (
               <ComboBox
@@ -225,7 +225,7 @@ export function UserProfileForm({
               />
             )}
           </div>
-        )}
+        )} */}
 
         <div className="z-30  flex w-full flex-col items-start justify-start gap-5">
           <ComboBox
