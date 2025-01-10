@@ -46,9 +46,9 @@ const icons = [
 ];
 
 export function ReserveRoom({ date }: { date: Moment }) {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const session = useSession();
-  const t = translations[language];
+
   const [step, setStep] = useState(0);
   const utils = api.useContext();
   const users = api.user.getMyCompanyUsers.useQuery();
@@ -300,13 +300,15 @@ export function ReserveRoom({ date }: { date: Moment }) {
               ) : (
                 <div className="mx-auto max-w-sm rounded-md bg-secondary p-5">
                   <MultiSelector
-                    label="انتخاب کاربر"
-                    options={users.data.map((a) => {
-                      return {
-                        label: a.name,
-                        value: a.id,
-                      };
-                    })}
+                    label={t.chooseUsers}
+                    options={users.data
+                      .filter((a) => a.role != "ROOM")
+                      .map((a) => {
+                        return {
+                          label: a.name,
+                          value: a.id,
+                        };
+                      })}
                     onChange={(option) => {
                       formik.setFieldValue("participants", option);
                     }}

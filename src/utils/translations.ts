@@ -133,8 +133,10 @@ export const translations = {
     TestEmailSentSuccessfully: "Test email sent successfully",
     NotifyUsers: "Notify users",
     noCompany: "No company",
+    chooseUsers: "Choose users",
   },
   fa: {
+    chooseUsers: "انتخاب کاربر",
     noCompany: "شرکت ندارید",
     NotifyUsers: "اطلاع رسانی به کاربر ها",
     Success: "موفق بود",
