@@ -7,6 +7,7 @@ import {
   ReplaceIcon,
   StickyNoteIcon,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -46,6 +47,7 @@ const icons = [
 
 export function ReserveRoom({ date }: { date: Moment }) {
   const { language } = useLanguage();
+  const session = useSession();
   const t = translations[language];
   const [step, setStep] = useState(0);
   const utils = api.useContext();
@@ -174,6 +176,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 {t.reserveSelect}
               </h3>
               <RoomsList
+                companyId={session.data.user.companyId}
                 onClick={(room) => {
                   formik.setValues((values) => {
                     return {

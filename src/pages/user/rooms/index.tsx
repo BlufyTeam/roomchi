@@ -19,7 +19,10 @@ export default function RoomPage() {
     <UserMainLayout>
       <BlurBackground />
       <div className=" flex  h-screen w-full items-center justify-center overflow-hidden overflow-y-auto rounded-lg   ">
-        <RoomsList rootLink="user/rooms" />
+        <RoomsList
+          companyId={session.data.user.companyId}
+          rootLink="user/rooms"
+        />
       </div>
     </UserMainLayout>
   );

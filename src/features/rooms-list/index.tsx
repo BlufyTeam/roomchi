@@ -35,7 +35,7 @@ import { translations } from "~/utils/translations";
 
 export default function RoomsList({
   onClick = (room: Room) => {},
-  companyId = undefined,
+  companyId,
   rootLink = "rooms",
 }) {
   const { language } = useLanguage();
