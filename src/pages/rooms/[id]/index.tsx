@@ -1,7 +1,7 @@
 import moment from "jalali-moment";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useMemo } from "react";
 import PlanListWithRoom from "~/features/plan-list-with-room";
 import { RoomsListSkeleton } from "~/features/rooms-list/loading";
 
@@ -12,10 +12,11 @@ import { api } from "~/utils/api";
 export default function RoomStatusPage() {
   const router = useRouter();
   const session = useSession();
+  const todayDate = useMemo(() => new Date().toISOString(), []);
   const getPlans = api.plan.getPlansByDateAndRoom.useQuery(
     {
       roomId: router.query.id as string,
-      date: moment(moment(Date.now()).format("yyyy MMMM D")).toDate(),
+      date: todayDate,
     },
     {
       enabled: session.status === "authenticated",
