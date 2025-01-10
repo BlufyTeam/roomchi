@@ -302,7 +302,10 @@ export function ReserveRoom({ date }: { date: Moment }) {
                   <MultiSelector
                     label={t.chooseUsers}
                     options={users.data
-                      .filter((a) => a.role != "ROOM")
+                      .filter((a) => {
+                        if (a.role != "ROOM" && a.id !== session.data.user.id)
+                          return a;
+                      })
                       .map((a) => {
                         return {
                           label: a.name,
