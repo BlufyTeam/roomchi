@@ -28,6 +28,7 @@ export async function sendEmail(
   try {
     const transporter = await getNodemailerTransport();
     const adminConfig = await getAdminConfig();
+    if (!adminConfig) return undefined;
     const info = await transporter.sendMail({
       from: adminConfig.emailFrom,
       to,

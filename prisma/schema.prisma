@@ -54,7 +54,7 @@ model Resource {
 model Plan {
   id             String        @id @default(cuid())
   title          String
-  user           User          @relation(fields: [userId], references: [id])
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String
   room           Room          @relation(fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   roomId         String
@@ -69,7 +69,7 @@ model Plan {
 model Participant {
   plan        Plan     @relation(fields: [planId], references: [id])
   planId      String // relation scalar field (used in the `@relation` attribute above)
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String // relation scalar field (used in the `@relation` attribute above)
   hasAccepted Boolean? @default(false)
   assignedAt  DateTime @default(now())
@@ -108,22 +108,22 @@ model Company {
 }
 
 model User {
-  id          String        @id @default(cuid())
-  name        String?
-  email       String?       @unique
-  username    String        @unique
-  password    String
-  description String?
-  is_active   Boolean       @default(true)
-  image_url   String?
-  company     Company?      @relation(fields: [companyId], references: [id])
-  companyId   String?
-  sessions    Session[]
-  role        String        @default("USER")
-  created_at  DateTime      @default(now())
-  updated_at  DateTime?     @updatedAt()
-  Plan        Plan[]
-  plans       Participant[]
+  id           String        @id @default(cuid())
+  name         String?
+  email        String?       @unique
+  username     String        @unique
+  password     String
+  description  String?
+  is_active    Boolean       @default(true)
+  image_url    String?
+  company      Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId    String?
+  sessions     Session[]
+  role         String        @default("USER")
+  created_at   DateTime      @default(now())
+  updated_at   DateTime?     @updatedAt()
+  Plan         Plan[]
+  participants Participant[]
 
   @@map("users")
 }

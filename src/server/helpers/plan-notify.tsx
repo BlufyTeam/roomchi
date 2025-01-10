@@ -56,7 +56,9 @@ export const sendPlanNotificationEmail = async (
     />
   );
   // Send email to valid users
-  await sendEmail(getValidEmails.join(","), subject, "", emailHtml);
+  try {
+    await sendEmail(getValidEmails.join(","), subject, "", emailHtml);
+  } catch {}
 };
 
 // Usage Example:
