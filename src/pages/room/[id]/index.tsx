@@ -17,6 +17,7 @@ export default function SingleRoomPage() {
   const room = api.room.getRoomById.useQuery({
     id: router.query.id?.toString() ?? "",
   });
+  console.log({ date: moment(new Date().toLocaleDateString()).toDate() });
   const getPlans = api.plan.getPlansByDateAndRoom.useQuery(
     {
       roomId: router.query.id as string,

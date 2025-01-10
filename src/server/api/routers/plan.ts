@@ -47,6 +47,10 @@ export const planRouter = createTRPCRouter({
   getPlansByDateAndRoom: protectedProcedure // will be tablet or roomProcedure in the future
     .input(planDateAndRoomSchema)
     .query(async ({ ctx, input }) => {
+      console.log({ date: input.date });
+      console.log({
+        dateLt: moment(input.date).locale("fa").endOf("day").toDate(),
+      });
       const plans = await ctx.prisma.plan.findMany({
         where: {
           roomId: input.roomId,
