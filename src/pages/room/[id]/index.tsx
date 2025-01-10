@@ -5,7 +5,7 @@ import React from "react";
 
 import { useLanguage } from "~/context/language.context";
 import { RoomsListSkeleton } from "~/features/rooms-list/loading";
-import { Plans } from "~/pages/room/[id]/plans";
+import Plans from "~/pages/room/[id]/plans";
 import RoomMainLayout from "~/pages/room/layout";
 import { api } from "~/utils/api";
 

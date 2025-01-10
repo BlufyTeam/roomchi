@@ -10,7 +10,7 @@ interface PlansProps {
   plans: PlanWithRoom[];
 }
 
-export function Plans({ plans = [] }: PlansProps) {
+export default function Plans({ plans = [] }: PlansProps) {
   const { t } = useLanguage();
 
   return (
