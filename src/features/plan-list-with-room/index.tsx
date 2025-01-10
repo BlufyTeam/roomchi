@@ -145,36 +145,55 @@ function RoomItem({
           <div className="flex flex-col items-end justify-center gap-5 ">
             <div className="flex flex-col">
               {status === "Done" && (
-                <span className="flex items-center justify-center gap-1 rounded-lg  bg-cyan-500/10 px-0.5 py-2 text-sm text-cyan-600  md:p-2 ">
+                <div className="flex items-center justify-center gap-1 rounded-lg  bg-cyan-500/10 px-0.5 py-2 text-sm text-cyan-600  md:p-2 ">
                   <CalendarCheckIcon className="h-5 w-5 2xl:h-6 2xl:w-6 " />
                   <h3 className="text-[10px]  2xl:text-sm">{t.finished}</h3>
-                  <span className="text-[10px]  2xl:text-sm">
-                    {moment(plan.start_datetime).locale("fa").format("HH:mm")}
+                  <div dir="rtl" className="text-[10px]  2xl:text-sm">
+                    <span>
+                      {" "}
+                      {moment(plan.start_datetime).locale("fa").format("HH:mm")}
+                    </span>
                     {t.until}
-                    {moment(plan.end_datetime).locale("fa").format("HH:mm")}
-                  </span>
-                </span>
+                    <span>
+                      {" "}
+                      {moment(plan.end_datetime).locale("fa").format("HH:mm")}
+                    </span>
+                  </div>
+                </div>
               )}
               {status === "Reserved" && (
-                <span className="flex items-center justify-center gap-1 rounded-lg bg-rose-500/10 p-2 text-sm text-rose-600">
+                <div className="flex items-center justify-center gap-1 rounded-lg bg-rose-500/10 p-2 text-sm text-rose-600">
                   <CalendarRangeIcon className="h-5 w-5 2xl:h-6 2xl:w-6  " />
                   <h3 className="text-[10px] 2xl:text-sm ">{t.reserved}</h3>
-                  <span className="text-[10px]  2xl:text-sm">
-                    {moment(plan.start_datetime).locale("fa").format("HH:mm")}
-                    {t.until}{" "}
-                    {moment(plan.end_datetime).locale("fa").format("HH:mm")}
-                  </span>
-                </span>
+                  <div dir="rtl" className="text-[10px]  2xl:text-sm">
+                    <span>
+                      {" "}
+                      {moment(plan.start_datetime).locale("fa").format("HH:mm")}
+                    </span>
+                    {t.until}
+                    <span>
+                      {" "}
+                      {moment(plan.end_datetime).locale("fa").format("HH:mm")}
+                    </span>
+                  </div>
+                </div>
               )}
               {status === "AlreadyStarted" && (
-                <span className="flex items-center justify-center gap-1 rounded-lg  bg-amber-500/10 p-2 text-sm text-amber-600">
+                <div className="flex items-center justify-center gap-1 rounded-lg  bg-amber-500/10 p-2 text-sm text-amber-600">
                   <BanIcon className="h-5 w-5 2xl:h-6 2xl:w-6  " />
                   <h3 className="text-[10px] 2xl:text-sm">{t.inProgress}</h3>
-                  <span className="text-[10px] 2xl:text-sm">
-                    {moment(plan.start_datetime).locale("fa").format("HH:mm")}{" "}
-                    تا {moment(plan.end_datetime).locale("fa").format("HH:m")}
-                  </span>
-                </span>
+                  <div dir="rtl" className="text-[10px]  2xl:text-sm">
+                    <span>
+                      {" "}
+                      {moment(plan.start_datetime).locale("fa").format("HH:mm")}
+                    </span>
+                    <span> {t.until}</span>
+                    <span>
+                      {" "}
+                      {moment(plan.end_datetime).locale("fa").format("HH:mm")}
+                    </span>
+                  </div>
+                </div>
               )}
             </div>
           </div>

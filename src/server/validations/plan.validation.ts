@@ -21,7 +21,7 @@ export const planDeleteSchema = z.object({
 
 export const planDateAndRoomSchema = z.object({
   roomId: z.string({ required_error: "این فیلد اجباری است" }),
-  date: z.date(),
+  date: z.string(),
 });
 export const planDateSchema = z.object({
   start_datetime: z.date(),
