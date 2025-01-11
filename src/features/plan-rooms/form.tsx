@@ -5,6 +5,8 @@ import {
   HourglassIcon,
   Loader2Icon,
   ReplaceIcon,
+  ShieldCheck,
+  ShieldOff,
   StickyNoteIcon,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -115,6 +117,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
     initialValues: {
       room: undefined,
       send_email: false,
+      is_confidential: false,
       title: "",
       roomId: "",
       start_datetime: date
@@ -146,14 +149,6 @@ export function ReserveRoom({ date }: { date: Moment }) {
   return (
     <>
       <div className="flex w-full flex-col items-center justify-center font-iransans ">
-        {/* <ButtonCheckbox
-          checked={formik.values.send_email}
-          onClick={() => {
-            formik.setFieldValue("send_email", !formik.values.send_email);
-          }}
-          text={t.NotifyUsers}
-        /> */}
-
         <MultiStep
           isLoading={createPlan.isLoading}
           onStepClick={(stepNumber) => {
@@ -298,25 +293,55 @@ export function ReserveRoom({ date }: { date: Moment }) {
               {users.isLoading ? (
                 "در حال دریافت کاربران برای انتخاب"
               ) : (
-                <div className="mx-auto max-w-sm rounded-md bg-secondary p-5">
-                  <MultiSelector
-                    label={t.chooseUsers}
-                    options={users.data
-                      .filter((a) => {
-                        if (a.role != "ROOM" && a.id !== session.data.user.id)
-                          return a;
-                      })
-                      .map((a) => {
-                        return {
-                          label: a.name,
-                          value: a.id,
-                        };
-                      })}
-                    onChange={(option) => {
-                      formik.setFieldValue("participants", option);
+                <div className="flex flex-col items-center justify-center gap-5">
+                  <ButtonCheckbox
+                    checked={formik.values.is_confidential}
+                    onClick={() => {
+                      formik.setFieldValue(
+                        "is_confidential",
+                        !formik.values.is_confidential
+                      );
                     }}
-                    value={formik.values.participants}
+                    text={
+                      formik.values.is_confidential
+                        ? t.confidential
+                        : t.notConfidential
+                    }
+                    checkIcon={<ShieldCheck className="size-5" />}
+                    unCheckIcon={<ShieldOff className="size-5" />}
                   />
+
+                  <ButtonCheckbox
+                    checked={formik.values.send_email}
+                    onClick={() => {
+                      formik.setFieldValue(
+                        "send_email",
+                        !formik.values.send_email
+                      );
+                    }}
+                    text={t.NotifyUsers}
+                  />
+
+                  <div className="mx-auto max-w-sm rounded-md bg-secondary p-5">
+                    <MultiSelector
+                      label={t.chooseUsers}
+                      options={users.data
+                        .filter((a) => {
+                          if (a.role != "ROOM" && a.id !== session.data.user.id)
+                            return a;
+                        })
+                        .map((a) => {
+                          return {
+                            label: a.name,
+                            value: a.id,
+                          };
+                        })}
+                      onChange={(option) => {
+                        formik.setFieldValue("participants", option);
+                      }}
+                      value={formik.values.participants}
+                    />
+                  </div>
                 </div>
               )}
               <Button

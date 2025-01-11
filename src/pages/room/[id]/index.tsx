@@ -12,7 +12,7 @@ import { api } from "~/utils/api";
 export default function SingleRoomPage() {
   const router = useRouter();
   const session = useSession();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const room = api.room.getRoomById.useQuery({
     id: router.query.id?.toString() ?? "",
@@ -43,11 +43,24 @@ export default function SingleRoomPage() {
 
   return (
     <RoomMainLayout>
-      <div className="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+      <div className=" min-h-screen gap-2 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-5">
+          <div
+            dir="rtl"
+            className="w-full items-center justify-center text-center text-2xl text-primary"
+          >
+            <span className="text-primary"> {t.todaysMeetings}</span>{" "}
+            <span className="text-3xl text-emerald-800">
+              {" "}
+              {moment()
+                .locale(language)
+                .format(language === "fa" ? "DD MMMM YYYY" : "YYYY MMMM DD")}
+            </span>
+          </div>
           <h1 className="mb-8 text-center text-3xl font-bold text-primary sm:text-4xl lg:text-5xl">
             {room.data?.title}
           </h1>
+
           {getPlans.data && getPlans.data.length === 0 ? (
             <div className="text-center text-lg text-gray-600">
               {t.noMeetingsToday}

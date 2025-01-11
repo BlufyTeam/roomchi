@@ -5,7 +5,13 @@ import { cn } from "~/lib/utils";
 import Button from "~/ui/buttons";
 import XIcon from "~/ui/icons/xicon";
 
-export default function ButtonCheckbox({ checked, text, onClick = () => {} }) {
+export default function ButtonCheckbox({
+  checked,
+  text,
+  onClick = () => {},
+  checkIcon = <BellIcon className={cn("size-5")} />,
+  unCheckIcon = <BellOffIcon className={cn("size-5")} />,
+}) {
   return (
     <Button
       onClick={onClick}
@@ -25,11 +31,7 @@ export default function ButtonCheckbox({ checked, text, onClick = () => {} }) {
       <Label htmlFor="send_email" className="cursor-pointer">
         {text}
       </Label>{" "}
-      {checked ? (
-        <BellIcon className={cn("size-5")} />
-      ) : (
-        <BellOffIcon className={cn("size-5")} />
-      )}
+      {checked ? checkIcon : unCheckIcon}
     </Button>
   );
 }

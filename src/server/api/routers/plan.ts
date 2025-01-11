@@ -149,7 +149,6 @@ export const planRouter = createTRPCRouter({
   createPlan: adminAndSuperAdminProcedure
     .input(createPlanSchema)
     .mutation(async ({ input, ctx }) => {
-      console.log({ input });
       if (
         moment(input.end_datetime).isSameOrBefore(moment(input.start_datetime))
       ) {
@@ -216,7 +215,7 @@ export const planRouter = createTRPCRouter({
 
       // Notify the users about the new plan
 
-      if (input.participantsIds.length > 0)
+      if (input.participantsIds.length > 0 && input.send_email)
         await sendPlanNotificationEmail(
           ctx,
           plan,

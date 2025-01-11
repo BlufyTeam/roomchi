@@ -73,6 +73,8 @@ function PlanItem({ plan, t }: { plan: PlanWithRoom; t: any }) {
         {statusConfig.icon}
         <span className="text-2xl">{statusConfig.label}</span>
       </div>
+      <span className="text-primary">{plan.title}</span>
+
       <div className="text-right">
         <p className="text-2xl text-accent">
           {moment(plan.start_datetime).locale("fa").format("HH:mm")}

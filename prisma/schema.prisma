@@ -63,6 +63,8 @@ model Plan {
   description    String
   participants   Participant[]
 
+  is_confidential Boolean @default(false)
+
   @@map("plans")
 }
 
