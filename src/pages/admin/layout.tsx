@@ -92,7 +92,7 @@ export default function AdminMainLayout({ children }: any): any {
                 className="flex cursor-pointer items-center justify-center gap-2 rounded-full stroke-white p-1.5 text-primary  hover:bg-accent/50 hover:stroke-primary hover:ring-accent/50"
               >
                 <ExitIcon className="h-4 w-4" />
-                <span className="hidden text-sm text-primary md:flex">
+                <span className="hidden w-auto text-sm text-primary md:flex">
                   {t.exit}
                 </span>
               </Button>

@@ -12,7 +12,7 @@ const roleToPathMap = {
 };
 
 export async function middleware(req: NextRequest) {
-  const token = await getToken({ req, secret: process.env.SECRET });
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   if (!token) {
     console.warn("No token found, redirecting to /login");
