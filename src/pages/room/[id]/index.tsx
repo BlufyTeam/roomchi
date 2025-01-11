@@ -43,8 +43,8 @@ export default function SingleRoomPage() {
 
   return (
     <RoomMainLayout>
-      <div className=" min-h-screen gap-2 px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-5">
+      <div className=" min-h-screen min-w-full gap-2 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-full flex-col items-center justify-center gap-5">
           <div
             dir="rtl"
             className="w-full items-center justify-center text-center text-2xl text-primary"
@@ -57,6 +57,7 @@ export default function SingleRoomPage() {
                 .format(language === "fa" ? "DD MMMM YYYY" : "YYYY MMMM DD")}
             </span>
           </div>
+
           <h1 className="mb-8 text-center text-3xl font-bold text-primary sm:text-4xl lg:text-5xl">
             {room.data?.title}
           </h1>

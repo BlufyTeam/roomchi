@@ -136,7 +136,7 @@ function RoomItem({
                 {t.capacity}:{capicity}
               </span>
             </ToolTip>
-
+            {/* 
             <div className="flex  w-40 flex-wrap items-center  justify-start gap-2">
               {[...Array(Math.min(capicity, 10)).keys()].map((i) => {
                 return (
@@ -146,14 +146,15 @@ function RoomItem({
                 );
               })}
               {capicity > 10 && <span>...</span>}
-            </div>
+            </div> */}
           </div>
-          <div className="grid grid-cols-3 items-center justify-end gap-2">
+          {/* <div className="grid grid-cols-3 items-center justify-end gap-2">
             <PrinterIcon />
             <CastIcon />
             <ProjectorIcon />
-          </div>
+          </div> */}
         </div>
+
         <div className="flex items-center justify-between">
           {room.price != 0 && (
             <span>

@@ -1,5 +1,6 @@
 import { Room } from "@prisma/client";
 import moment from "jalali-moment";
+import { ShieldCheck } from "lucide-react";
 
 import {
   AppleIcon,
@@ -123,7 +124,11 @@ function RoomItem({
   });
   const { language } = useLanguage();
   const t = translations[language];
-  const hasAlreadyJoined = plan.participants.find((a) => a.userId === userId);
+  const hasAlreadyJoined = plan.participants.find(
+    (a) => a.userId === userId
+  )?.hasAccepted;
+
+  const countOfParticipants = plan.participants.length;
   return (
     <>
       <div className="items-centercursor-pointer  flex flex-col  justify-between gap-5 rounded-xl border border-primary/30 bg-secondary p-5 text-primary backdrop-blur-md transition-colors hover:border-primary">
@@ -208,7 +213,8 @@ function RoomItem({
                 {t.capacity}:{capicity}{" "}
               </span>
             </ToolTip>
-            <div className=" flex w-40 flex-wrap  items-center justify-start  gap-2">
+
+            {/* <div className=" flex w-40 flex-wrap  items-center justify-start  gap-2">
               {[...Array(capicity).keys()].map((i) => {
                 return (
                   <>
@@ -224,14 +230,47 @@ function RoomItem({
                   </>
                 );
               })}
-            </div>
+            </div> */}
           </div>
-          <div className="grid grid-cols-3 items-center justify-end gap-2">
-            <PrinterIcon />
-            <CastIcon />
-            <ProjectorIcon />
+
+          {language === "fa" ? (
+            <span className="text-primary">
+              {countOfParticipants === 0 ? (
+                "0 شرکت کننده"
+              ) : (
+                <>
+                  {countOfParticipants} نفر شرکت{" "}
+                  {countOfParticipants === 1
+                    ? "کرده است"
+                    : countOfParticipants > 1
+                    ? "کرده اند"
+                    : ""}
+                </>
+              )}
+            </span>
+          ) : (
+            <span className="text-primary">
+              Participants {countOfParticipants}
+            </span>
+          )}
+          <div className="flex flex-col items-end justify-end gap-2">
+            {" "}
+            {/* <div className="grid grid-cols-3 items-center justify-end gap-2">
+              <PrinterIcon />
+              <CastIcon />
+              <ProjectorIcon />
+            </div> */}
+            {plan.is_confidential ? (
+              <div className="flex items-center justify-center gap-2 text-emerald-800  ">
+                <ShieldCheck className="size-4 shrink-0" />
+                <span> {t.confidential}</span>
+              </div>
+            ) : (
+              <span className="text-primary">{plan.title}</span>
+            )}
           </div>
         </div>
+
         <div className="flex items-center justify-between">
           {plan.room.price != 0 && <span>{plan.room.price} تومان</span>}
 
@@ -241,7 +280,8 @@ function RoomItem({
 
           {userId !== plan.userId &&
             plan.status === "Reserved" &&
-            sessionData.user.role === "USER" && (
+            sessionData.user.role === "USER" &&
+            plan.participants.find((a) => a.userId === userId) && (
               <>
                 <Button
                   disabled={joinPlan.isLoading || exitPlan.isLoading}

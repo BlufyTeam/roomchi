@@ -190,7 +190,8 @@ export default function Modal({
                     modalSize,
                     center ? "mobileMin:rounded-2xl" : "rounded-t-2xl",
                     "relative z-[101] flex  flex-col  items-center  justify-center gap-0 overflow-hidden border  border-accent/50  ",
-                    isOnMobile ? "h-full" : ""
+                    isOnMobile ? "h-full" : "",
+                    className
                   )}
 
                   // h-auto top-52

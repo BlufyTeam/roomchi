@@ -138,8 +138,11 @@ export const translations = {
     confidential: "Confidential",
     notConfidential: "Not Confidential",
     todaysMeetings: "Today's meetings",
+
+    participants: "Attendances",
   },
   fa: {
+    participants: "شرکت کنندگان",
     todaysMeetings: "جلسات امروز",
     confidential: "محرمانه",
     notConfidential: "غیر محرمانه",

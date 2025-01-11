@@ -19,6 +19,7 @@ import * as React from "react";
 interface PlanDetailsEmailProps {
   planTitle?: string;
   planDescription?: string;
+  isConfidential?: boolean;
   startDateTime?: string;
   endDateTime?: string;
   roomTitle?: string;
@@ -29,6 +30,7 @@ interface PlanDetailsEmailProps {
 export const PlanDetailsEmail = ({
   planTitle,
   planDescription,
+  isConfidential = false,
   startDateTime,
   endDateTime,
   roomTitle,
@@ -70,7 +72,7 @@ export const PlanDetailsEmail = ({
             <Row style={{ ...boxInfos, paddingBottom: "0" }}>
               <Column>
                 <Heading style={headingPrimary}>{planTitle}</Heading>
-
+                {isConfidential && <Text style={title}>محرمانه</Text>}
                 <Text style={paragraph}>
                   <b>توضیحات: </b>
                   {planDescription}
@@ -131,6 +133,12 @@ const main = {
 
 const paragraph = {
   fontSize: 16,
+  lineHeight: "1.5",
+  direction: "rtl" as const,
+};
+
+const title = {
+  fontSize: 20,
   lineHeight: "1.5",
   direction: "rtl" as const,
 };

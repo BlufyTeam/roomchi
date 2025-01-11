@@ -41,6 +41,7 @@ export const sendPlanNotificationEmail = async (
   text += ` اتاق ${plan?.room?.title}`;
   text += "\n";
   text += plan.title;
+  text += plan.is_confidential ? "محرمانه" : "";
   text += "\n";
   text += plan.description;
 

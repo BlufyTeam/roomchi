@@ -100,7 +100,8 @@ export function ReserveRoom({ date }: { date: Moment }) {
         try {
           await createPlan.mutateAsync({
             roomId: formik.values.roomId,
-            //send_email: formik.values.send_email,
+            send_email: formik.values.send_email,
+            is_confidential: formik.values.is_confidential,
             title: formik.values.title,
             start_datetime: formik.values.start_datetime,
             end_datetime: formik.values.end_datetime,

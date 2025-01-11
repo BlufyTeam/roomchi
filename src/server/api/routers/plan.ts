@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import moment from "jalali-moment";
+import { tree } from "next/dist/build/templates/app-page";
 import { z } from "zod";
 import {
   createTRPCRouter,
@@ -68,7 +69,11 @@ export const planRouter = createTRPCRouter({
         },
         include: {
           room: true,
-          participants: true,
+          participants: {
+            include: {
+              user: true,
+            },
+          },
         },
         orderBy: { start_datetime: "asc" },
       });
@@ -192,6 +197,7 @@ export const planRouter = createTRPCRouter({
           start_datetime: input.start_datetime,
           description: input.description,
           end_datetime: input.end_datetime,
+          is_confidential: input.is_confidential,
           participants: {
             create: input.participantsIds.map((participantId) => ({
               user: {
@@ -199,6 +205,7 @@ export const planRouter = createTRPCRouter({
                   id: participantId, // Replace with the participant's user ID
                 },
               },
+              hasAccepted: true,
               assignedBy: ctx.session.user.id,
             })),
           },

@@ -39,7 +39,7 @@ const calendar: Moment[] = calendarTemp.map((a) => a.days).flat(1);
 
 export default function AdminPage() {
   const session = useSession();
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   const getPlansBetWeenDates = api.plan.getPlansBetWeenDates.useQuery(
     {
       start_datetime: calendar.at(0).toDate(),
@@ -129,9 +129,11 @@ export default function AdminPage() {
                       return (
                         <div
                           key={i}
-                          className="hidden items-center justify-center gap-2 md:flex "
+                          className="hidden items-center justify-center gap-2 text-primary md:flex "
                         >
-                          <span>{plan.title}</span>
+                          <span>
+                            {plan.is_confidential ? t.confidential : plan.title}
+                          </span>
                           <span>
                             {moment(plan.start_datetime).format("HH:MM")}
                           </span>

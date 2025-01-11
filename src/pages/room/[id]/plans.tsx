@@ -1,10 +1,24 @@
 import moment from "jalali-moment";
-import { BanIcon, CalendarCheckIcon, CalendarRangeIcon } from "lucide-react";
-import React from "react";
+import {
+  BanIcon,
+  CalendarCheckIcon,
+  CalendarRangeIcon,
+  ShieldCheck,
+} from "lucide-react";
+import React, { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/shadcn/popover";
 import { useLanguage } from "~/context/language.context";
+import { cn } from "~/lib/utils";
+import Button from "~/ui/buttons";
+import ChevronDownIcon from "~/ui/icons/chervons/chevron-down";
+import Modal from "~/ui/modals";
 import { RouterOutputs } from "~/utils/api";
 
-type PlanWithRoom = RouterOutputs["plan"]["getPlansByDate"][number];
+type PlanWithRoom = RouterOutputs["plan"]["getPlansByDateAndRoom"][number];
 
 interface PlansProps {
   plans: PlanWithRoom[];
@@ -14,17 +28,18 @@ export default function Plans({ plans = [] }: PlansProps) {
   const { t } = useLanguage();
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1  gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {plans.map((plan) => (
-          <PlanItem key={plan.id} plan={plan} t={t} />
+          <PlanItem key={plan.id} plan={plan} />
         ))}
       </div>
     </div>
   );
 }
 
-function PlanItem({ plan, t }: { plan: PlanWithRoom; t: any }) {
+function PlanItem({ plan }: { plan: PlanWithRoom }) {
+  const { t } = useLanguage();
   const status = plan.status;
   let statusConfig;
 
@@ -63,25 +78,71 @@ function PlanItem({ plan, t }: { plan: PlanWithRoom; t: any }) {
   }
 
   return (
-    <div
-      dir="rtl"
-      className="flex flex-col justify-between rounded-lg border border-primary/10 bg-secbuttn p-4 shadow-md"
-    >
+    <div className="flex flex-col justify-between gap-2 rounded-lg bg-secondary p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
       <div
-        className={`flex items-center justify-start gap-2 rounded-md ${statusConfig.bgColor} ${statusConfig.textColor} mb-2 p-2`}
+        className={cn(
+          `mb-4 flex items-center justify-start gap-2 rounded-md p-3`,
+          statusConfig.bgColor,
+          statusConfig.textColor
+        )}
       >
         {statusConfig.icon}
-        <span className="text-2xl">{statusConfig.label}</span>
+        <span className="text-xl font-semibold">{statusConfig.label}</span>
       </div>
-      <span className="text-primary">{plan.title}</span>
-
+      {plan.is_confidential ? (
+        <div className="flex items-center  justify-center gap-2 text-2xl text-emerald-800  ">
+          <ShieldCheck className="size-6 shrink-0" />
+          <span> {t.confidential}</span>
+        </div>
+      ) : (
+        <span className="text-primary">{plan.title}</span>
+      )}
+      <ParticipantsModal participants={plan?.participants ?? []} />
       <div className="text-right">
-        <p className="text-2xl text-accent">
+        <p className="text-xl text-primary">
           {moment(plan.start_datetime).locale("fa").format("HH:mm")}
-          {t.until}
+          {" - "}
           {moment(plan.end_datetime).locale("fa").format("HH:mm")}
         </p>
       </div>
     </div>
+  );
+}
+
+function ParticipantsModal({ participants }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { t } = useLanguage();
+  return (
+    <>
+      <Button
+        className="bg-emerald-200 text-emerald-800"
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        {t.participants}
+      </Button>
+      <Modal
+        title={t.participants}
+        className="bg-secondary"
+        size="sm"
+        isOpen={isOpen}
+        center
+        onClose={() => setIsOpen(false)}
+      >
+        <div className="flex flex-wrap items-center justify-start gap-2 p-5">
+          {participants.map((participant) => (
+            <div
+              key={participant.userId}
+              className="flex items-center space-x-2"
+            >
+              <span className=" rounded-full bg-emerald-200 px-2 text-xl text-emerald-800">
+                {participant.user.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Modal>
+    </>
   );
 }
