@@ -112,7 +112,7 @@ export const planRouter = createTRPCRouter({
       const plans = await ctx.prisma.plan.findMany({
         where: {
           start_datetime: {
-            gte: moment(input.date).locale("fa").startOf("day").toDate(),
+            gte: input.date,
             lt: moment(input.date).locale("fa").endOf("day").toDate(),
           },
           room: {
