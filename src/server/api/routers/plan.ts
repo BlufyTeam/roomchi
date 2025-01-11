@@ -106,7 +106,8 @@ export const planRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       console.log({
         input,
-        start: moment(input.date).locale("fa").startOf("day").toDate(),
+        gte: input.date,
+        lt: moment(input.date).locale("fa").endOf("day").toDate(),
       });
 
       const plans = await ctx.prisma.plan.findMany({
