@@ -104,17 +104,29 @@ export const planRouter = createTRPCRouter({
   getPlansByDate: protectedProcedure
     .input(z.object({ date: z.string().optional() }).optional())
     .query(async ({ ctx, input }) => {
+      const date = moment(input.date);
+
+      // Convert to Jalali and calculate the start and end of the day
+
+      // Convert to Gregorian and calculate gte and lt in UTC
+
+      const lt = date
+        .clone()
+        .add(1, "day")
+        .subtract(1, "millisecond")
+        .utc()
+        .toISOString(); // End of the next day in UTC
+
       console.log({
         input,
-        gte: input.date,
-        lt: moment(input.date).locale("fa").endOf("day").toDate(),
-      });
 
+        lt,
+      });
       const plans = await ctx.prisma.plan.findMany({
         where: {
           start_datetime: {
             gte: input.date,
-            lt: moment(input.date).locale("fa").endOf("day").toDate(),
+            lt: lt,
           },
           room: {
             companyId: ctx.session.user.companyId,
