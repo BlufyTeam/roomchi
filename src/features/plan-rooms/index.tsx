@@ -8,7 +8,7 @@ import {
   StickyNoteIcon,
 } from "lucide-react";
 import { ReplaceIcon } from "lucide-react";
-import React, { ElementRef, useRef, useState } from "react";
+import React, { ElementRef, useMemo, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import PickTimeView from "~/features/pick-time-view";
 import PlanListWithRoom from "~/features/plan-list-with-room";
@@ -38,9 +38,9 @@ export default function PlanRooms({ date, dateString }: Props) {
   const { language } = useLanguage();
   const t = translations[language];
   const session = useSession();
-
+  const todayDate = useMemo(() => new Date().toISOString(), []);
   const getPlans = api.plan.getPlansByDate.useQuery({
-    date: date.toDate(),
+    date: todayDate,
   });
 
   if (getPlans.isLoading || session.status === "loading")

@@ -113,7 +113,7 @@ export const planRouter = createTRPCRouter({
       });
     }),
   getPlansByDate: protectedProcedure
-    .input(z.object({ date: z.date().optional() }).optional())
+    .input(z.object({ date: z.string().optional() }).optional())
     .query(async ({ ctx, input }) => {
       console.log({
         input,
