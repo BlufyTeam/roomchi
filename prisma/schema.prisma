@@ -70,7 +70,7 @@ model Plan {
 }
 
 model Participant {
-  plan        Plan     @relation(fields: [planId], references: [id])
+  plan        Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
   planId      String // relation scalar field (used in the `@relation` attribute above)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String // relation scalar field (used in the `@relation` attribute above)
