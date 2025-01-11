@@ -88,12 +88,6 @@ export const PlanDetailsEmail = ({
                     <Button href={planLink} style={button}>
                       لینک جلسه آنلاین
                     </Button>
-                    <Img
-                      style={image}
-                      width={620}
-                      src={qrCodeDataUrl}
-                      alt="Qr Code"
-                    />
                   </Column>
                 )}
 

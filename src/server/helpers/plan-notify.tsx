@@ -46,15 +46,15 @@ export const sendPlanNotificationEmail = async (
   text += plan.title;
   text += "\n";
   text += plan.description;
-  const qrCodeDataUrl = await generateQRCode(plan.link);
-  console.log(plan.link);
-  console.log(qrCodeDataUrl);
+  // const qrCodeDataUrl = await generateQRCode(plan.link);
+  // console.log(plan.link);
+  // console.log(qrCodeDataUrl);
   const emailHtml = await render(
     <PlanDetailsEmail
       planDescription={plan.description}
       planTitle={plan.title}
       planLink={plan.link}
-      qrCodeDataUrl={qrCodeDataUrl}
+      qrCodeDataUrl={""}
       roomTitle={plan.room?.title}
       startDateTime={timeStart}
       endDateTime={timeEnd}
