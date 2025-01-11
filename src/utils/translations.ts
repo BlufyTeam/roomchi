@@ -140,8 +140,10 @@ export const translations = {
     todaysMeetings: "Today's meetings",
 
     participants: "Attendances",
+    linkForOnlineMeeting: "Link for online meeting",
   },
   fa: {
+    linkForOnlineMeeting: "لینک جلسه آنلاین",
     participants: "شرکت کنندگان",
     todaysMeetings: "جلسات امروز",
     confidential: "محرمانه",

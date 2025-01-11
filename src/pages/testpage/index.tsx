@@ -20,6 +20,8 @@ import {
 import UploadImage from "~/features/uplaod-image-base64";
 import moment from "jalali-moment";
 import { api } from "~/utils/api";
+import { generateQRCode } from "~/utils/qr-code";
+import Image from "next/image";
 
 const frameworks = [
   {
@@ -44,7 +46,7 @@ const frameworks = [
   },
 ];
 
-export default function TestPage() {
+export default function TestPage({ url }) {
   // const plans = api.plan.getPlansByDate.useQuery({
   //   // roomId: router.query.id as string,
   //   date: moment("2023-06-13").toDate(),
@@ -52,6 +54,8 @@ export default function TestPage() {
   // if (plans.isLoading) return <>loading</>;
   return (
     <>
+      {url}
+      <Image src={url} width={500} height={500} alt="" />
       <br />
     </>
   );
@@ -107,4 +111,14 @@ export function ComboBox({
       </PopoverContent>
     </Popover>
   );
+}
+
+export async function getServerSideProps() {
+  const gen = await generateQRCode("https://google.com");
+  console.log(gen);
+  return {
+    props: {
+      url: gen,
+    },
+  };
 }

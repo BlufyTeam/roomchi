@@ -34,13 +34,13 @@ type Props = {
   date: Moment;
   dateString?: string;
 };
-export default function PlanRooms({ date, dateString }: Props) {
+export default function PlanRooms({ date }: Props) {
   const { language } = useLanguage();
   const t = translations[language];
   const session = useSession();
-  const todayDate = useMemo(() => new Date().toISOString(), []);
+
   const getPlans = api.plan.getPlansByDate.useQuery({
-    date: todayDate,
+    date: date.toISOString(),
   });
 
   if (getPlans.isLoading || session.status === "loading")

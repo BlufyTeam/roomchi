@@ -187,6 +187,7 @@ export const planRouter = createTRPCRouter({
           description: input.description,
           end_datetime: input.end_datetime,
           is_confidential: input.is_confidential,
+          link: input?.link,
           participants: {
             create: input.participantsIds.map((participantId) => ({
               user: {

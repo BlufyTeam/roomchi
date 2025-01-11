@@ -106,6 +106,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
             start_datetime: formik.values.start_datetime,
             end_datetime: formik.values.end_datetime,
             description: formik.values.description,
+            link: formik.values.link,
             participantsIds: formik.values.participants.map((a) => a.value),
           });
           goTo(0);
@@ -120,6 +121,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
       send_email: false,
       is_confidential: false,
       title: "",
+      link: "",
       roomId: "",
       start_datetime: date
         .clone()
@@ -245,7 +247,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
             </div>,
             <div
               key={3}
-              className="flex flex-col items-center justify-center gap-4 "
+              className="flex w-full max-w-sm flex-col items-center justify-center gap-4 "
             >
               <p
                 onClick={() => {
@@ -279,6 +281,11 @@ export function ReserveRoom({ date }: { date: Moment }) {
               <TextFieldWithLable
                 label={t.description}
                 {...formik.getFieldProps("description")}
+              />
+              <TextFieldWithLable
+                isRtl={false}
+                label={t.linkForOnlineMeeting}
+                {...formik.getFieldProps("link")}
               />
               <Button
                 disabled={createPlan.isLoading}

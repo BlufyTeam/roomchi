@@ -23,6 +23,8 @@ interface PlanDetailsEmailProps {
   startDateTime?: string;
   endDateTime?: string;
   roomTitle?: string;
+  planLink?: string;
+  qrCodeDataUrl?: string;
   roomId: string;
   withEnterButton: boolean;
 }
@@ -32,6 +34,8 @@ export const PlanDetailsEmail = ({
   planDescription,
   isConfidential = false,
   startDateTime,
+  planLink,
+  qrCodeDataUrl,
   endDateTime,
   roomTitle,
   roomId,
@@ -60,14 +64,14 @@ export const PlanDetailsEmail = ({
           </Section> */}
 
           <Section style={content}>
-            <Row>
+            {/* <Row>
               <Img
                 style={image}
                 width={620}
                 src={`https://www.recraft.ai/community?imageId=3313c996-31e8-4bc9-9d64-65c04a30f7af`}
                 alt="تصویر سربرگ"
               />
-            </Row>
+            </Row> */}
 
             <Row style={{ ...boxInfos, paddingBottom: "0" }}>
               <Column>
@@ -77,6 +81,22 @@ export const PlanDetailsEmail = ({
                   <b>توضیحات: </b>
                   {planDescription}
                 </Text>
+
+                {planLink?.length > 0 && (
+                  <Column>
+                    {" "}
+                    <Button href={planLink} style={button}>
+                      لینک جلسه آنلاین
+                    </Button>
+                    <Img
+                      style={image}
+                      width={620}
+                      src={qrCodeDataUrl}
+                      alt="Qr Code"
+                    />
+                  </Column>
+                )}
+
                 <Text style={{ ...paragraph, marginTop: -5 }}>
                   <b>زمان شروع: </b>
                   {startDateTime}

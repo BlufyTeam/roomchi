@@ -4,6 +4,7 @@ import moment from "moment";
 import { z } from "zod";
 import { sendEmail } from "~/lib/mail/nodemailer-config";
 import PlanDetailsEmail from "~/templates/notify-users-email";
+import { generateQRCode } from "~/utils/qr-code";
 
 export const sendPlanNotificationEmail = async (
   ctx,
@@ -42,13 +43,18 @@ export const sendPlanNotificationEmail = async (
   text += "\n";
   text += plan.title;
   text += plan.is_confidential ? "محرمانه" : "";
+  text += plan.title;
   text += "\n";
   text += plan.description;
-
+  const qrCodeDataUrl = await generateQRCode(plan.link);
+  console.log(plan.link);
+  console.log(qrCodeDataUrl);
   const emailHtml = await render(
     <PlanDetailsEmail
       planDescription={plan.description}
       planTitle={plan.title}
+      planLink={plan.link}
+      qrCodeDataUrl={qrCodeDataUrl}
       roomTitle={plan.room?.title}
       startDateTime={timeStart}
       endDateTime={timeEnd}

@@ -60,7 +60,8 @@ model Plan {
   roomId         String
   start_datetime DateTime
   end_datetime   DateTime
-  description    String
+  description    String?
+  link           String?
   participants   Participant[]
 
   is_confidential Boolean @default(false)

@@ -3,9 +3,11 @@ import {
   BanIcon,
   CalendarCheckIcon,
   CalendarRangeIcon,
+  LinkIcon,
   ShieldCheck,
 } from "lucide-react";
 import React, { useState } from "react";
+import { QrCode } from "~/components/main/qr-code";
 import {
   Popover,
   PopoverContent,
@@ -100,6 +102,8 @@ function PlanItem({ plan }: { plan: PlanWithRoom }) {
       {!plan.is_confidential && (
         <ParticipantsModal participants={plan?.participants ?? []} />
       )}
+
+      {plan?.link && <LinkModal url={plan.link} />}
       <div className="text-right">
         <p className="text-xl text-primary">
           {moment(plan.start_datetime).locale("fa").format("HH:mm")}
@@ -143,6 +147,39 @@ function ParticipantsModal({ participants }) {
               </span>
             </div>
           ))}
+        </div>
+      </Modal>
+    </>
+  );
+}
+
+function LinkModal({ url }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { t } = useLanguage();
+  return (
+    <>
+      <Button
+        className="gap-2 bg-emerald-200 text-emerald-800"
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        <span> {t.linkForOnlineMeeting}</span>
+        <LinkIcon />
+      </Button>
+      <Modal
+        title={t.linkForOnlineMeeting}
+        className="bg-secondary"
+        size="sm"
+        isOpen={isOpen}
+        center
+        onClose={() => setIsOpen(false)}
+      >
+        <div className="flex flex-col items-center justify-center gap-2  p-5">
+          <QrCode value={url} />
+          <a href={url} className="text-primary underline underline-offset-8">
+            {url}
+          </a>
         </div>
       </Modal>
     </>
