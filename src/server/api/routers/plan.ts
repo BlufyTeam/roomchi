@@ -48,23 +48,12 @@ export const planRouter = createTRPCRouter({
   getPlansByDateAndRoom: protectedProcedure // will be tablet or roomProcedure in the future
     .input(planDateAndRoomSchema)
     .query(async ({ ctx, input }) => {
-      const nowTime = moment(input.date).locale("fa").toDate();
-      const endOfDay = moment(input.date).locale("fa").endOf("day").toDate(); // End of day in server's local time
-      console.log({
-        date: input.date,
-        nowTime: moment(input.date).locale("fa"),
-      });
-      console.log({
-        dateEnd: endOfDay,
-        end: moment(input.date).locale("fa").endOf("day"),
-      });
-
       const plans = await ctx.prisma.plan.findMany({
         where: {
           roomId: input.roomId,
           start_datetime: {
-            gte: nowTime,
-            lt: endOfDay,
+            gte: moment(input.date).locale("fa").startOf("day").toDate(),
+            lt: moment(input.date).locale("fa").endOf("day").toDate(),
           },
         },
         include: {
