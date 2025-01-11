@@ -97,7 +97,9 @@ function PlanItem({ plan }: { plan: PlanWithRoom }) {
       ) : (
         <span className="text-primary">{plan.title}</span>
       )}
-      <ParticipantsModal participants={plan?.participants ?? []} />
+      {!plan.is_confidential && (
+        <ParticipantsModal participants={plan?.participants ?? []} />
+      )}
       <div className="text-right">
         <p className="text-xl text-primary">
           {moment(plan.start_datetime).locale("fa").format("HH:mm")}
