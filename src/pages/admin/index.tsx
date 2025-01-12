@@ -133,12 +133,12 @@ export default function AdminPage() {
                       return (
                         <div
                           key={i}
-                          className="hidden items-center justify-center gap-2 text-primary md:flex "
+                          className="hidden items-center justify-center gap-2 text-accent md:flex "
                         >
-                          <span>
+                          <span className=" group-hover:text-secondary">
                             {plan.is_confidential ? t.confidential : plan.title}
                           </span>
-                          <span>
+                          <span className=" group-hover:text-secondary">
                             {moment(plan.start_datetime).format("HH:MM")}
                           </span>
                         </div>
