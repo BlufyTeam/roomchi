@@ -70,15 +70,14 @@ export const planRouter = createTRPCRouter({
       return plans.map((plan, i) => {
         let status: RoomStatus = "Open";
 
-        // Set Persian locale globally
         moment.locale("fa");
 
-        // Get `now` in Tehran timezone
-        const now = moment().zone("Asia/Tehran");
+        // Get current time in UTC and then convert to Jalali
+        const now = moment().utc();
 
-        // Parse `start` and `end` in Tehran timezone
-        const start = moment(plan.start_datetime).zone("Asia/Tehran");
-        const end = moment(plan.end_datetime).zone("Asia/Tehran");
+        // Parse `start` and `end` as UTC
+        const start = moment(plan.start_datetime).utc();
+        const end = moment(plan.end_datetime).utc();
 
         console.log({
           i,
@@ -86,10 +85,11 @@ export const planRouter = createTRPCRouter({
           now: now.format("YYYY-MM-DD | HH:mm:ss"), // UTC format
           start: start.format("YYYY-MM-DD | HH:mm:ss"),
           end: end.format("YYYY-MM-DD | HH:mm:ss"),
-          jalaliNow: now.format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in local time
+          jalaliNow: now.local().format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in UTC
+          IS: now.isBetween(start, end), // Correct comparison in UTC
         });
 
-        // Compare times in Tehran timezone
+        // Compare times in UTC
         if (now.isBetween(start, end)) status = "AlreadyStarted";
         if (now.isAfter(end)) status = "Done";
         if (now.isBefore(start)) status = "Reserved";
@@ -161,15 +161,14 @@ export const planRouter = createTRPCRouter({
       return plans.map((plan, i) => {
         let status: RoomStatus = "Open";
 
-        // Set Persian locale globally
         moment.locale("fa");
 
-        // Get `now` in Tehran timezone
-        const now = moment().zone("Asia/Tehran");
+        // Get current time in UTC and then convert to Jalali
+        const now = moment().utc();
 
-        // Parse `start` and `end` in Tehran timezone
-        const start = moment(plan.start_datetime).zone("Asia/Tehran");
-        const end = moment(plan.end_datetime).zone("Asia/Tehran");
+        // Parse `start` and `end` as UTC
+        const start = moment(plan.start_datetime).utc();
+        const end = moment(plan.end_datetime).utc();
 
         console.log({
           i,
@@ -177,10 +176,11 @@ export const planRouter = createTRPCRouter({
           now: now.format("YYYY-MM-DD | HH:mm:ss"), // UTC format
           start: start.format("YYYY-MM-DD | HH:mm:ss"),
           end: end.format("YYYY-MM-DD | HH:mm:ss"),
-          jalaliNow: now.format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in local time
+          jalaliNow: now.local().format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in UTC
+          IS: now.isBetween(start, end), // Correct comparison in UTC
         });
 
-        // Compare times in Tehran timezone
+        // Compare times in UTC
         if (now.isBetween(start, end)) status = "AlreadyStarted";
         if (now.isAfter(end)) status = "Done";
         if (now.isBefore(start)) status = "Reserved";
