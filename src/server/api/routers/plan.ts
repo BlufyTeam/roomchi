@@ -77,19 +77,26 @@ export const planRouter = createTRPCRouter({
 
         momentTz.locale("fa"); // Set the locale to Persian (fa)
 
-        // Get the current time in Tehran time zone
-        const now = momentTz().tz("Asia/Tehran");
+        // Get the current time in UTC and subtract 3 hours and 30 minutes (Tehran offset)
+        const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
 
-        // Parse the start and end times in Tehran time zone
-        const start = momentTz(plan.start_datetime).tz("Asia/Tehran");
-        const end = momentTz(plan.end_datetime).tz("Asia/Tehran");
+        // Parse the start and end times
+        const start = momentTz(plan.start_datetime);
+        const end = momentTz(plan.end_datetime);
+
+        // Log the raw UTC timestamps for debugging
+        console.log({
+          nowUTC: now.toISOString(), // Raw UTC string for now
+          startUTC: start.toISOString(), // Raw UTC string for start
+          endUTC: end.toISOString(), // Raw UTC string for end
+        });
 
         console.log({
           i,
           title: plan.title,
-          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now in Tehran time
-          start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in Tehran time
-          end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in Tehran time
+          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now with manual subtraction
+          start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in local time
+          end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in local time
           jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
           IS: now.isBetween(start, end), // Check if now is between start and end
         });
@@ -173,19 +180,26 @@ export const planRouter = createTRPCRouter({
 
         momentTz.locale("fa"); // Set the locale to Persian (fa)
 
-        // Get the current time in Tehran time zone
-        const now = momentTz().tz("Asia/Tehran");
+        // Get the current time in UTC and subtract 3 hours and 30 minutes (Tehran offset)
+        const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
 
-        // Parse the start and end times in Tehran time zone
-        const start = momentTz(plan.start_datetime).tz("Asia/Tehran");
-        const end = momentTz(plan.end_datetime).tz("Asia/Tehran");
+        // Parse the start and end times
+        const start = momentTz(plan.start_datetime);
+        const end = momentTz(plan.end_datetime);
+
+        // Log the raw UTC timestamps for debugging
+        console.log({
+          nowUTC: now.toISOString(), // Raw UTC string for now
+          startUTC: start.toISOString(), // Raw UTC string for start
+          endUTC: end.toISOString(), // Raw UTC string for end
+        });
 
         console.log({
           i,
           title: plan.title,
-          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now in Tehran time
-          start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in Tehran time
-          end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in Tehran time
+          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now with manual subtraction
+          start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in local time
+          end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in local time
           jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
           IS: now.isBetween(start, end), // Check if now is between start and end
         });
