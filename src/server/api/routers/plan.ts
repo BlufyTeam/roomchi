@@ -72,8 +72,8 @@ export const planRouter = createTRPCRouter({
 
         moment.locale("fa");
 
-        // Get current time in UTC and then convert to Jalali
-        const now = moment().utc();
+        // Get current time in UTC (correctly reflecting the actual UTC time)
+        const now = moment.utc();
 
         // Parse `start` and `end` as UTC
         const start = moment(plan.start_datetime).utc();
@@ -157,14 +157,13 @@ export const planRouter = createTRPCRouter({
         },
         orderBy: { start_datetime: "desc" },
       });
-
       return plans.map((plan, i) => {
         let status: RoomStatus = "Open";
 
         moment.locale("fa");
 
-        // Get current time in UTC and then convert to Jalali
-        const now = moment().utc();
+        // Get current time in UTC (correctly reflecting the actual UTC time)
+        const now = moment.utc();
 
         // Parse `start` and `end` as UTC
         const start = moment(plan.start_datetime).utc();
