@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import moment from "jalali-moment";
+import momentTz from "moment-timezone";
 import { tree } from "next/dist/build/templates/app-page";
 import { z } from "zod";
 import {
@@ -72,24 +73,29 @@ export const planRouter = createTRPCRouter({
 
         moment.locale("fa");
 
-        // Get current time in UTC (correctly reflecting the actual UTC time)
-        const now = moment.utc();
+        // Get `now` in Tehran timezone
+        const now = momentTz().tz("Asia/Tehran");
 
-        // Parse `start` and `end` as UTC
-        const start = moment(plan.start_datetime).utc();
-        const end = moment(plan.end_datetime).utc();
+        // Parse `start` and `end` in Tehran timezone
+        const start = momentTz(
+          plan.start_datetime,
+          "YYYY-MM-DDTHH:mm:ss.SSSZ"
+        ).tz("Asia/Tehran");
+        const end = momentTz(plan.end_datetime, "YYYY-MM-DDTHH:mm:ss.SSSZ").tz(
+          "Asia/Tehran"
+        );
 
         console.log({
           i,
           title: plan.title,
-          now: now.format("YYYY-MM-DD | HH:mm:ss"), // UTC format
+          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Jalali date in Tehran time
           start: start.format("YYYY-MM-DD | HH:mm:ss"),
           end: end.format("YYYY-MM-DD | HH:mm:ss"),
-          jalaliNow: now.local().format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in UTC
-          IS: now.isBetween(start, end), // Correct comparison in UTC
+          jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
+          IS: now.isBetween(start, end), // This will now return the correct value
         });
 
-        // Compare times in UTC
+        // Compare times
         if (now.isBetween(start, end)) status = "AlreadyStarted";
         if (now.isAfter(end)) status = "Done";
         if (now.isBefore(start)) status = "Reserved";
@@ -162,24 +168,29 @@ export const planRouter = createTRPCRouter({
 
         moment.locale("fa");
 
-        // Get current time in UTC (correctly reflecting the actual UTC time)
-        const now = moment.utc();
+        // Get `now` in Tehran timezone
+        const now = momentTz().tz("Asia/Tehran");
 
-        // Parse `start` and `end` as UTC
-        const start = moment(plan.start_datetime).utc();
-        const end = moment(plan.end_datetime).utc();
+        // Parse `start` and `end` in Tehran timezone
+        const start = momentTz(
+          plan.start_datetime,
+          "YYYY-MM-DDTHH:mm:ss.SSSZ"
+        ).tz("Asia/Tehran");
+        const end = momentTz(plan.end_datetime, "YYYY-MM-DDTHH:mm:ss.SSSZ").tz(
+          "Asia/Tehran"
+        );
 
         console.log({
           i,
           title: plan.title,
-          now: now.format("YYYY-MM-DD | HH:mm:ss"), // UTC format
+          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Jalali date in Tehran time
           start: start.format("YYYY-MM-DD | HH:mm:ss"),
           end: end.format("YYYY-MM-DD | HH:mm:ss"),
-          jalaliNow: now.local().format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in UTC
-          IS: now.isBetween(start, end), // Correct comparison in UTC
+          jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
+          IS: now.isBetween(start, end), // This will now return the correct value
         });
 
-        // Compare times in UTC
+        // Compare times
         if (now.isBetween(start, end)) status = "AlreadyStarted";
         if (now.isAfter(end)) status = "Done";
         if (now.isBefore(start)) status = "Reserved";
