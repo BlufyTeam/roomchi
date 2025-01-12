@@ -73,40 +73,35 @@ export const planRouter = createTRPCRouter({
         momentTz().tz("Asia/Tehran").format()
       ); // Should show Tehran time
       return plans.map((plan, i) => {
-        let status: RoomStatus = "Open";
+        let status = "Open"; // Default status
 
-        moment.locale("fa");
+        momentTz.locale("fa"); // Set the locale to Persian (fa)
 
-        // Get `now` in Tehran timezone
+        // Get the current time in Tehran time zone
         const now = momentTz().tz("Asia/Tehran");
 
-        // Parse `start` and `end` in Tehran timezone
-        const start = momentTz(
-          plan.start_datetime,
-          "YYYY-MM-DDTHH:mm:ss.SSSZ"
-        ).tz("Asia/Tehran");
-        const end = momentTz(plan.end_datetime, "YYYY-MM-DDTHH:mm:ss.SSSZ").tz(
-          "Asia/Tehran"
-        );
+        // Parse the start and end times in Tehran time zone
+        const start = momentTz(plan.start_datetime).tz("Asia/Tehran");
+        const end = momentTz(plan.end_datetime).tz("Asia/Tehran");
 
         console.log({
           i,
           title: plan.title,
-          now: now, // Jalali date in Tehran time
-          start: start,
-          end: end,
-          jalaliNow: now, // Jalali date in local time
-          IS: now.isBetween(start, end), // Should now return the correct value
+          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now in Tehran time
+          start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in Tehran time
+          end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in Tehran time
+          jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
+          IS: now.isBetween(start, end), // Check if now is between start and end
         });
 
-        // Compare times using `.isBetween()` with the same timezone context
-        if (now.isBetween(start, end, null, "[]")) status = "AlreadyStarted"; // "[]" for inclusive
-        if (now.isAfter(end)) status = "Done";
-        if (now.isBefore(start)) status = "Reserved";
+        // Compare times
+        if (now.isBetween(start, end)) status = "AlreadyStarted"; // If now is between start and end
+        if (now.isAfter(end)) status = "Done"; // If now is after the end time
+        if (now.isBefore(start)) status = "Reserved"; // If now is before the start time
 
         return {
           ...plan,
-          status,
+          status, // Add the computed status
         };
       });
     }),
@@ -174,40 +169,35 @@ export const planRouter = createTRPCRouter({
         momentTz().tz("Asia/Tehran").format()
       ); // Should show Tehran time
       return plans.map((plan, i) => {
-        let status: RoomStatus = "Open";
+        let status = "Open"; // Default status
 
-        moment.locale("fa");
+        momentTz.locale("fa"); // Set the locale to Persian (fa)
 
-        // Get `now` in Tehran timezone
+        // Get the current time in Tehran time zone
         const now = momentTz().tz("Asia/Tehran");
 
-        // Parse `start` and `end` in Tehran timezone
-        const start = momentTz(
-          plan.start_datetime,
-          "YYYY-MM-DDTHH:mm:ss.SSSZ"
-        ).tz("Asia/Tehran");
-        const end = momentTz(plan.end_datetime, "YYYY-MM-DDTHH:mm:ss.SSSZ").tz(
-          "Asia/Tehran"
-        );
+        // Parse the start and end times in Tehran time zone
+        const start = momentTz(plan.start_datetime).tz("Asia/Tehran");
+        const end = momentTz(plan.end_datetime).tz("Asia/Tehran");
 
         console.log({
           i,
           title: plan.title,
-          now: now, // Jalali date in Tehran time
-          start: start,
-          end: end,
-          jalaliNow: now, // Jalali date in local time
-          IS: now.isBetween(start, end), // Should now return the correct value
+          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now in Tehran time
+          start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in Tehran time
+          end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in Tehran time
+          jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
+          IS: now.isBetween(start, end), // Check if now is between start and end
         });
 
-        // Compare times using `.isBetween()` with the same timezone context
-        if (now.isBetween(start, end, null, "[]")) status = "AlreadyStarted"; // "[]" for inclusive
-        if (now.isAfter(end)) status = "Done";
-        if (now.isBefore(start)) status = "Reserved";
+        // Compare times
+        if (now.isBetween(start, end)) status = "AlreadyStarted"; // If now is between start and end
+        if (now.isAfter(end)) status = "Done"; // If now is after the end time
+        if (now.isBefore(start)) status = "Reserved"; // If now is before the start time
 
         return {
           ...plan,
-          status,
+          status, // Add the computed status
         };
       });
     }),
