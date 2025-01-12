@@ -74,11 +74,11 @@ export const planRouter = createTRPCRouter({
         moment.locale("fa");
 
         // Convert `now` to UTC
-        const now = moment().utc();
+        const now = moment();
 
         // Parse `start` and `end` as UTC
-        const start = moment(plan.start_datetime).utc();
-        const end = moment(plan.end_datetime).utc();
+        const start = moment(plan.start_datetime);
+        const end = moment(plan.end_datetime);
 
         console.log({
           i,
@@ -165,11 +165,11 @@ export const planRouter = createTRPCRouter({
         moment.locale("fa");
 
         // Convert `now` to UTC
-        const now = moment().utc();
+        const now = moment();
 
         // Parse `start` and `end` as UTC
-        const start = moment(plan.start_datetime).utc();
-        const end = moment(plan.end_datetime).utc();
+        const start = moment(plan.start_datetime);
+        const end = moment(plan.end_datetime);
 
         console.log({
           i,
