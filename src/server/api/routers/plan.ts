@@ -67,7 +67,11 @@ export const planRouter = createTRPCRouter({
         },
         orderBy: { start_datetime: "asc" },
       });
-
+      console.log("Server's Time:", moment().format()); // UTC time
+      console.log(
+        "Local Time (Tehran):",
+        momentTz().tz("Asia/Tehran").format()
+      ); // Should show Tehran time
       return plans.map((plan, i) => {
         let status: RoomStatus = "Open";
 
@@ -163,6 +167,12 @@ export const planRouter = createTRPCRouter({
         },
         orderBy: { start_datetime: "desc" },
       });
+
+      console.log("Server's Time:", moment().format()); // UTC time
+      console.log(
+        "Local Time (Tehran):",
+        momentTz().tz("Asia/Tehran").format()
+      ); // Should show Tehran time
       return plans.map((plan, i) => {
         let status: RoomStatus = "Open";
 
