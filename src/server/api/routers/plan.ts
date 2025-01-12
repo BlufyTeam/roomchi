@@ -70,18 +70,22 @@ export const planRouter = createTRPCRouter({
       return plans.map((plan, i) => {
         let status: RoomStatus = "Open";
 
+        // Convert to local time for comparison
+        const now = moment();
+        const start = moment(plan.start_datetime).local(); // Convert to local time
+        const end = moment(plan.end_datetime).local(); // Convert to local time
+
         console.log({
           i,
           title: plan.title,
-          now: moment().format("YYYY MM DD | HH:mm:ss"),
-          start: plan.start_datetime,
-          end: plan.end_datetime,
+          now: now.format("YYYY MM DD | HH:mm:ss"),
+          start: start.format("YYYY MM DD | HH:mm:ss"),
+          end: end.format("YYYY MM DD | HH:mm:ss"),
         });
 
-        if (moment().isBetween(plan.start_datetime, plan.end_datetime))
-          status = "AlreadyStarted";
-        if (moment().isAfter(plan.end_datetime)) status = "Done";
-        if (moment().isBefore(plan.start_datetime)) status = "Reserved";
+        if (now.isBetween(start, end)) status = "AlreadyStarted";
+        if (now.isAfter(end)) status = "Done";
+        if (now.isBefore(start)) status = "Reserved";
 
         return {
           ...plan,
@@ -150,18 +154,22 @@ export const planRouter = createTRPCRouter({
       return plans.map((plan, i) => {
         let status: RoomStatus = "Open";
 
+        // Convert to local time for comparison
+        const now = moment();
+        const start = moment(plan.start_datetime).local(); // Convert to local time
+        const end = moment(plan.end_datetime).local(); // Convert to local time
+
         console.log({
           i,
           title: plan.title,
-          now: moment().format("YYYY MM DD | HH:mm:ss"),
-          start: plan.start_datetime,
-          end: plan.end_datetime,
+          now: now.format("YYYY MM DD | HH:mm:ss"),
+          start: start.format("YYYY MM DD | HH:mm:ss"),
+          end: end.format("YYYY MM DD | HH:mm:ss"),
         });
 
-        if (moment().isBetween(plan.start_datetime, plan.end_datetime))
-          status = "AlreadyStarted";
-        if (moment().isAfter(plan.end_datetime)) status = "Done";
-        if (moment().isBefore(plan.start_datetime)) status = "Reserved";
+        if (now.isBetween(start, end)) status = "AlreadyStarted";
+        if (now.isAfter(end)) status = "Done";
+        if (now.isBefore(start)) status = "Reserved";
 
         return {
           ...plan,
