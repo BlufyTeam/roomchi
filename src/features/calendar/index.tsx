@@ -75,24 +75,24 @@ export default function Calendar({
 }: Props) {
   const { language } = useLanguage();
   const [calendar, setCalendar] = useState(
-    getMonthDays(moment().locale(language))
+    getMonthDays(moment().utc().locale(language))
   );
   return (
     <div className="grid  max-w-7xl  gap-10 px-2 py-10">
       <LayoutGroup id="months-InPageMenu">
         <InPageMenu
           className="mx-auto rounded-xl bg-secbuttn px-5 pb-1 pt-2"
-          value={moment().locale(language).month()}
+          value={moment().utc().locale(language).month()}
           list={language === "fa" ? MONTHS : MONTHS_EN}
           onChange={(monthNumber) => {
             let newCalendar = undefined;
             if (language === "en")
               newCalendar = getMonthDays(
-                moment().month(monthNumber).locale(language)
+                moment().utc().month(monthNumber).locale(language)
               );
             if (language === "fa")
               newCalendar = getMonthDays(
-                moment().jMonth(monthNumber).locale(language)
+                moment().utc().jMonth(monthNumber).locale(language)
               );
             setCalendar(newCalendar);
             onMonthChange(
@@ -109,7 +109,7 @@ export default function Calendar({
       <div className="grid  grid-cols-7 gap-2">
         {calendar.map((item: Moment, i) => {
           const isItemToday =
-            moment().locale(language).format("D MMMM yyyy") ===
+            moment().utc().locale(language).format("D MMMM yyyy") ===
             item.locale(language).format("D MMMM yyyy");
           return (
             <>
@@ -118,7 +118,7 @@ export default function Calendar({
                 key={i}
                 disabled={item
                   .clone()
-                  .isBefore(moment().locale(language).subtract(1, "day"))}
+                  .isBefore(moment().utc().locale(language).subtract(1, "day"))}
                 className={twMerge(
                   "text-centerd group relative flex cursor-pointer items-center justify-center"
                 )}

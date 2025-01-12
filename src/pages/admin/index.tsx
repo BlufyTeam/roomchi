@@ -16,7 +16,7 @@ import PickTimeView from "~/features/pick-time-view";
 import { useLanguage } from "~/context/language.context";
 
 let calendarTemp = [];
-const today = moment(Date.now()).locale("fa");
+const today = moment(Date.now()).utc().locale("fa");
 const startDay = today.clone().startOf("month").startOf("week");
 const endDay = today.clone().endOf("month").endOf("week");
 
@@ -41,8 +41,11 @@ export default function AdminPage() {
   const { language, t } = useLanguage();
   const getPlansBetWeenDates = api.plan.getPlansBetWeenDates.useQuery(
     {
-      start_datetime: calendar.at(0).toDate(),
-      end_datetime: calendar.at(calendar.length - 1).toDate(),
+      start_datetime: calendar.at(0).utc().toDate(),
+      end_datetime: calendar
+        .at(calendar.length - 1)
+        .utc()
+        .toDate(),
     },
     {
       enabled: session.status === "authenticated",
@@ -72,23 +75,25 @@ export default function AdminPage() {
       <Calendar
         onMonthChange={(startDate, endDate) => {
           utils.plan.getPlansBetWeenDates.invalidate({
-            start_datetime: startDate.toDate(),
-            end_datetime: endDate.toDate(),
+            start_datetime: startDate.utc().toDate(),
+            end_datetime: endDate.utc().toDate(),
           });
         }}
         onDate={(date, monthNumber) => {
           const plans = getPlansBetWeenDates.data
             .filter((plan) =>
               moment(plan.start_datetime)
+                .utc()
                 .startOf("day")
                 .isSame(date.startOf("day"))
             )
             .reverse();
 
           const formattedDate =
-            date.clone().add(1, "day").isBefore(moment()) && plans.length <= 0
+            date.clone().utc().add(1, "day").isBefore(moment()) &&
+            plans.length <= 0
               ? undefined
-              : date.toISOString();
+              : date.utc().toISOString();
           return (
             <Link
               key={date.toString()}

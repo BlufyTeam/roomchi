@@ -49,12 +49,25 @@ export const planRouter = createTRPCRouter({
   getPlansByDateAndRoom: protectedProcedure // will be tablet or roomProcedure in the future
     .input(planDateAndRoomSchema)
     .query(async ({ ctx, input }) => {
+      console.log(
+        "hee",
+        input.date,
+        moment(new Date(input.date)).locale("en").utc().startOf("day").toDate()
+      );
       const plans = await ctx.prisma.plan.findMany({
         where: {
           roomId: input.roomId,
           start_datetime: {
-            gte: moment(input.date).locale("fa").startOf("day").toDate(),
-            lt: moment(input.date).locale("fa").endOf("day").toDate(),
+            gte: moment(new Date(input.date))
+              .locale("en")
+              .utc()
+              .startOf("day")
+              .toDate(),
+            lt: moment(new Date(input.date))
+              .locale("en")
+              .utc()
+              .endOf("day")
+              .toDate(),
           },
         },
         include: {
@@ -67,18 +80,14 @@ export const planRouter = createTRPCRouter({
         },
         orderBy: { start_datetime: "asc" },
       });
-      console.log("Server's Time:", moment().format()); // UTC time
-      console.log(
-        "Local Time (Tehran):",
-        momentTz().tz("Asia/Tehran").format()
-      ); // Should show Tehran time
+
       return plans.map((plan, i) => {
         let status = "Open"; // Default status
 
         momentTz.locale("fa"); // Set the locale to Persian (fa)
 
         // Get the current time in UTC and subtract 3 hours and 30 minutes (Tehran offset)
-        const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
+        const now = momentTz(); // Subtract Tehran offset
 
         // Parse the start and end times
         const start = momentTz(plan.start_datetime);
@@ -132,6 +141,7 @@ export const planRouter = createTRPCRouter({
         orderBy: { start_datetime: "desc" },
       });
     }),
+  // for admin
   getPlansByDate: protectedProcedure
     .input(z.object({ date: z.string().optional() }).optional())
     .query(async ({ ctx, input }) => {
@@ -167,7 +177,7 @@ export const planRouter = createTRPCRouter({
           room: true,
           participants: true,
         },
-        orderBy: { start_datetime: "desc" },
+        orderBy: { start_datetime: "asc" },
       });
 
       console.log("Server's Time:", moment().format()); // UTC time
@@ -176,12 +186,15 @@ export const planRouter = createTRPCRouter({
         momentTz().tz("Asia/Tehran").format()
       ); // Should show Tehran time
       return plans.map((plan, i) => {
-        let status = "Open"; // Default status
+        let status: RoomStatus = "Open"; // Default status
+        console.log({ input });
+        console.log({ start: plan.start_datetime });
+        console.log({ end: plan.end_datetime });
 
         momentTz.locale("fa"); // Set the locale to Persian (fa)
 
         // Get the current time in UTC and subtract 3 hours and 30 minutes (Tehran offset)
-        const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
+        const now = momentTz(); // Subtract Tehran offset
 
         // Parse the start and end times
         const start = momentTz(plan.start_datetime);
