@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { twMerge } from "tailwind-merge";
+import { Time } from "@internationalized/date";
 
 import Link from "next/link";
 import AdminMainLayout from "~/pages/admin/layout";
@@ -139,7 +140,7 @@ export default function AdminPage() {
                             {plan.is_confidential ? t.confidential : plan.title}
                           </span>
                           <span className=" group-hover:text-secondary">
-                            {moment(plan.start_datetime).format("HH:MM")}
+                            {moment(plan.start_datetime).format("HH:mm")}
                           </span>
                         </div>
                       );

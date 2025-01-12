@@ -10,12 +10,14 @@ import {
   StickyNoteIcon,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { Time } from "@internationalized/date";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { object } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import MultiSelector from "~/components/origin/multi-select";
+import { MyTimeField } from "~/components/origin/time-picker";
 import { Checkbox } from "~/components/shadcn/checkbox";
 import { Label } from "~/components/shadcn/label";
 import { toast } from "~/components/ui/toast/use-toast";
@@ -204,7 +206,26 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 <div className="flex items-center justify-center gap-4">
                   <div>
                     <h3 className="w-full py-5 text-center"> {t.startTime}</h3>
-                    <PickTimeView
+                    <MyTimeField
+                      value={
+                        new Time(
+                          moment(formik.values.start_datetime).hour(),
+                          moment(formik.values.start_datetime).minute()
+                        )
+                      }
+                      onChange={(value) => {
+                        formik.setFieldValue(
+                          "start_datetime",
+                          moment(date)
+                            .set({
+                              hour: value.hour,
+                              minute: value.minute,
+                            })
+                            .toDate()
+                        );
+                      }}
+                    />
+                    {/* <PickTimeView
                       value={moment(formik.values.start_datetime)}
                       date={date}
                       onChange={(time) => {
@@ -215,11 +236,30 @@ export function ReserveRoom({ date }: { date: Moment }) {
                           };
                         });
                       }}
-                    />
+                    /> */}
                   </div>
                   <div>
                     <h3 className="w-full py-5 text-center"> {t.endTime}</h3>
-                    <PickTimeView
+                    <MyTimeField
+                      value={
+                        new Time(
+                          moment(formik.values.end_datetime).hour(),
+                          moment(formik.values.end_datetime).minute()
+                        )
+                      }
+                      onChange={(value) => {
+                        formik.setFieldValue(
+                          "end_datetime",
+                          moment(date)
+                            .set({
+                              hour: value.hour,
+                              minute: value.minute,
+                            })
+                            .toDate()
+                        );
+                      }}
+                    />
+                    {/* <PickTimeView
                       value={moment(formik.values.end_datetime)}
                       date={date}
                       onChange={(time) => {
@@ -230,7 +270,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                           };
                         });
                       }}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
