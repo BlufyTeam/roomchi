@@ -74,7 +74,7 @@ export const planRouter = createTRPCRouter({
         moment.locale("fa");
 
         // Get `now` in Tehran timezone
-        const now = momentTz();
+        const now = momentTz().tz("Asia/Tehran");
 
         // Parse `start` and `end` in Tehran timezone
         const start = momentTz(
@@ -92,11 +92,11 @@ export const planRouter = createTRPCRouter({
           start: start.format("YYYY-MM-DD | HH:mm:ss"),
           end: end.format("YYYY-MM-DD | HH:mm:ss"),
           jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
-          IS: now.isBetween(start, end), // This will now return the correct value
+          IS: now.isBetween(start, end), // Should now return the correct value
         });
 
-        // Compare times
-        if (now.isBetween(start, end)) status = "AlreadyStarted";
+        // Compare times using `.isBetween()` with the same timezone context
+        if (now.isBetween(start, end, null, "[]")) status = "AlreadyStarted"; // "[]" for inclusive
         if (now.isAfter(end)) status = "Done";
         if (now.isBefore(start)) status = "Reserved";
 
@@ -169,7 +169,7 @@ export const planRouter = createTRPCRouter({
         moment.locale("fa");
 
         // Get `now` in Tehran timezone
-        const now = momentTz();
+        const now = momentTz().tz("Asia/Tehran");
 
         // Parse `start` and `end` in Tehran timezone
         const start = momentTz(
@@ -187,11 +187,11 @@ export const planRouter = createTRPCRouter({
           start: start.format("YYYY-MM-DD | HH:mm:ss"),
           end: end.format("YYYY-MM-DD | HH:mm:ss"),
           jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
-          IS: now.isBetween(start, end), // This will now return the correct value
+          IS: now.isBetween(start, end), // Should now return the correct value
         });
 
-        // Compare times
-        if (now.isBetween(start, end)) status = "AlreadyStarted";
+        // Compare times using `.isBetween()` with the same timezone context
+        if (now.isBetween(start, end, null, "[]")) status = "AlreadyStarted"; // "[]" for inclusive
         if (now.isAfter(end)) status = "Done";
         if (now.isBefore(start)) status = "Reserved";
 
