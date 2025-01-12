@@ -87,7 +87,7 @@ export const planRouter = createTRPCRouter({
         momentTz.locale("fa"); // Set the locale to Persian (fa)
 
         // Get the current time in UTC and subtract 3 hours and 30 minutes (Tehran offset)
-        const now = momentTz(); // Subtract Tehran offset
+        const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
 
         // Parse the start and end times
         const start = momentTz(plan.start_datetime);
@@ -199,35 +199,36 @@ export const planRouter = createTRPCRouter({
         console.log({ start: plan.start_datetime });
         console.log({ end: plan.end_datetime });
 
-        let localDate = moment(); // Local time (e.g., using Jalali moment or Gregorian)
-        let utcDate = localDate.utc(); // Convert to UTC
-
-        // You can also convert another date to UTC
-        let startDate = moment(plan.start_datetime).utc();
-        let endDate = moment(plan.end_datetime).utc();
         momentTz.locale("fa"); // Set the locale to Persian (fa)
+
+        // Get the current time in UTC and subtract 3 hours and 30 minutes (Tehran offset)
+        const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
+
+        // Parse the start and end times
+        const start = momentTz(plan.start_datetime);
+        const end = momentTz(plan.end_datetime);
 
         // Log the raw UTC timestamps for debugging
         console.log({
-          nowUTC: utcDate.toISOString(), // Raw UTC string for now
-          startUTC: startDate.toISOString(), // Raw UTC string for start
-          endUTC: endDate.toISOString(), // Raw UTC string for end
+          nowUTC: now.toISOString(), // Raw UTC string for now
+          startUTC: start.toISOString(), // Raw UTC string for start
+          endUTC: end.toISOString(), // Raw UTC string for end
         });
 
         console.log({
           i,
           title: plan.title,
-          now: utcDate.format("YYYY-MM-DD | HH:mm:ss"), // Now with manual subtraction
-          start: startDate.format("YYYY-MM-DD | HH:mm:ss"), // Start time in local time
-          end: endDate.format("YYYY-MM-DD | HH:mm:ss"), // End time in local time
-          jalaliNow: utcDate.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
-          IS: utcDate.isBetween(startDate, endDate), // Check if now is between start and end
+          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now with manual subtraction
+          start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in local time
+          end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in local time
+          jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
+          IS: now.isBetween(start, end), // Check if now is between start and end
         });
 
         // Compare times
-        if (utcDate.isBetween(startDate, endDate)) status = "AlreadyStarted"; // If now is between start and end
-        if (utcDate.isAfter(endDate)) status = "Done"; // If now is after the end time
-        if (utcDate.isBefore(startDate)) status = "Reserved"; // If now is before the start time
+        if (now.isBetween(start, end)) status = "AlreadyStarted"; // If now is between start and end
+        if (now.isAfter(end)) status = "Done"; // If now is after the end time
+        if (now.isBefore(start)) status = "Reserved"; // If now is before the start time
 
         return {
           ...plan,
