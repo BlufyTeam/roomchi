@@ -26,6 +26,7 @@ export const planDateAndRoomSchema = z.object({
 export const planDateSchema = z.object({
   start_datetime: z.date(),
   end_datetime: z.date(),
+  onlyPlansIParticipateIn: z.boolean().optional().default(false),
 });
 
 export const createPlanSchema = z.object({

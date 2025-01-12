@@ -97,7 +97,7 @@ export default function UserMainLayout({ children }: any): any {
       {currentMenuItem && (
         <LayoutSubContainer currentMenuItem={currentMenuItem} />
       )}
-      <ContainerBottomBorder className="h-full items-start bg-accent/5 ">
+      <ContainerBottomBorder className="fle h-full flex-col items-center justify-center bg-accent/5 ">
         {children}
       </ContainerBottomBorder>
     </div>

@@ -1,3 +1,5 @@
+import { settings } from ".eslintrc.cjs";
+
 export const translations = {
   en: {
     loginTo: "Login to your account",
@@ -141,8 +143,15 @@ export const translations = {
 
     participants: "Attendances",
     linkForOnlineMeeting: "Link for online meeting",
+    settings: "Settings",
+    onlyMyPlans: "Only My Plans",
+    allPlans: "All Plans",
   },
   fa: {
+    allPlans: "نمایش تمام جلسات ",
+
+    onlyMyPlans: "فقط نمایش جلسات من",
+    settings: "تنظیمات",
     linkForOnlineMeeting: "لینک جلسه آنلاین",
     participants: "شرکت کنندگان",
     todaysMeetings: "جلسات امروز",
@@ -158,6 +167,7 @@ export const translations = {
     SendTestEmail: "ارسال ایمیل تست",
     RecipientEmail: "دریافت کننده",
     mail: "ایمیل سرور",
+
     mailDescription: "در این بخش می توانید ایمیل را تغییر دهید.",
     "این فیلد اجباری است": "این فیلد اجباری است",
     startDateRequired: "تاریخ شروع اجباری است",

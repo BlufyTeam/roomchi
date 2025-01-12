@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { twMerge } from "tailwind-merge";
 
@@ -15,9 +15,10 @@ import UserSkeleton from "~/pages/user/loading";
 import PickTimeView from "~/features/pick-time-view";
 import { useLanguage } from "~/context/language.context";
 import Calendar from "~/features/calendar";
+import Button from "~/ui/buttons";
 
 let calendarTemp = [];
-const today = moment(Date.now()).locale("fa");
+const today = moment(Date.now()).utc().locale("fa");
 const startDay = today.clone().startOf("month").startOf("week");
 const endDay = today.clone().endOf("month").endOf("week");
 
@@ -39,11 +40,16 @@ const calendar: Moment[] = calendarTemp.map((a) => a.days).flat(1);
 
 export default function AdminPage() {
   const session = useSession();
+  const [onlyPlansIParticipateIn, setOnlyPlansIParticipateIn] = useState(false);
   const { t, language } = useLanguage();
   const getPlansBetWeenDates = api.plan.getPlansBetWeenDates.useQuery(
     {
-      start_datetime: calendar.at(0).toDate(),
-      end_datetime: calendar.at(calendar.length - 1).toDate(),
+      start_datetime: calendar.at(0).utc().toDate(),
+      end_datetime: calendar
+        .at(calendar.length - 1)
+        .utc()
+        .toDate(),
+      onlyPlansIParticipateIn: onlyPlansIParticipateIn,
     },
     {
       enabled: session.status === "authenticated",
@@ -70,26 +76,38 @@ export default function AdminPage() {
 
   return (
     <UserMainLayout>
+      <div className="flex w-full flex-col items-center justify-center gap-5 py-2">
+        <Button
+          onClick={() => {
+            setOnlyPlansIParticipateIn((prev) => !prev);
+          }}
+          className="bg-secondary text-primary"
+        >
+          {!onlyPlansIParticipateIn ? t.onlyMyPlans : t.allPlans}
+        </Button>
+      </div>
       <Calendar
         onMonthChange={(startDate, endDate) => {
           utils.plan.getPlansBetWeenDates.invalidate({
-            start_datetime: startDate.toDate(),
-            end_datetime: endDate.toDate(),
+            start_datetime: startDate.utc().toDate(),
+            end_datetime: endDate.utc().toDate(),
           });
         }}
         onDate={(date, monthNumber) => {
           const plans = getPlansBetWeenDates.data
             .filter((plan) =>
               moment(plan.start_datetime)
+                .utc()
                 .startOf("day")
                 .isSame(date.startOf("day"))
             )
             .reverse();
 
           const formattedDate =
-            date.clone().add(1, "day").isBefore(moment()) && plans.length <= 0
+            date.clone().utc().add(1, "day").isBefore(moment()) &&
+            plans.length <= 0
               ? undefined
-              : date.toISOString();
+              : date.utc().toISOString();
           return (
             <Link
               key={date.toString()}

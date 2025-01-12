@@ -41,7 +41,7 @@ export default function Plans({ plans = [] }: PlansProps) {
 }
 
 function PlanItem({ plan }: { plan: PlanWithRoom }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const status = plan.status;
   let statusConfig;
 
@@ -79,9 +79,14 @@ function PlanItem({ plan }: { plan: PlanWithRoom }) {
       };
   }
 
+  const dir = language === "fa" ? "trl" : "ltr";
   return (
-    <div className="flex flex-col justify-between gap-2 rounded-lg bg-secondary p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
+    <div
+      dir={dir}
+      className="flex flex-col justify-between gap-2 rounded-lg bg-secondary p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
+    >
       <div
+        dir={dir}
         className={cn(
           `mb-4 flex items-center justify-start gap-2 rounded-md p-3`,
           statusConfig.bgColor,
@@ -89,22 +94,29 @@ function PlanItem({ plan }: { plan: PlanWithRoom }) {
         )}
       >
         {statusConfig.icon}
-        <span className="text-xl font-semibold">{statusConfig.label}</span>
+        <span dir={dir} className="text-xl font-semibold">
+          {statusConfig.label}
+        </span>
       </div>
       {plan.is_confidential ? (
-        <div className="flex items-center  justify-center gap-2 text-2xl text-emerald-800  ">
+        <div
+          dir={dir}
+          className="flex items-center  justify-center gap-2 text-2xl text-emerald-800  "
+        >
           <ShieldCheck className="size-6 shrink-0" />
           <span> {t.confidential}</span>
         </div>
       ) : (
-        <span className="text-primary">{plan.title}</span>
+        <span dir={dir} className="text-center text-primary">
+          {plan.title}
+        </span>
       )}
       {!plan.is_confidential && (
         <ParticipantsModal participants={plan?.participants ?? []} />
       )}
 
       {plan?.link && <LinkModal url={plan.link} />}
-      <div className="text-right">
+      <div dir={dir} className="text-start">
         <p className="text-xl text-primary">
           {moment(plan.start_datetime).locale("fa").format("HH:mm")}
           {" - "}

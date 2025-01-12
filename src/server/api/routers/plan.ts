@@ -128,7 +128,15 @@ export const planRouter = createTRPCRouter({
         where: {
           start_datetime: { gte: input?.start_datetime },
           end_datetime: { lte: input?.end_datetime },
-
+          ...(input?.onlyPlansIParticipateIn
+            ? {
+                participants: {
+                  some: {
+                    userId: ctx.session.user.id,
+                  },
+                },
+              }
+            : {}),
           room: {
             companyId: ctx.session.user.companyId ?? "",
           },

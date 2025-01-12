@@ -1,48 +1,46 @@
 import React from "react";
 import AdminMainLayout from "~/pages/admin/layout";
-import Button from "~/ui/buttons";
 
-const themes = [
-  "theme-light-1",
-  "theme-light-2",
-  "theme-light-3",
-  "theme-dark-1",
-  "theme-dark-2",
-  "theme-dark-3",
-];
+import { Container } from "~/ui/containers";
 
-export default function SettingsPage() {
+import AdminNodemailerForm from "~/pages/admin/settings/form";
+import TestEmailForm from "~/pages/admin/settings/test-send-email.form";
+
+export default function MailPage() {
   return (
     <AdminMainLayout>
-      <Button
-        className="m-5 bg-primbuttn p-5 text-secondary"
-        onClick={() => {
-          document.querySelector("html").dir =
-            document.querySelector("html").dir === "rtl" ? "ltr" : "rtl";
-        }}
-      >
-        toggle rtl
-      </Button>
-
-      <div className="flex items-center justify-center gap-5">
-        {themes.map((theme) => {
-          return (
-            <>
-              <Button
-                key={theme}
-                className="bg-primbuttn p-5 text-secondary"
-                onClick={() => {
-                  document.querySelector("body").className = theme;
-
-                  localStorage.setItem("theme", theme);
-                }}
-              >
-                {theme}
-              </Button>
-            </>
-          );
-        })}
-      </div>
+      <Container className="flex max-w-3xl flex-col items-stretch gap-10 py-10 ">
+        <AdminNodemailerForm />
+        <TestEmailForm />
+      </Container>
     </AdminMainLayout>
   );
 }
+
+// export async function getServerSideProps() {
+//   const nodemailer = require("nodemailer");
+
+//   const transporter = nodemailer.createTransport({
+//     host: "sandbox.smtp.mailtrap.io",
+//     port: 587,
+//     secure: false, // true for port 465, false for other ports
+//     auth: {
+//       user: "980d751e0e24e6",
+//       pass: "6bd07916a8f336",
+//     },
+//   });
+
+//   const info = await transporter.sendMail({
+//     from: '"Maddison Foo Koch 👻" <maddison53@ethereal.email>', // sender address
+//     to: "ali.hassanzadeh78@gmail.com", // list of receivers
+//     subject: "Hello ✔", // Subject line
+//     text: "Hello world?", // plain text body
+//     html: "<b>Hello world?</b>", // html body
+//   });
+
+//   console.log("Message sent: %s", info.messageId);
+
+//   return {
+//     props: {},
+//   };
+// }
