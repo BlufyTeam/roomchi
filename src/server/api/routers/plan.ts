@@ -74,7 +74,7 @@ export const planRouter = createTRPCRouter({
         moment.locale("fa");
 
         // Get `now` in Tehran timezone
-        const now = momentTz().tz("Asia/Tehran");
+        const now = momentTz();
 
         // Parse `start` and `end` in Tehran timezone
         const start = momentTz(
@@ -169,7 +169,7 @@ export const planRouter = createTRPCRouter({
         moment.locale("fa");
 
         // Get `now` in Tehran timezone
-        const now = momentTz().tz("Asia/Tehran");
+        const now = momentTz();
 
         // Parse `start` and `end` in Tehran timezone
         const start = momentTz(
