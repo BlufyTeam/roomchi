@@ -88,10 +88,10 @@ export const planRouter = createTRPCRouter({
         console.log({
           i,
           title: plan.title,
-          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Jalali date in Tehran time
-          start: start.format("YYYY-MM-DD | HH:mm:ss"),
-          end: end.format("YYYY-MM-DD | HH:mm:ss"),
-          jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
+          now: now, // Jalali date in Tehran time
+          start: start,
+          end: end,
+          jalaliNow: now, // Jalali date in local time
           IS: now.isBetween(start, end), // Should now return the correct value
         });
 
@@ -183,10 +183,10 @@ export const planRouter = createTRPCRouter({
         console.log({
           i,
           title: plan.title,
-          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Jalali date in Tehran time
-          start: start.format("YYYY-MM-DD | HH:mm:ss"),
-          end: end.format("YYYY-MM-DD | HH:mm:ss"),
-          jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
+          now: now, // Jalali date in Tehran time
+          start: start,
+          end: end,
+          jalaliNow: now, // Jalali date in local time
           IS: now.isBetween(start, end), // Should now return the correct value
         });
 
