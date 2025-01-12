@@ -73,23 +73,23 @@ export const planRouter = createTRPCRouter({
         // Set Persian locale globally
         moment.locale("fa");
 
-        // Parse `now` as local time
-        const now = moment();
+        // Convert `now` to UTC
+        const now = moment().utc();
 
-        // Convert `start` and `end` to the same time zone manually
-        // Assuming `start` and `end` are in UTC
-        const start = moment(plan.start_datetime).utcOffset("+03:30", true); // Iran Standard Time
-        const end = moment(plan.end_datetime).utcOffset("+03:30", true); // Iran Standard Time
+        // Parse `start` and `end` as UTC
+        const start = moment(plan.start_datetime).utc();
+        const end = moment(plan.end_datetime).utc();
 
         console.log({
           i,
           title: plan.title,
-          now: now.format("YYYY/MM/DD | HH:mm:ss"), // Format in Persian calendar
-          start: start.format("YYYY/MM/DD | HH:mm:ss"),
-          end: end.format("YYYY/MM/DD | HH:mm:ss"),
+          now: now.format("YYYY-MM-DD | HH:mm:ss"), // UTC format
+          start: start.format("YYYY-MM-DD | HH:mm:ss"),
+          end: end.format("YYYY-MM-DD | HH:mm:ss"),
+          jalaliNow: now.local().format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in local time
         });
 
-        // Compare normalized times
+        // Compare times in UTC
         if (now.isBetween(start, end)) status = "AlreadyStarted";
         if (now.isAfter(end)) status = "Done";
         if (now.isBefore(start)) status = "Reserved";
@@ -164,23 +164,23 @@ export const planRouter = createTRPCRouter({
         // Set Persian locale globally
         moment.locale("fa");
 
-        // Parse `now` as local time
-        const now = moment();
+        // Convert `now` to UTC
+        const now = moment().utc();
 
-        // Convert `start` and `end` to the same time zone manually
-        // Assuming `start` and `end` are in UTC
-        const start = moment(plan.start_datetime).utcOffset("+03:30", true); // Iran Standard Time
-        const end = moment(plan.end_datetime).utcOffset("+03:30", true); // Iran Standard Time
+        // Parse `start` and `end` as UTC
+        const start = moment(plan.start_datetime).utc();
+        const end = moment(plan.end_datetime).utc();
 
         console.log({
           i,
           title: plan.title,
-          now: now.format("YYYY/MM/DD | HH:mm:ss"), // Format in Persian calendar
-          start: start.format("YYYY/MM/DD | HH:mm:ss"),
-          end: end.format("YYYY/MM/DD | HH:mm:ss"),
+          now: now.format("YYYY-MM-DD | HH:mm:ss"), // UTC format
+          start: start.format("YYYY-MM-DD | HH:mm:ss"),
+          end: end.format("YYYY-MM-DD | HH:mm:ss"),
+          jalaliNow: now.local().format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in local time
         });
 
-        // Compare normalized times
+        // Compare times in UTC
         if (now.isBetween(start, end)) status = "AlreadyStarted";
         if (now.isAfter(end)) status = "Done";
         if (now.isBefore(start)) status = "Reserved";
