@@ -73,12 +73,12 @@ export const planRouter = createTRPCRouter({
         // Set Persian locale globally
         moment.locale("fa");
 
-        // Convert `now` to UTC
-        const now = moment();
+        // Get `now` in Tehran timezone
+        const now = moment().zone("Asia/Tehran");
 
-        // Parse `start` and `end` as UTC
-        const start = moment(plan.start_datetime);
-        const end = moment(plan.end_datetime);
+        // Parse `start` and `end` in Tehran timezone
+        const start = moment(plan.start_datetime).zone("Asia/Tehran");
+        const end = moment(plan.end_datetime).zone("Asia/Tehran");
 
         console.log({
           i,
@@ -86,10 +86,10 @@ export const planRouter = createTRPCRouter({
           now: now.format("YYYY-MM-DD | HH:mm:ss"), // UTC format
           start: start.format("YYYY-MM-DD | HH:mm:ss"),
           end: end.format("YYYY-MM-DD | HH:mm:ss"),
-          jalaliNow: now.local().format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in local time
+          jalaliNow: now.format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in local time
         });
 
-        // Compare times in UTC
+        // Compare times in Tehran timezone
         if (now.isBetween(start, end)) status = "AlreadyStarted";
         if (now.isAfter(end)) status = "Done";
         if (now.isBefore(start)) status = "Reserved";
@@ -164,12 +164,12 @@ export const planRouter = createTRPCRouter({
         // Set Persian locale globally
         moment.locale("fa");
 
-        // Convert `now` to UTC
-        const now = moment();
+        // Get `now` in Tehran timezone
+        const now = moment().zone("Asia/Tehran");
 
-        // Parse `start` and `end` as UTC
-        const start = moment(plan.start_datetime);
-        const end = moment(plan.end_datetime);
+        // Parse `start` and `end` in Tehran timezone
+        const start = moment(plan.start_datetime).zone("Asia/Tehran");
+        const end = moment(plan.end_datetime).zone("Asia/Tehran");
 
         console.log({
           i,
@@ -177,10 +177,10 @@ export const planRouter = createTRPCRouter({
           now: now.format("YYYY-MM-DD | HH:mm:ss"), // UTC format
           start: start.format("YYYY-MM-DD | HH:mm:ss"),
           end: end.format("YYYY-MM-DD | HH:mm:ss"),
-          jalaliNow: now.local().format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in local time
+          jalaliNow: now.format("jYYYY/jMM/jDD | HH:mm:ss"), // Jalali date in local time
         });
 
-        // Compare times in UTC
+        // Compare times in Tehran timezone
         if (now.isBetween(start, end)) status = "AlreadyStarted";
         if (now.isAfter(end)) status = "Done";
         if (now.isBefore(start)) status = "Reserved";
