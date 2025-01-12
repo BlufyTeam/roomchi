@@ -26,7 +26,7 @@ export default function SingleRoomPage() {
     },
     {
       enabled: session.status === "authenticated",
-      refetchInterval: 600000, // 10 Minutes
+      refetchInterval: 60000, // 1 Minute
     }
   );
 
