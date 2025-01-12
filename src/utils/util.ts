@@ -21,8 +21,8 @@ export const reloadSession = () => {
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function TranslateRoomStatus(status: RoomStatus) {
-  const { language } = useLanguage();
-  const t = translations[language];
+  const { t } = useLanguage();
+
   switch (status) {
     case "AlreadyStarted":
       return t.inProgress;

@@ -67,8 +67,16 @@ export const planRouter = createTRPCRouter({
         orderBy: { start_datetime: "asc" },
       });
 
-      return plans.map((plan) => {
+      return plans.map((plan, i) => {
         let status: RoomStatus = "Open";
+
+        console.log({
+          i,
+          title: plan.title,
+          now: moment().format("YYYY MM DD | HH:mm:ss"),
+          start: plan.start_datetime,
+          end: plan.end_datetime,
+        });
 
         if (moment().isBetween(plan.start_datetime, plan.end_datetime))
           status = "AlreadyStarted";
@@ -139,8 +147,16 @@ export const planRouter = createTRPCRouter({
         orderBy: { start_datetime: "desc" },
       });
 
-      return plans.map((plan) => {
+      return plans.map((plan, i) => {
         let status: RoomStatus = "Open";
+
+        console.log({
+          i,
+          title: plan.title,
+          now: moment().format("YYYY MM DD | HH:mm:ss"),
+          start: plan.start_datetime,
+          end: plan.end_datetime,
+        });
 
         if (moment().isBetween(plan.start_datetime, plan.end_datetime))
           status = "AlreadyStarted";
