@@ -1,18 +1,16 @@
-"use client";
-
 import React, {
   createContext,
   useState,
   useContext,
-  ReactNode,
   useEffect,
+  ReactNode,
 } from "react";
-import { translations } from "~/utils/translations";
+import { iranSans, poppins } from "~/pages/_app"; // Import font variables
 
 type Language = "fa" | "en";
 
 interface LanguageContextType {
-  t: (typeof translations)["en" | "fa"];
+  t: Record<string, string>;
   language: Language;
   setLanguage: (lang: Language) => void;
 }
@@ -24,15 +22,27 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [language, setLanguage] = useState<Language>("fa"); // Start with a default language
-  const t: (typeof translations)["en" | "fa"] = translations[language];
+  const [language, setLanguage] = useState<Language>("fa");
+
   useEffect(() => {
-    // Only run on the client side
     const storedLanguage = localStorage.getItem("language") as Language;
     if (storedLanguage) {
       setLanguage(storedLanguage);
     }
   }, []);
+
+  useEffect(() => {
+    // Update the <html> class dynamically
+    const fontClass =
+      language === "fa"
+        ? `font-iransans ${iranSans.variable}`
+        : `font-poppins ${poppins.variable}`;
+    // document.documentElement.setAttribute(
+    //   "dir",
+    //   language === "fa" ? "rtl" : "ltr"
+    // );
+    document.documentElement.className = `h-full ${fontClass}`;
+  }, [language]);
 
   const changeLanguage = (lang: Language) => {
     setLanguage(lang);
@@ -41,7 +51,11 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <LanguageContext.Provider
-      value={{ t, language, setLanguage: changeLanguage }}
+      value={{
+        t: {}, // Add your translations logic
+        language,
+        setLanguage: changeLanguage,
+      }}
     >
       {children}
     </LanguageContext.Provider>

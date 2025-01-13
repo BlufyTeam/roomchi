@@ -119,7 +119,7 @@ export const translations = {
     titleRequired: "Title is required",
     startDateRequired: "Start date is required",
     endDateRequired: "End date is required",
-    "این فیلد اجباری است": "This field is required",
+
     save: "save",
 
     mail: "Mail Server",
@@ -146,10 +146,31 @@ export const translations = {
     settings: "Settings",
     onlyMyPlans: "Only My Plans",
     allPlans: "All Plans",
+
+    "This field is required": "This field is required",
+    "At least 3 characters": "At least 3 characters",
+    "Username can not be less than 3 characters":
+      "Username can not be less than 3 characters",
+
+    "Password can not be less than 3 characters":
+      "Password can not be less than 3 characters",
+    "User role is mandatory": "User role is mandatory",
+
+    //room valdiation
+    "Choosing room is mandatory": "Choosing room is mandatory",
+    "Title is mandatory": "Title is mandatory",
   },
   fa: {
+    "Title is mandatory": "عنوان ضروری است",
+    "Choosing room is mandatory": "انتخاب اتاق ضروری است",
+    "User role is mandatory": "نقش کاربری اجباری است",
+    "Password can not be less than 3 characters":
+      "پسورد نمیتواند کمتر از 6 حرف باشد.",
+    "Username can not be less than 3 characters":
+      "یوزرنیم نمیتواند کمتر از 3 حرف باشد",
+    "At least 3 characters": "حداقل باید 3 کاراکتر باشد",
+    "This field is required": "This field is required",
     allPlans: "نمایش تمام جلسات ",
-
     onlyMyPlans: "فقط نمایش جلسات من",
     settings: "تنظیمات",
     linkForOnlineMeeting: "لینک جلسه آنلاین",
@@ -169,7 +190,7 @@ export const translations = {
     mail: "ایمیل سرور",
 
     mailDescription: "در این بخش می توانید ایمیل را تغییر دهید.",
-    "این فیلد اجباری است": "این فیلد اجباری است",
+
     startDateRequired: "تاریخ شروع اجباری است",
     endDateRequired: "تاریخ پایان اجباری است",
     roomRequired: "انتخاب اتاق اجباری است",

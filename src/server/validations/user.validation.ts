@@ -3,19 +3,19 @@ import { z } from "zod";
 // Update the role enum to include "SUPER_ADMIN"
 const baseUserSchema = z.object({
   name: z
-    .string({ required_error: "این فیلد اجباری است" })
-    .min(3, "حداقل باید 3 کاراکتر باشد"),
+    .string({ required_error: "This field is required" })
+    .min(3, "At least 3 characters"),
   email: z.string().nullish(),
   username: z
-    .string({ required_error: "این فیلد اجباری است" })
-    .min(3, "یوزرنیم نمیتواند کمتر از 3 حرف باشد"),
+    .string({ required_error: "This field is required" })
+    .min(3, "Username can not be less than 3 characters"),
   password: z
-    .string({ required_error: "این فیلد اجباری است" })
-    .min(6, "پسورد نمیتواند کمتر از 6 حرف باشد."),
+    .string({ required_error: "This field is required" })
+    .min(6, "Password can not be less than 3 characters"),
   description: z.string().optional(),
   // Add "SUPER_ADMIN" to the role enum
   role: z.enum(["ADMIN", "USER", "ROOM", "SUPER_ADMIN"], {
-    required_error: "نقش کاربری اجباری است",
+    required_error: "User role is mandatory",
   }),
   companyId: z.string().optional(),
 });
@@ -58,14 +58,14 @@ export const updateUserSchema = baseUserSchema
   });
 
 export const userIdSchema = z.object({
-  id: z.string({ required_error: "این فیلد اجباری است" }),
+  id: z.string({ required_error: "This field is required" }),
 });
 
 export const userLoginSchema = z.object({
   username: z
-    .string({ required_error: "این فیلد اجباری است" })
-    .min(3, "یوزرنیم نمیتواند کمتر از 3 حرف باشد"),
+    .string({ required_error: "This field is required" })
+    .min(3, "Username can not be less than 3 characters"),
   password: z
-    .string({ required_error: "این فیلد اجباری است" })
-    .min(6, "پسورد نمیتواند کمتر از 6 حرف باشد."),
+    .string({ required_error: "This field is required" })
+    .min(6, "Password can not be less than 3 characters"),
 });

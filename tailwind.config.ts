@@ -15,6 +15,7 @@ export default {
     extend: {
       fontFamily: {
         iransans: ["var(--font-iransans)"],
+        poppins: ["var(--font-poppins)"],
       },
       textColor: {
         primary: withOpacity("--primary"),

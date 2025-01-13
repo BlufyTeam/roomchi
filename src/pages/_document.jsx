@@ -5,7 +5,7 @@ import { iranSans } from "~/pages/_app";
 export default class MyDocument extends Document {
   render() {
     return (
-      <Html dir="rtl" className={cn(iranSans.variable, "h-full font-iransans")}>
+      <Html dir="rtl" className={cn("h-full")}>
         <Head />
         <body
           className="theme-dark-3 scrollbar-track-[var(--accent)] h-full "

@@ -1,26 +1,26 @@
 import { z } from "zod";
 
 export const updatePlanSchema = z.object({
-  id: z.string({ required_error: "این فیلد اجباری است" }),
-  title: z.string({ required_error: "این فیلد اجباری است" }),
-  userId: z.string({ required_error: "این فیلد اجباری است" }),
-  roomId: z.string({ required_error: "این فیلد اجباری است" }),
-  start_datetime: z.date({ required_error: "این فیلد اجباری است" }),
-  end_datetime: z.date({ required_error: "این فیلد اجباری است" }),
+  id: z.string({ required_error: "This field is required" }),
+  title: z.string({ required_error: "This field is required" }),
+  userId: z.string({ required_error: "This field is required" }),
+  roomId: z.string({ required_error: "This field is required" }),
+  start_datetime: z.date({ required_error: "This field is required" }),
+  end_datetime: z.date({ required_error: "This field is required" }),
   description: z.string().optional(),
   send_email: z.boolean().default(false),
 });
 
 export const planIdSchema = z.object({
-  id: z.string({ required_error: "این فیلد اجباری است" }),
+  id: z.string({ required_error: "This field is required" }),
 });
 export const planDeleteSchema = z.object({
-  id: z.string({ required_error: "این فیلد اجباری است" }),
+  id: z.string({ required_error: "This field is required" }),
   send_email: z.boolean().default(false),
 });
 
 export const planDateAndRoomSchema = z.object({
-  roomId: z.string({ required_error: "این فیلد اجباری است" }),
+  roomId: z.string({ required_error: "This field is required" }),
   date: z.string(),
 });
 export const planDateSchema = z.object({
@@ -30,11 +30,11 @@ export const planDateSchema = z.object({
 });
 
 export const createPlanSchema = z.object({
-  room: z.any({ required_error: "انتخاب اتاق ضروری است" }),
-  title: z.string({ required_error: "داشتن عنوان اجباری است " }),
-  roomId: z.string({ required_error: "انتخاب اتاق اجباری است " }),
-  start_datetime: z.date({ required_error: "این فیلد اجباری است" }),
-  end_datetime: z.date({ required_error: "این فیلد اجباری است" }),
+  room: z.any({ required_error: "Choosing room is mandatory" }),
+  title: z.string({ required_error: "Title is mandatory" }),
+  roomId: z.string({ required_error: "Choosing room is mandatory" }),
+  start_datetime: z.date({ required_error: "This field is required" }),
+  end_datetime: z.date({ required_error: "This field is required" }),
   description: z.string().optional(),
   link: z.string().nullish().optional(),
   is_confidential: z.boolean().default(false),

@@ -2,6 +2,8 @@
 
 import { Button } from "~/components/ui/button";
 import { useLanguage } from "~/context/language.context";
+import { cn } from "~/lib/utils";
+import { iranSans, poppins } from "~/pages/_app";
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
@@ -11,7 +13,16 @@ export function LanguageSwitcher() {
   };
 
   return (
-    <Button onClick={toggleLanguage} className="bg-primary text-secondary">
+    <Button
+      onClick={toggleLanguage}
+      className={cn(
+        "bg-primary text-secondary",
+
+        language === "fa"
+          ? `font-poppins  ${poppins.variable}`
+          : `font-iransans ${iranSans.variable}`
+      )}
+    >
       {language === "fa" ? "English" : "فارسی"}
     </Button>
   );
