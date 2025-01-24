@@ -14,8 +14,7 @@ import { authOptions } from "~/server/auth";
 import BlurBackground from "~/ui/blur-backgrounds";
 
 function LandingPage() {
-  const { language } = useLanguage();
-  const t = translations[language];
+  const { language, t } = useLanguage();
 
   return (
     <div

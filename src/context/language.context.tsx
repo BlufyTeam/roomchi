@@ -6,11 +6,12 @@ import React, {
   ReactNode,
 } from "react";
 import { iranSans, poppins } from "~/pages/_app"; // Import font variables
+import { translations } from "~/utils/translations";
 
 type Language = "fa" | "en";
 
 interface LanguageContextType {
-  t: Record<string, string>;
+  t: (typeof translations)["en" | "fa"];
   language: Language;
   setLanguage: (lang: Language) => void;
 }
@@ -23,7 +24,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [language, setLanguage] = useState<Language>("fa");
-
+  const t: (typeof translations)["en" | "fa"] = translations[language];
   useEffect(() => {
     const storedLanguage = localStorage.getItem("language") as Language;
     if (storedLanguage) {
@@ -52,7 +53,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <LanguageContext.Provider
       value={{
-        t: {}, // Add your translations logic
+        t: t, // Add your translations logic
         language,
         setLanguage: changeLanguage,
       }}

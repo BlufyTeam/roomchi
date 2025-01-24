@@ -154,6 +154,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
   return (
     <>
       <div className="flex w-full flex-col items-center justify-center font-iransans ">
+        {t.confidential}sadsad
         <MultiStep
           isLoading={createPlan.isLoading}
           onStepClick={(stepNumber) => {
@@ -282,7 +283,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 }}
                 className="bg-accent/20 text-accent"
               >
-                {t.next}
+                {t.done}
               </Button>
             </div>,
             <div

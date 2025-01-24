@@ -7,7 +7,7 @@ import PlanDetailsEmail from "~/templates/notify-users-email";
 import { generateQRCode } from "~/utils/qr-code";
 
 export const sendPlanNotificationEmail = async (
-  ctx,
+  ctx = undefined,
   plan: Plan & { room?: Room; participants: (Participant & { user: User })[] },
   subject: string,
   message: string,
