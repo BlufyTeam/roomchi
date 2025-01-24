@@ -13,7 +13,7 @@ export default function Table({
   return (
     <>
       <div className="flex h-full w-full items-stretch justify-center">
-        <div className="w-full overflow-auto rounded-[20px] md:w-9/12">
+        <div className="w-full overflow-auto rounded-[20px] ">
           <table {...getTableProps()} className=" w-full text-center">
             <thead>
               {

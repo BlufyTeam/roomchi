@@ -31,8 +31,8 @@ export default function UsersList() {
   }, [users]);
 
   const router = useRouter();
-  const { language } = useLanguage();
-  const t = translations[language];
+  const { language, t } = useLanguage();
+
   const utils = api.useContext();
   const deleteUser = api.user.deleteUser.useMutation({
     // async onMutate(deletedUser: User) {
@@ -169,7 +169,7 @@ export default function UsersList() {
           },
         },
       ],
-      []
+      [t]
     ) || [];
 
   if (users.isLoading) return <UsersSkeleton />;
