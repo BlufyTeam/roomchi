@@ -123,7 +123,7 @@ export const translations = {
     save: "save",
 
     mail: "Mail Server",
-
+    activeDirectory: "Active Directory",
     mailDescription: "In this section you can create or edit mail server",
 
     RecipientEmail: "Recipient Email",
@@ -188,7 +188,7 @@ export const translations = {
     SendTestEmail: "ارسال ایمیل تست",
     RecipientEmail: "دریافت کننده",
     mail: "ایمیل سرور",
-
+    activeDirectory: "اکتیو دایرکتوری",
     mailDescription: "در این بخش می توانید ایمیل را تغییر دهید.",
 
     startDateRequired: "تاریخ شروع اجباری است",

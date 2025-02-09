@@ -12,6 +12,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import type { Company, User } from "@prisma/client";
 import { createHash } from "crypto";
+import { verifyUserPassword } from "~/lib/ldap";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -51,6 +52,18 @@ export const authOptions: NextAuthOptions = {
         if (user && user.password === credentials.password) {
           return user;
         } else {
+          // TODO: get config from database | find users admin then get its config
+          const acUser = await verifyUserPassword(
+            "RougineDarou",
+            "192.168.100.11",
+            "helpdesk",
+            "ani4N6-u}jxY",
+            credentials.username.toLowerCase(),
+            credentials.password
+          );
+          if (acUser) {
+            return user;
+          }
           return null;
         }
       },
@@ -62,6 +75,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     session: async ({ session, token }) => {
       const findUniqueUser = await prisma.user.findUnique({
+        //@ts-ignore
         where: { username: token.user.username },
         include: {
           company: true,

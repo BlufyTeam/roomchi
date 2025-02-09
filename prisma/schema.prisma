@@ -164,3 +164,15 @@ model MailConfig {
 
   @@map("mail_configs")
 }
+
+model ActiveDirectoryConfig {
+  id               String   @id @default(cuid())
+  domainName       String
+  domainController String
+  loginName        String
+  password         String
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  @@map("active_directory_configs")
+}

@@ -37,6 +37,7 @@
     "imap": "^0.8.19",
     "jalali-moment": "^3.3.11",
     "js-base64": "^3.7.5",
+    "ldapjs": "^3.0.7",
     "lucide-react": "^0.231.0",
     "mailparser": "^3.7.2",
     "moment-timezone": "^0.5.46",
