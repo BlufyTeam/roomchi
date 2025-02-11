@@ -1,124 +1,109 @@
-"use client";
+import { useState } from "react";
+import { ChevronRight, ChevronDown } from "lucide-react";
+import { Checkbox } from "~/components/shadcn/checkbox";
+import { boolean } from "zod";
 
-import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-
-import { cn } from "~/lib/utils";
-import { Button } from "~/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "~/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import UploadImage from "~/features/uplaod-image-base64";
-import moment from "jalali-moment";
-import { api } from "~/utils/api";
-import { generateQRCode } from "~/utils/qr-code";
-import Image from "next/image";
-
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
+const adPaths = [
+  "OU=Domain Controllers,DC=RougineDarou,DC=com",
+  "OU=Client Computers,DC=RougineDarou,DC=com",
+  "OU=Client PCs,OU=Client Computers,DC=RougineDarou,DC=com",
+  "OU=Client Laptops,OU=Client Computers,DC=RougineDarou,DC=com",
+  "OU=GPO,OU=Client Laptops,OU=Client Computers,DC=RougineDarou,DC=com",
+  "OU=Admin Users,DC=RougineDarou,DC=com",
+  "OU=IT-USERS,OU=Admin Users,DC=RougineDarou,DC=com",
+  "OU=Client Users,DC=RougineDarou,DC=com",
+  "OU=Rouginedarou,OU=Client Users,DC=RougineDarou,DC=com",
+  "OU=Other Users,OU=Client Users,DC=RougineDarou,DC=com",
+  "OU=Internet Groups,OU=Client Users,DC=RougineDarou,DC=com",
+  "OU=IT,DC=RougineDarou,DC=com",
+  "OU=Rouginedarou,OU=IT,DC=RougineDarou,DC=com",
+  "OU=Client Users,OU=Rouginedarou,OU=IT,DC=RougineDarou,DC=com",
+  "OU=Systemic Users,DC=RougineDarou,DC=com",
+  "OU=Servers,DC=RougineDarou,DC=com",
+  "OU=Disabled Users,DC=RougineDarou,DC=com",
+  "OU=Groups,DC=RougineDarou,DC=com",
 ];
 
-export default function TestPage({ url }) {
-  // const plans = api.plan.getPlansByDate.useQuery({
-  //   // roomId: router.query.id as string,
-  //   date: moment("2023-06-13").toDate(),
-  // });
-  // if (plans.isLoading) return <>loading</>;
+// Function to build the LDAP tree from a list of distinguished names
+const buildTree = (dnList) => {
+  const root = { name: "Root", fullPath: "", children: [] };
+  const nodeMap = { "": root };
+
+  dnList?.forEach((dn) => {
+    const parts = dn.split(",").reverse();
+    let currentPath = "";
+    let parent = root;
+
+    parts.forEach((part) => {
+      if (!part.startsWith("OU=")) return;
+      const name = part.replace("OU=", "");
+      currentPath = currentPath ? `${part},${currentPath}` : part;
+
+      if (!nodeMap[currentPath]) {
+        const newNode = { name, fullPath: currentPath, children: [] };
+        nodeMap[currentPath] = newNode;
+        parent.children.push(newNode);
+      }
+      parent = nodeMap[currentPath];
+    });
+  });
+
+  return root;
+};
+
+const TreeNode = ({ node, onSelect }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [checked, setChecked] = useState(false);
+
   return (
-    <>
-      {url}
-      <Image src={url} width={500} height={500} alt="" />
-      <br />
-    </>
+    <div dir="ltr" className="ml-4">
+      <div className="flex items-center gap-2">
+        {node.children.length > 0 && (
+          <button onClick={() => setExpanded(!expanded)}>
+            {expanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          </button>
+        )}
+        <Checkbox
+          checked={checked}
+          onCheckedChange={(value) => {
+            if (typeof value === "boolean") setChecked(value);
+            onSelect(node.fullPath, value);
+          }}
+        />
+        <span>{node.name}</span>
+      </div>
+      {expanded && node.children.length > 0 && (
+        <div className="ml-4 border-l pl-2">
+          {node.children.map((child) => (
+            <TreeNode key={child.fullPath} node={child} onSelect={onSelect} />
+          ))}
+        </div>
+      )}
+    </div>
   );
-}
+};
 
-export function ComboBox({
-  value = [],
-  onChange = () => {},
-  placeHolder = "",
-}) {
-  const [open, setOpen] = React.useState(false);
-  const [_value, setValue] = React.useState("");
+export default function LDAPTreeView() {
+  const [selectedPaths, setSelectedPaths] = useState([]);
+  const ldapTree = buildTree(adPaths);
 
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          {_value
-            ? value.find((item) => item.value === _value)?.label
-            : placeHolder}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder={placeHolder} />
-          <CommandEmpty>پیدا نشد</CommandEmpty>
-          <CommandGroup>
-            {value.map((item) => (
-              <CommandItem
-                key={item.value}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === _value ? "" : currentValue);
-                  setOpen(false);
-                }}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    _value === item.value ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {item.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-export async function getServerSideProps() {
-  const gen = await generateQRCode("https://google.com");
-  console.log(gen);
-  return {
-    props: {
-      url: gen,
-    },
+  const handleSelect = (path, isChecked) => {
+    setSelectedPaths((prev) => {
+      if (isChecked) return [...prev, path];
+      return prev.filter((p) => p !== path);
+    });
   };
+
+  return (
+    <div dir="ltr" className="mx-auto max-w-md rounded-lg border p-4">
+      <h2 className="mb-2 text-lg font-semibold">LDAP Tree</h2>
+      <TreeNode node={ldapTree} onSelect={handleSelect} />
+      <div className="mt-4 rounded bg-gray-100 p-2">
+        <h3 className="text-sm font-medium">Selected Paths:</h3>
+        <pre className="text-xs text-gray-700">
+          {JSON.stringify(selectedPaths, null, 2)}
+        </pre>
+      </div>
+    </div>
+  );
 }
