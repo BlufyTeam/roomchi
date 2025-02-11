@@ -39,6 +39,15 @@ export const roomRouter = createTRPCRouter({
   getRooms: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.room.findMany();
   }),
+  getUserCompanyRooms: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.room.findMany({
+      where: {
+        company: {
+          id: ctx.session.user.company.id,
+        },
+      },
+    });
+  }),
   getRoomById: publicProcedure.input(roomIdSchema).query(({ ctx, input }) => {
     return ctx.prisma.room.findUnique({
       where: {
