@@ -16,6 +16,7 @@ import PickTimeView from "~/features/pick-time-view";
 import { useLanguage } from "~/context/language.context";
 import Calendar from "~/features/calendar";
 import Button from "~/ui/buttons";
+import { cn } from "~/lib/utils";
 
 let calendarTemp = [];
 const today = moment(Date.now()).utc().locale("fa");
@@ -40,6 +41,12 @@ const calendar: Moment[] = calendarTemp.map((a) => a.days).flat(1);
 
 export default function AdminPage() {
   const session = useSession();
+  const [selectedRoomId, setSelectedRoomId] = useState<string | undefined>(
+    undefined
+  );
+  const { data: rooms, isLoading: isRoomsLoading } =
+    api.room.getUserCompanyRooms.useQuery();
+
   const [onlyPlansIParticipateIn, setOnlyPlansIParticipateIn] = useState(false);
   const { t, language } = useLanguage();
   const getPlansBetWeenDates = api.plan.getPlansBetWeenDates.useQuery(
@@ -86,6 +93,28 @@ export default function AdminPage() {
           {!onlyPlansIParticipateIn ? t.onlyMyPlans : t.allPlans}
         </Button>
       </div>
+      <div className="flex gap-2 py-10">
+        {rooms.map((room) => {
+          const isSelected = selectedRoomId === room.id;
+          return (
+            <>
+              <Button
+                className={cn(
+                  "bg-secondary text-primary",
+                  isSelected && "bg-primary text-secondary"
+                )}
+                onClick={() => {
+                  if (selectedRoomId === room.id)
+                    return setSelectedRoomId(undefined);
+                  setSelectedRoomId(room.id);
+                }}
+              >
+                {room.title}
+              </Button>
+            </>
+          );
+        })}
+      </div>
       <Calendar
         onMonthChange={(startDate, endDate) => {
           utils.plan.getPlansBetWeenDates.invalidate({
@@ -114,23 +143,25 @@ export default function AdminPage() {
               href={formattedDate ? `/user/?plan=${formattedDate}` : ""}
               as={formattedDate ? `/user/${formattedDate}` : ""}
               shallow={true}
-              className={twMerge(
+              className={cn(
                 `disabled:cursor-not-allowe relative flex  w-full flex-col items-center justify-center gap-2
-                    bg-accent/10
-                    py-2
-                    text-center
-                   text-primary
-                   transition-colors
-                   duration-500
-                   group-enabled:group-hover:bg-primbuttn
-                   group-enabled:group-hover:text-secondary
+                bg-accent/10
+                py-2
+                text-center
+               text-primary
+               transition-colors
+               duration-500
+               group-enabled:group-hover:bg-primbuttn
+               group-enabled:group-hover:text-secondary
 
-                   group-disabled:bg-transparent
+               group-disabled:bg-transparent
 
-                  group-disabled:text-gray-500`,
+              group-disabled:text-gray-500`,
                 plans.length > 0
                   ? "rounded-2xl border   group-enabled:border-accent"
-                  : " rounded-md group-disabled:cursor-not-allowed"
+                  : " rounded-md group-disabled:cursor-not-allowed",
+                plans.find((a) => a.roomId === selectedRoomId) &&
+                  "bg-primary text-secondary"
               )}
             >
               {parseInt(date.format("M")) !== monthNumber + 1 ? (
@@ -147,13 +178,13 @@ export default function AdminPage() {
                       return (
                         <div
                           key={i}
-                          className="hidden items-center justify-center gap-2 text-primary md:flex "
+                          className="hidden items-center justify-center gap-2 text-accent md:flex "
                         >
-                          <span>
+                          <span className=" group-hover:text-secondary">
                             {plan.is_confidential ? t.confidential : plan.title}
                           </span>
-                          <span>
-                            {moment(plan.start_datetime).format("HH:MM")}
+                          <span className=" group-hover:text-secondary">
+                            {moment(plan.start_datetime).format("HH:mm")}
                           </span>
                         </div>
                       );

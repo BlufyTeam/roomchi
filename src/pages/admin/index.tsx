@@ -45,6 +45,9 @@ export default function AdminPage() {
   const [selectedRoomId, setSelectedRoomId] = useState<string | undefined>(
     undefined
   );
+  const { data: rooms, isLoading: isRoomsLoading } =
+    api.room.getUserCompanyRooms.useQuery();
+
   const getPlansBetWeenDates = api.plan.getPlansBetWeenDates.useQuery(
     {
       start_datetime: calendar.at(0).utc().toDate(),
@@ -59,8 +62,7 @@ export default function AdminPage() {
   );
   const utils = api.useContext();
   const router = useRouter();
-  const { data: rooms, isLoading: isRoomsLoading } =
-    api.room.getUserCompanyRooms.useQuery();
+
   useEffect(() => {
     router.events.on("routeChangeComplete", (route) => {
       if (router.asPath === "/admin")
