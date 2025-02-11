@@ -17,6 +17,7 @@ import PickTimeView from "~/features/pick-time-view";
 import { useLanguage } from "~/context/language.context";
 import Button from "~/ui/buttons";
 import { cn } from "~/lib/utils";
+import SelectAndSearch from "~/components/origin/select-and-search";
 
 let calendarTemp = [];
 const today = moment(Date.now()).utc().locale("fa");
@@ -82,32 +83,27 @@ export default function AdminPage() {
 
   return (
     <AdminMainLayout>
-      <div className="flex w-full flex-col items-center justify-center">
+      <div className="flex w-full flex-col items-start justify-center md:flex-row">
         {isRoomsLoading ? (
           "..."
         ) : (
           <>
             <div className="flex gap-2 py-10">
-              {rooms.map((room) => {
-                const isSelected = selectedRoomId === room.id;
-                return (
-                  <>
-                    <Button
-                      className={cn(
-                        "bg-secondary text-primary",
-                        isSelected && "bg-primary text-secondary"
-                      )}
-                      onClick={() => {
-                        if (selectedRoomId === room.id)
-                          return setSelectedRoomId(undefined);
-                        setSelectedRoomId(room.id);
-                      }}
-                    >
-                      {room.title}
-                    </Button>
-                  </>
-                );
-              })}
+              <SelectAndSearch
+                btnClassName="bg-secondary "
+                name="business_category"
+                className="md:max-w-[220px]"
+                list={rooms?.map((room) => ({
+                  value: room.id,
+                  label: room.title,
+                }))}
+                withOtherOption={false}
+                title="فیلتر اتاق"
+                value={selectedRoomId}
+                onChange={(value) => {
+                  setSelectedRoomId(value);
+                }}
+              />
             </div>
           </>
         )}
