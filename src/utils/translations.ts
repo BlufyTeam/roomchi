@@ -159,8 +159,10 @@ export const translations = {
     //room valdiation
     "Choosing room is mandatory": "Choosing room is mandatory",
     "Title is mandatory": "Title is mandatory",
+    search: "Search",
   },
   fa: {
+    search: "جستجو",
     "Title is mandatory": "عنوان ضروری است",
     "Choosing room is mandatory": "انتخاب اتاق ضروری است",
     "User role is mandatory": "نقش کاربری اجباری است",

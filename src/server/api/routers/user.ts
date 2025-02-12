@@ -86,16 +86,30 @@ export const userRouter = createTRPCRouter({
       z.object({
         limit: z.number().min(1).max(100).nullish().default(10),
         cursor: z.string().nullish(),
+        searchTerm: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 50;
-      const { cursor } = input;
+      const { cursor, searchTerm } = input;
 
       // Build the 'where' filter
       const where: any = {
         // Exclude SUPER_ADMIN users
         role: { not: "SUPER_ADMIN" },
+        ...(searchTerm
+          ? {
+              OR: [
+                { name: { contains: searchTerm, mode: "insensitive" } },
+                { username: { contains: searchTerm, mode: "insensitive" } },
+                {
+                  company: {
+                    name: { contains: searchTerm, mode: "insensitive" },
+                  },
+                },
+              ],
+            }
+          : undefined),
       };
 
       // Admins can only see users in their company
@@ -108,7 +122,17 @@ export const userRouter = createTRPCRouter({
         (await ctx.prisma.user.findMany({
           take: limit + 1, // get an extra item at the end to check for next cursor
           cursor: cursor ? { id: cursor } : undefined,
-          where: where,
+          where: {
+            OR: [
+              { name: { contains: searchTerm } },
+              { username: { contains: searchTerm } },
+              {
+                company: {
+                  name: { contains: searchTerm },
+                },
+              },
+            ],
+          },
           include: {
             company: true,
           },
@@ -138,6 +162,7 @@ export const userRouter = createTRPCRouter({
     });
     return users;
   }),
+
   getUserById: adminAndSuperAdminProcedure
     .input(userIdSchema)
     .query(async ({ input, ctx }) => {

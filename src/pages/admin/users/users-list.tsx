@@ -1,7 +1,10 @@
-import { User } from "~/types";
+"use client";
+
+import type { User } from "~/types";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import type React from "react";
+import { useMemo, useState } from "react";
 import { useUser } from "~/context/user.context";
 import Table from "~/features/table";
 import { ROLES } from "~/server/constants";
@@ -10,16 +13,24 @@ import Button from "~/ui/buttons";
 import withConfirmation from "~/ui/with-confirmation";
 import { api } from "~/utils/api";
 import { useLanguage } from "~/context/language.context";
-import { translations } from "~/utils/translations";
+
+import { TextFieldWithLabel } from "~/ui/forms/with-lables";
+import { useDebounce } from "~/components/shadcn/multi-select";
+import SearchIcon from "~/ui/icons/searchs";
+import ThreeDotsWave from "~/ui/loadings/three-dots-wave";
 
 const ButtonWithConfirmation = withConfirmation(Button);
 
 export default function UsersList() {
   const { setSelectedRowUser, selectedRowUser } = useUser();
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
+
   const users = api.user.getUsers.useInfiniteQuery(
     {
       limit: 8,
+      searchTerm: debouncedSearchTerm,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -27,7 +38,7 @@ export default function UsersList() {
   );
 
   const flatUsers: any = useMemo(() => {
-    return users.data?.pages.map((page) => page.items).flat(1) || [];
+    return users.data?.pages.flatMap((page) => page.items) || [];
   }, [users]);
 
   const router = useRouter();
@@ -169,13 +180,35 @@ export default function UsersList() {
           },
         },
       ],
-      [t]
+      [t, deleteUser.isLoading] // Added deleteUser.isLoading to dependencies
     ) || [];
 
-  if (users.isLoading) return <UsersSkeleton />;
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const isInitialLoading = users.isLoading && !users.isFetching;
+
+  if (isInitialLoading) return <UsersSkeleton />;
 
   return (
     <>
+      <TextFieldWithLabel
+        label={t.search}
+        value={searchTerm}
+        onChange={handleSearch}
+        className="border-b-0 text-white"
+        labelClassName=" peer-focus:text-white text-white"
+        containerClassName="bg-gray-800 max-w-[220px] w-full rounded-xl text-white"
+        iconContainerClassName="peer-focus:stroke-white stroke-white"
+        icon={<SearchIcon className="size-4 stroke-inherit" />}
+      />
+
+      {users.isFetching && !isInitialLoading && (
+        <div className="mb-4">
+          <ThreeDotsWave />
+        </div>
+      )}
       <span className="text-primary">{flatUsers.length}</span>
 
       <Table
@@ -191,8 +224,8 @@ export default function UsersList() {
       />
       <div className="flex items-center justify-center gap-5 py-5">
         <Button
-          disabled={users.isLoading || !users.hasNextPage}
-          isLoading={users.isLoading}
+          disabled={users.isFetching || !users.hasNextPage}
+          isLoading={users.isFetching}
           onClick={() => {
             users.fetchNextPage();
           }}
