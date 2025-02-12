@@ -100,11 +100,11 @@ export const userRouter = createTRPCRouter({
         ...(searchTerm
           ? {
               OR: [
-                { name: { contains: searchTerm, mode: "insensitive" } },
-                { username: { contains: searchTerm, mode: "insensitive" } },
+                { name: { contains: searchTerm } },
+                { username: { contains: searchTerm } },
                 {
                   company: {
-                    name: { contains: searchTerm, mode: "insensitive" },
+                    name: { contains: searchTerm },
                   },
                 },
               ],
@@ -122,17 +122,7 @@ export const userRouter = createTRPCRouter({
         (await ctx.prisma.user.findMany({
           take: limit + 1, // get an extra item at the end to check for next cursor
           cursor: cursor ? { id: cursor } : undefined,
-          where: {
-            OR: [
-              { name: { contains: searchTerm } },
-              { username: { contains: searchTerm } },
-              {
-                company: {
-                  name: { contains: searchTerm },
-                },
-              },
-            ],
-          },
+          where: where,
           include: {
             company: true,
           },
