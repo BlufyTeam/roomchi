@@ -100,11 +100,11 @@ export const userRouter = createTRPCRouter({
         ...(searchTerm
           ? {
               OR: [
-                { name: { contains: searchTerm } },
-                { username: { contains: searchTerm } },
+                { name: { startsWith: searchTerm } },
+                { username: { startsWith: searchTerm } },
                 {
                   company: {
-                    name: { contains: searchTerm },
+                    name: { startsWith: searchTerm },
                   },
                 },
               ],
