@@ -1,6 +1,7 @@
 import Imap from "imap";
 import { simpleParser } from "mailparser";
 import ICAL from "ical.js";
+import { getServerAuthSession } from "~/server/auth";
 
 export type Appointment = {
   subject: string; // The subject of the email or "No Subject" as default
@@ -17,23 +18,22 @@ type Attendee = {
   name?: string; // Optional: Attendee's name (parameter "cn")
 };
 
-const imapConfig: Imap.Config = {
-  user: "meet@rouginedarou.com", // Your Gmail address
-  password: "MeatApp123", // Your Gmail App Password
-  host: "mail.rouginedarou.com", // Gmail IMAP server
-  port: 993, // IMAP port (usually 993 for SSL)
-  tls: true, // Use TLS
-};
+// const imapConfig: Imap.Config = {
+//   user: "meet@rouginedarou.com", // Your Gmail address
+//   password: "MeatApp123", // Your Gmail App Password
+//   host: "mail.rouginedarou.com", // Gmail IMAP server
+//   port: 993, // IMAP port (usually 993 for SSL)
+//   tls: true, // Use TLS
+// };
 
 // Function to keep the connection alive and listen for new emails
 export const keepConnectionAlive = (
+  imap: Imap,
   onAppointment: (
     appointment: Appointment,
     action: "CREATE" | "CANCELED"
   ) => void
 ) => {
-  const imap = new Imap(imapConfig);
-
   const openInbox = (callback: (err?: Error) => void) => {
     //SENT ITEMS
     imap.openBox("INBOX", false, callback); // Open inbox in read-write mode (false)

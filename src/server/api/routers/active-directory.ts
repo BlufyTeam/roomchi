@@ -4,14 +4,27 @@ import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
+  adminProcedure,
 } from "~/server/api/trpc";
 import { activeDirectoryConfigSchema } from "~/server/validations/active-directory";
 
 export const activeDirectoryRouter = createTRPCRouter({
   getUsers: publicProcedure
     .input(activeDirectoryConfigSchema)
-    .mutation(({ input }) => {
-      ldapSearch("RougineDarou", "192.168.100.11", "helpdesk", "ani4N6-u}jxY")
+    .mutation(async ({ input, ctx }) => {
+      const config = await ctx.prisma.activeDirectoryConfig.findFirst({
+        where: {
+          company: {
+            id: ctx.session.user.company.id,
+          },
+        },
+      });
+      ldapSearch(
+        config.domainName,
+        config.domainController,
+        config.loginName,
+        config.password
+      )
         .then((users) => {
           console.log("Found users: ", users);
         })
@@ -19,13 +32,55 @@ export const activeDirectoryRouter = createTRPCRouter({
           console.error("Error occurred: ", error);
         });
     }),
-
-  getAll: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(({ input, ctx }) => {
-      return ctx.prisma.user.findUnique({
+  getAdminConfig: adminProcedure.query(async ({ input, ctx }) => {
+    const config = await ctx.prisma.activeDirectoryConfig.findFirst({
+      where: {
+        company: {
+          id: ctx.session.user.company.id,
+        },
+      },
+    });
+    return config;
+  }),
+  setAdminConfig: adminProcedure
+    .input(activeDirectoryConfigSchema)
+    .mutation(async ({ input, ctx }) => {
+      const config = await ctx.prisma.activeDirectoryConfig.findFirst({
         where: {
-          id: input.id,
+          company: {
+            id: ctx.session.user.company.id,
+          },
+        },
+      });
+      if (config) {
+        return await ctx.prisma.activeDirectoryConfig.update({
+          where: {
+            id: config.id,
+          },
+          data: {
+            domainController: input.domainController,
+            loginName: input.loginName,
+            password: input.password,
+            domainName: input.domainName,
+            company: {
+              connect: {
+                id: ctx.session.user.company.id,
+              },
+            },
+          },
+        });
+      }
+      return await ctx.prisma.activeDirectoryConfig.create({
+        data: {
+          domainController: input.domainController,
+          loginName: input.loginName,
+          password: input.password,
+          domainName: input.domainName,
+          company: {
+            connect: {
+              id: ctx.session.user.company.id,
+            },
+          },
         },
       });
     }),

@@ -15,15 +15,8 @@ import {
   nodemailerConfigSchema,
   sendEmailSchema,
 } from "~/server/validations/mail.validation";
+import { api } from "~/utils/api";
 
-export interface AdminConfig {
-  smtpHost: string;
-  smtpPort: number;
-  smtpSecure: boolean;
-  smtpUser: string;
-  smtpPass: string;
-  emailFrom: string;
-}
 const imapConfig: Imap.Config = {
   user: "sepehr.naderi@rouginedarou.com", // Your Gmail address
   password: "SeNa123", // Your Gmail App Password
@@ -54,7 +47,11 @@ const emailsOutputSchema = z.array(emailSchema);
 export const mailRouter = createTRPCRouter({
   getAdminConfig: adminAndSuperAdminProcedure.query(async ({ input, ctx }) => {
     const config = await ctx.prisma.mailConfig.findFirst({
-      orderBy: { created_at: "desc" },
+      where: {
+        company: {
+          id: ctx.session.user.company.id,
+        },
+      },
     });
     return config;
   }),
@@ -63,7 +60,11 @@ export const mailRouter = createTRPCRouter({
     .input(nodemailerConfigSchema)
     .mutation(async ({ ctx, input }) => {
       const config = await ctx.prisma.mailConfig.findFirst({
-        orderBy: { created_at: "desc" },
+        where: {
+          company: {
+            id: ctx.session.user.company.id,
+          },
+        },
       });
       if (config) {
         return await ctx.prisma.mailConfig.update({
@@ -77,6 +78,11 @@ export const mailRouter = createTRPCRouter({
             smtpPort: input.smtpPort,
             smtpSecure: input.smtpSecure,
             smtpUser: input.smtpUser,
+            company: {
+              connect: {
+                id: ctx.session.user.company.id,
+              },
+            },
           },
         });
       }
@@ -88,6 +94,11 @@ export const mailRouter = createTRPCRouter({
           smtpPort: input.smtpPort,
           smtpSecure: input.smtpSecure,
           smtpUser: input.smtpUser,
+          company: {
+            connect: {
+              id: ctx.session.user.company.id,
+            },
+          },
         },
       });
     }),
@@ -95,10 +106,15 @@ export const mailRouter = createTRPCRouter({
     .input(sendEmailSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const transporter = await getNodemailerTransport();
         const adminConfig = await ctx.prisma.mailConfig.findFirst({
-          orderBy: { created_at: "desc" },
+          where: {
+            company: {
+              id: ctx.session.user.company.id,
+            },
+          },
         });
+        const transporter = await getNodemailerTransport(adminConfig);
+
         const info = await transporter.sendMail({
           from: adminConfig.emailFrom,
           to: input.to,
@@ -120,37 +136,6 @@ export const mailRouter = createTRPCRouter({
     }),
 });
 
-export async function getAdminConfig(): Promise<AdminConfig> {
-  const config = await prisma.mailConfig.findFirst({
-    orderBy: { created_at: "desc" },
-  });
-
-  return config;
-}
-
-export async function sendEmail(
-  to: string,
-  subject: string,
-  text: string,
-  html?: string
-) {
-  try {
-    const transporter = await getNodemailerTransport();
-    const adminConfig = await getAdminConfig();
-    const info = await transporter.sendMail({
-      from: adminConfig.emailFrom,
-      to,
-      subject,
-      text,
-      html,
-    });
-    console.log("Message sent: %s", info.messageId);
-    return info;
-  } catch (error) {
-    console.error("Error sending email:", error);
-    throw error;
-  }
-}
 type Email = {
   id: string;
   subject: string;

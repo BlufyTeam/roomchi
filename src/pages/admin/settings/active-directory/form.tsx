@@ -9,25 +9,45 @@ import withLabel from "~/ui/forms/with-label";
 import InputError from "~/ui/forms/input-error";
 import Button from "~/ui/buttons";
 import { useToast } from "~/components/ui/toast/use-toast";
-import { nodemailerConfigSchema } from "~/server/validations/mail.validation";
+import {
+  incomeMailConfigSchema,
+  nodemailerConfigSchema,
+} from "~/server/validations/mail.validation";
 import { Switch } from "~/components/shadcn/switch";
 import { useLanguage } from "~/context/language.context";
 import { translations } from "~/utils/translations";
 import { activeDirectoryConfigSchema } from "~/server/validations/active-directory";
-import { z } from "zod";
-import { EnglishAndNumberField } from "~/ui/forms/english-field";
 
-const EnglishFieldFieldWithLabel = withLabel(EnglishAndNumberField);
+const TextFieldWithLabel = withLabel(TextField);
+const IntegerFieldWithLabel = withLabel(IntegerField);
 
-type ActiveDirectoryConfigType = z.infer<typeof activeDirectoryConfigSchema>;
 export default function ActiveDirectoryForm() {
   const { toast } = useToast();
   const utils = api.useContext();
-  const { language } = useLanguage();
-  const t = translations[language];
+  const { t } = useLanguage();
 
-  const getUsersMutate = api.activeDirectory.getUsers.useMutation();
-  const formik = useFormik<ActiveDirectoryConfigType>({
+  const getConfig = api.activeDirectory.getAdminConfig.useQuery(undefined, {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+  const updateConfig = api.activeDirectory.setAdminConfig.useMutation({
+    onSuccess: () => {
+      utils.activeDirectory.getAdminConfig.invalidate();
+      toast({
+        title: t.Success,
+        description: t.activeDirectoryConfiguredSuccessfully,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const formik = useFormik({
     initialValues: {
       domainName: "",
       domainController: "",
@@ -37,8 +57,16 @@ export default function ActiveDirectoryForm() {
     validationSchema: toFormikValidationSchema(activeDirectoryConfigSchema),
     validateOnBlur: true,
     validateOnMount: true,
-    onSubmit: (values) => {},
+    onSubmit: (values) => {
+      updateConfig.mutate(values);
+    },
   });
+
+  useEffect(() => {
+    if (getConfig.data) {
+      formik.setValues(getConfig.data);
+    }
+  }, [getConfig.data]);
 
   return (
     <form
@@ -46,23 +74,20 @@ export default function ActiveDirectoryForm() {
       className="relative flex   flex-col items-center justify-center gap-8 rounded-lg bg-secondary p-5"
     >
       <div className="w-full">
-        <EnglishFieldFieldWithLabel
+        <TextFieldWithLabel
           label="Domain Name"
           name="domainName"
           id="domainName"
-          value={formik.values.domainName}
-          onValueChange={(value) => {
-            formik.setFieldValue("domainName", value);
-          }}
+          {...formik.getFieldProps("domainName")}
         />
         <InputError message={formik.errors.domainName} />
       </div>
       <div className="w-full">
-        <EnglishFieldFieldWithLabel
+        <TextFieldWithLabel
           label="Domain Controller"
           name="domainController"
           id="domainController"
-          value={formik.values.domainController}
+          value={formik.values.domainController.toString()}
           onValueChange={(value) => {
             formik.setFieldValue("domainController", value);
           }}
@@ -71,42 +96,29 @@ export default function ActiveDirectoryForm() {
       </div>
 
       <div className="w-full">
-        <EnglishFieldFieldWithLabel
+        <TextFieldWithLabel
           label="Login Name"
           name="loginName"
           id="loginName"
-          value={formik.values.loginName}
-          onValueChange={(value) => {
-            formik.setFieldValue("loginName", value);
-          }}
+          {...formik.getFieldProps("loginName")}
         />
         <InputError message={formik.errors.loginName} />
       </div>
       <div className="w-full">
-        <EnglishFieldFieldWithLabel
+        <TextFieldWithLabel
           label="Password"
           name="password"
           id="password"
-          value={formik.values.password}
-          onValueChange={(value) => {
-            formik.setFieldValue("password", value);
-          }}
+          type="password"
+          {...formik.getFieldProps("password")}
         />
         <InputError message={formik.errors.password} />
       </div>
 
       <Button
-        isLoading={getUsersMutate.isLoading}
+        disabled={updateConfig.isLoading || !formik.isValid}
+        isLoading={updateConfig.isLoading}
         type="submit"
-        onClick={() => {
-          console.log("hi");
-          getUsersMutate.mutate({
-            domainName: "",
-            domainController: "",
-            loginName: "",
-            password: "",
-          });
-        }}
         className="w-full rounded-xl bg-primbuttn text-secondary"
       >
         {t.save}

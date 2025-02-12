@@ -9,6 +9,14 @@ export const nodemailerConfigSchema = z.object({
   emailFrom: z.string(),
 });
 
+export const incomeMailConfigSchema = z.object({
+  smtpHost: z.string(),
+  smtpPort: z.number(),
+  smtpSecure: z.boolean(),
+  smtpUser: z.string(),
+  smtpPass: z.string(),
+});
+
 export const sendEmailSchema = z.object({
   to: z.string(),
   subject: z.string(),

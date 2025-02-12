@@ -46,13 +46,8 @@ export default function AdminMainLayout({ children }: any): any {
       description: t.userDescriptions,
     },
     {
-      value: t.mail,
-      link: "settings/mail",
-      description: "",
-    },
-    {
-      value: t.activeDirectory,
-      link: "settings/active-directory",
+      value: t.settings,
+      link: "settings",
       description: "",
     },
   ];

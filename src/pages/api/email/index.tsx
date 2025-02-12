@@ -4,6 +4,7 @@ import moment from "jalali-moment";
 import { simpleParser } from "mailparser";
 import { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
+import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 import { Appointment, keepConnectionAlive } from "~/server/email";
 import { sendPlanNotificationEmail } from "~/server/helpers/plan-notify";
@@ -16,9 +17,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (!isRunning) {
-    keepConnectionAlive((appointment, action) => {
+    keepConnectionAlive(async (appointment, action) => {
       if (action === "CREATE") {
-        createAppointment(appointment);
+        const session = await getServerAuthSession({ req, res });
+        createAppointment(appointment, session.user.company.id);
       }
       if (action === "CANCELED") {
         deleteAppointment(appointment);
@@ -32,7 +34,7 @@ export default async function handler(
   }
 }
 type CreatePlanInput = z.infer<typeof createPlanSchema>;
-async function createPlan(input: CreatePlanInput, userId) {
+async function createPlan(input: CreatePlanInput, userId, companyId) {
   if (moment(input.end_datetime).isSameOrBefore(moment(input.start_datetime))) {
     throw new TRPCError({
       code: "FORBIDDEN",
@@ -106,13 +108,14 @@ async function createPlan(input: CreatePlanInput, userId) {
       plan,
       "یک جلسه تشکل شد",
       "جزئیات جلسه",
-      "CREATE"
+      "CREATE",
+      companyId
     );
   console.log("A PLAN CREATED ", plan);
   return plan;
 }
 
-async function createAppointment(appointment: Appointment) {
+async function createAppointment(appointment: Appointment, companyId) {
   // TODO: create new plan
   console.log("Creating Appointment");
   try {
@@ -148,7 +151,8 @@ async function createAppointment(appointment: Appointment) {
         is_confidential: appointment.isPrivate,
         send_email: false,
       },
-      user.id
+      user.id,
+      companyId
     );
   } catch {}
 

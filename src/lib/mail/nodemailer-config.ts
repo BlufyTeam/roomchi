@@ -1,9 +1,7 @@
 import { createTransport } from "nodemailer";
-import { getAdminConfig } from "~/server/api/routers/mail";
+import { prisma } from "~/server/db";
 
-export async function getNodemailerTransport() {
-  const adminConfig = await getAdminConfig();
-
+export async function getNodemailerTransport(adminConfig) {
   const smtpConfig = {
     host: adminConfig.smtpHost,
     port: adminConfig.smtpPort,
@@ -19,15 +17,23 @@ export async function getNodemailerTransport() {
   return createTransport(smtpConfig);
 }
 
-export async function sendEmail(
-  to: string,
-  subject: string,
-  text: string,
-  html?: string
-) {
+type SendEmailInputType = {
+  to: string;
+  subject: string;
+  text: string;
+  html?: string;
+  companyId: string;
+};
+export async function sendEmail({
+  to,
+  subject,
+  text,
+  html,
+  companyId,
+}: SendEmailInputType) {
   try {
-    const transporter = await getNodemailerTransport();
-    const adminConfig = await getAdminConfig();
+    const adminConfig = await getAdminConfig({ companyId });
+    const transporter = await getNodemailerTransport(adminConfig);
     if (!adminConfig) return undefined;
     const info = await transporter.sendMail({
       from: adminConfig.emailFrom,
@@ -42,4 +48,24 @@ export async function sendEmail(
     console.error("Error sending email:", error);
     throw error;
   }
+}
+
+export interface AdminConfig {
+  smtpHost: string;
+  smtpPort: number;
+  smtpSecure: boolean;
+  smtpUser: string;
+  smtpPass: string;
+  emailFrom: string;
+}
+export async function getAdminConfig({ companyId }): Promise<AdminConfig> {
+  const config = await prisma.mailConfig.findFirst({
+    where: {
+      company: {
+        id: companyId,
+      },
+    },
+  });
+
+  return config;
 }

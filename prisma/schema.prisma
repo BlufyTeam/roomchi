@@ -98,14 +98,17 @@ model Room {
 }
 
 model Company {
-  id          String   @id @default(cuid())
-  name        String
-  logo_base64 String?
-  description String?
-  users       User[]
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt()
-  rooms       Room[]
+  id                    String                  @id @default(cuid())
+  name                  String
+  logo_base64           String?
+  description           String?
+  users                 User[]
+  created_at            DateTime                @default(now())
+  updated_at            DateTime                @updatedAt()
+  rooms                 Room[]
+  MailConfig            MailConfig[]
+  IncomeMailConfig      IncomeMailConfig[]
+  ActiveDirectoryConfig ActiveDirectoryConfig[]
 
   @@map("companies")
 }
@@ -159,20 +162,43 @@ model MailConfig {
   smtpUser   String
   smtpPass   String
   emailFrom  String
+  company    Company  @relation(fields: [companyId], references: [id])
+  companyId  String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
   @@map("mail_configs")
 }
 
+model IncomeMailConfig {
+  id         String  @id @default(cuid())
+  smtpHost   String
+  smtpPort   Int
+  smtpSecure Boolean
+  smtpUser   String
+  smtpPass   String
+
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("income_mail_configs")
+}
+
 model ActiveDirectoryConfig {
-  id               String   @id @default(cuid())
+  id               String @id @default(cuid())
   domainName       String
   domainController String
   loginName        String
   password         String
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("active_directory_configs")
 }

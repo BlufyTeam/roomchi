@@ -123,7 +123,10 @@ export const translations = {
     save: "save",
 
     mail: "Mail Server",
+    incomeMail: "Income Mail",
     activeDirectory: "Active Directory",
+    activeDirectoryConfiguredSuccessfully:
+      "Active directory configuration updated successfully",
     mailDescription: "In this section you can create or edit mail server",
 
     RecipientEmail: "Recipient Email",
@@ -132,6 +135,8 @@ export const translations = {
     Success: "Success",
     NodemailerConfiguredSuccessfully:
       "Nodemailer configuration updated successfully",
+    IncomeMailConfiguredSuccessfully:
+      "Income mail configuration updated successfully",
     TestEmailSentSuccessfully: "Test email sent successfully",
     NotifyUsers: "Notify users",
     noCompany: "No company",
@@ -160,8 +165,17 @@ export const translations = {
     "Choosing room is mandatory": "Choosing room is mandatory",
     "Title is mandatory": "Title is mandatory",
     search: "Search",
+    startListening: "Start Listening",
+    stopListening: "Stop Listening",
   },
   fa: {
+    startListening: "شروع",
+    stopListening: "متوقف",
+    activeDirectoryConfiguredSuccessfully:
+      "تنظیمات اکتیو دایرکتوری با موفقیت ذخیره شد",
+    IncomeMailConfiguredSuccessfully:
+      "تنظیمات ایمیل سرور ورودی با موفقیت ذخیره شد",
+    NodemailerConfiguredSuccessfully: "تنظیمات ایمیل سرور با موفقیت ذخیره شد",
     search: "جستجو",
     "Title is mandatory": "عنوان ضروری است",
     "Choosing room is mandatory": "انتخاب اتاق ضروری است",
@@ -185,11 +199,12 @@ export const translations = {
     noCompany: "شرکت ندارید",
     NotifyUsers: "اطلاع رسانی به کاربر ها",
     Success: "موفق بود",
-    NodemailerConfiguredSuccessfully: "کانفیگ Mail Server با موفقیت انجام شد",
+
     TestEmailSentSuccessfully: "ایمیل تست با موفقت ارسال شد",
     SendTestEmail: "ارسال ایمیل تست",
     RecipientEmail: "دریافت کننده",
     mail: "ایمیل سرور",
+    incomeMail: "ایمیل سرور ورودی",
     activeDirectory: "اکتیو دایرکتوری",
     mailDescription: "در این بخش می توانید ایمیل را تغییر دهید.",
 

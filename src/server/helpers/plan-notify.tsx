@@ -11,7 +11,8 @@ export const sendPlanNotificationEmail = async (
   plan: Plan & { room?: Room; participants: (Participant & { user: User })[] },
   subject: string,
   message: string,
-  action: "CREATE" | "UPDATE" | "DELETE"
+  action: "CREATE" | "UPDATE" | "DELETE",
+  companyId
 ) => {
   // Fetch users for the specified company
 
@@ -64,7 +65,13 @@ export const sendPlanNotificationEmail = async (
   );
   // Send email to valid users
   try {
-    await sendEmail(getValidEmails.join(","), subject, "", emailHtml);
+    await sendEmail({
+      to: getValidEmails.join(","),
+      subject: subject,
+      text: "",
+      html: emailHtml,
+      companyId: companyId,
+    });
   } catch {}
 };
 

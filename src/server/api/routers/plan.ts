@@ -322,7 +322,8 @@ export const planRouter = createTRPCRouter({
           plan,
           "یک جلسه تشکل شد",
           "جزئیات جلسه",
-          "CREATE"
+          "CREATE",
+          ctx.session.user.company.id
         );
       return plan;
     }),
@@ -351,7 +352,8 @@ export const planRouter = createTRPCRouter({
   //         plan,
   //         "جلسه ویرایش شد",
   //         "جزئیات جلسه",
-  //         "UPDATE"
+  //         "UPDATE",
+  //          ctx.session.user.company.id
   //       );
   //     return plan;
   //   }
@@ -387,7 +389,8 @@ export const planRouter = createTRPCRouter({
           plan,
           "جلسه لغو شد",
           "جزئیات جلسه",
-          "DELETE"
+          "DELETE",
+          ctx.session.user.company.id
         );
       }
       return plan;

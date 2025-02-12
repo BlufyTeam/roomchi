@@ -5,15 +5,15 @@ import { Container } from "~/ui/containers";
 
 import SettingsLayout from "~/pages/admin/settings/layout";
 import { useLanguage } from "~/context/language.context";
-import ActiveDirectoryForm from "~/pages/admin/settings/active-directory/form";
+import AdminIncomeMailForm from "~/pages/admin/settings/income-mail/form";
 
-export default function ActiveDirectoryPage() {
+export default function MailPage() {
   const { t } = useLanguage();
   return (
     <SettingsLayout>
-      <h2 className="text-2xl text-primary">{t.activeDirectory}</h2>
+      <h2 className="text-2xl text-primary">{t.incomeMail}</h2>
       <Container className="flex max-w-3xl flex-col items-stretch gap-10 py-10 ">
-        <ActiveDirectoryForm />
+        <AdminIncomeMailForm />
       </Container>
     </SettingsLayout>
   );
