@@ -220,8 +220,8 @@ async function getTreeView(
   });
 }
 
-// // Example usage
-// getTreeView("RougineDarou", "192.168.10.11", "helpesk", "ani6-u}jxY")
+// Example usage
+// getTreeView("RougineDarou", "192.168.100.11", "helpdesk", "ani4N6-u}jxY")
 //   .then((tree) => {
 //     console.log(tree); // This will output the list of strings
 //   })

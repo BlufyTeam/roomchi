@@ -10,8 +10,8 @@ import { activeDirectoryConfigSchema } from "~/server/validations/active-directo
 
 export const activeDirectoryRouter = createTRPCRouter({
   getUsers: publicProcedure
-    .input(activeDirectoryConfigSchema)
-    .mutation(async ({ input, ctx }) => {
+    //  .input(activeDirectoryConfigSchema)
+    .query(async ({ input, ctx }) => {
       const config = await ctx.prisma.activeDirectoryConfig.findFirst({
         where: {
           company: {
@@ -19,18 +19,13 @@ export const activeDirectoryRouter = createTRPCRouter({
           },
         },
       });
-      ldapSearch(
+      const result = await ldapSearch(
         config.domainName,
         config.domainController,
         config.loginName,
         config.password
-      )
-        .then((users) => {
-          console.log("Found users: ", users);
-        })
-        .catch((error) => {
-          console.error("Error occurred: ", error);
-        });
+      );
+      return result;
     }),
   getAdminConfig: adminProcedure.query(async ({ input, ctx }) => {
     const config = await ctx.prisma.activeDirectoryConfig.findFirst({

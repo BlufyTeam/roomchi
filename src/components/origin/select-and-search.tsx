@@ -41,7 +41,7 @@ interface SelectAndSearchProps {
 }
 
 const SelectAndSearch: FC<SelectAndSearchProps> = ({
-  list,
+  list = [],
   name,
   value,
   title = "انتخاب کنید",
@@ -57,7 +57,7 @@ const SelectAndSearch: FC<SelectAndSearchProps> = ({
   const [_value, set_Value] = useState<string>(value);
 
   useEffect(() => {
-    if (list.map((a) => a.value).includes(value)) {
+    if (list?.map((a) => a.value).includes(value)) {
       setIsOther(false);
     }
     set_Value(value);
@@ -126,7 +126,7 @@ const SelectAndSearch: FC<SelectAndSearchProps> = ({
             <CommandList>
               <CommandEmpty>موردی یافت نشد</CommandEmpty>
               <CommandGroup>
-                {list.map((item) => (
+                {list?.map((item) => (
                   <CommandItem
                     key={item.value}
                     value={item.value}
