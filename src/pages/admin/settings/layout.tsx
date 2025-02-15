@@ -20,12 +20,12 @@ export default function SettingsLayout({
 
   const menuList = [
     {
-      value: t.mail,
-      link: "settings/mail",
+      value: t.OutcomingMail,
+      link: "settings/outcome-mail",
       description: "",
     },
     {
-      value: t.mail,
+      value: t.IncomingMail,
       link: "settings/income-mail",
       description: "",
     },

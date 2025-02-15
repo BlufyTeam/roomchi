@@ -159,7 +159,7 @@ export default function AdminIncomeMailForm() {
         }}
       >
         {getIsIncommingMailConnectionRunning?.data
-          ? t.startDate
+          ? t.stopListening
           : t.startListening}
       </Button>
     </div>

@@ -28,13 +28,44 @@ interface PlansProps {
 
 export default function Plans({ plans = [] }: PlansProps) {
   const { t } = useLanguage();
+  const inProgressPlans = plans.filter(
+    (plan) => plan.status === "AlreadyStarted"
+  );
+  const otherPlans = plans.filter((plan) => plan.status !== "AlreadyStarted");
 
+  const getGridCols = (count: number) => {
+    if (count === 1) return "grid-cols-1";
+    if (count === 2) return "sm:grid-cols-2 ";
+    return "lg:grid-cols-3";
+  };
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {plans.map((plan) => (
-          <PlanItem key={plan.id} plan={plan} />
-        ))}
+    <div className="container mx-auto space-y-8 px-4 py-8">
+      {inProgressPlans.length > 0 && (
+        <div>
+          <h2 className="mb-4 text-2xl font-bold text-primary">
+            {t.inProgress}
+          </h2>
+          <div
+            className={cn("grid  gap-6 ", getGridCols(inProgressPlans.length))}
+          >
+            {inProgressPlans.map((plan) => (
+              <PlanItem key={plan.id} plan={plan} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div>
+        <h2 className="mb-4 text-2xl font-bold text-primary">{t.UpComming}</h2>
+        <div
+          className={cn(
+            "grid  grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          )}
+        >
+          {otherPlans.map((plan) => (
+            <PlanItem key={plan.id} plan={plan} />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -83,7 +114,7 @@ function PlanItem({ plan }: { plan: PlanWithRoom }) {
   return (
     <div
       dir={dir}
-      className="flex flex-col justify-between gap-2 rounded-lg bg-secondary p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
+      className="flex  flex-col justify-between gap-2 rounded-lg bg-secondary p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
     >
       <div
         dir={dir}

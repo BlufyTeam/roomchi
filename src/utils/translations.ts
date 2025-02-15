@@ -123,6 +123,8 @@ export const translations = {
     save: "save",
 
     mail: "Mail Server",
+    OutcomingMail: "Outcoming mail ",
+    IncomingMail: "incomming mail ",
     incomeMail: "Income Mail",
     activeDirectory: "Active Directory",
     activeDirectoryConfiguredSuccessfully:
@@ -167,8 +169,12 @@ export const translations = {
     search: "Search",
     startListening: "Start Listening",
     stopListening: "Stop Listening",
+    UpComming: "Up Comming",
   },
   fa: {
+    OutcomingMail: "ایمیل ارسالی",
+    IncomingMail: "ایمیل دریافتی",
+    UpComming: "جلسات بعدی",
     startListening: "شروع",
     stopListening: "متوقف",
     activeDirectoryConfiguredSuccessfully:

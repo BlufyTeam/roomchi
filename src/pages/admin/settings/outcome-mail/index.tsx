@@ -3,8 +3,8 @@ import AdminMainLayout from "~/pages/admin/layout";
 
 import { Container } from "~/ui/containers";
 
-import AdminNodemailerForm from "~/pages/admin/settings/mail/form";
-import TestEmailForm from "~/pages/admin/settings/mail/test-send-email.form";
+import AdminNodemailerForm from "~/pages/admin/settings/outcome-mail/form";
+import TestEmailForm from "./test-send-email.form";
 import SettingsLayout from "~/pages/admin/settings/layout";
 import { useLanguage } from "~/context/language.context";
 
