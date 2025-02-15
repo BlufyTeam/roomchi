@@ -20,12 +20,12 @@ type Attendee = {
 
 // const imapConfig: Imap.Config = {
 //   user: "meet@rouginedarou.com", // Your Gmail address
-//   password: "MeatApp123", // Your Gmail App Password
+//   password: "MeEt123", // Your Gmail App Password
 //   host: "mail.rouginedarou.com", // Gmail IMAP server
 //   port: 993, // IMAP port (usually 993 for SSL)
 //   tls: true, // Use TLS
 // };
-
+// const imap = new Imap(imapConfig);
 // Function to keep the connection alive and listen for new emails
 export const keepConnectionAlive = (
   imap: Imap,
@@ -57,10 +57,6 @@ export const keepConnectionAlive = (
 
   imap.once("error", (err) => {
     console.error("IMAP connection error:", err);
-  });
-
-  imap.once("end", () => {
-    console.log("IMAP connection closed.");
   });
 
   imap.connect();

@@ -58,6 +58,7 @@ export const incomeMailRouter = createTRPCRouter({
           },
         },
       });
+
       if (config) {
         return await ctx.prisma.incomeMailConfig.update({
           where: {
@@ -65,7 +66,6 @@ export const incomeMailRouter = createTRPCRouter({
           },
           data: {
             smtpHost: input.smtpHost,
-
             smtpPass: input.smtpPass,
             smtpPort: input.smtpPort,
             smtpSecure: input.smtpSecure,
@@ -103,48 +103,43 @@ export const incomeMailRouter = createTRPCRouter({
           },
         },
       });
-      let imapInstance = new Imap({
-        user: config.smtpUser,
-        password: config.smtpUser,
-        host: config.smtpHost,
-        port: config.smtpPort,
-        tls: config.smtpSecure,
-      });
 
-      runConnection(imapInstance, ctx.session.user.company.id);
+      runConnection(
+        {
+          user: config.smtpUser,
+          password: config.smtpPass,
+          host: config.smtpHost,
+          port: config.smtpPort,
+          tls: config.smtpSecure,
+        },
+        ctx.session.user.company.id
+      );
+      return config;
     }
   ),
   stopIncommingEmailListener: adminAndSuperAdminProcedure.mutation(
     async ({ ctx, input }) => {
-      const config = await ctx.prisma.incomeMailConfig.findFirst({
-        where: {
-          company: {
-            id: ctx.session.user.company.id,
-          },
-        },
-      });
-
       stopConnection(ctx.session.user.company.id);
+      return true;
     }
   ),
   isIncommingMailConnectionRunning: adminAndSuperAdminProcedure.query(
     async ({ ctx, input }) => {
+      console.log({ imapInstances: imapInstances.size });
       return isConnectionRunning(ctx.session.user.company.id);
     }
   ),
 });
 
-let isRunning = false;
-
-export function runConnection(imap: Imap, companyId: string) {
+export function runConnection(imapConfig: Imap.Config, companyId: string) {
   if (imapInstances.has(companyId)) {
     console.log(`IMAP listener is already running for company: ${companyId}`);
     return { message: "IMAP listener is already running" };
   }
+  let imapInstance = new Imap(imapConfig);
+  imapInstances.set(companyId, imapInstance); // Store the instance
 
-  imapInstances.set(companyId, imap); // Store the instance
-
-  keepConnectionAlive(imap, (appointment, action) => {
+  keepConnectionAlive(imapInstance, (appointment, action) => {
     if (action === "CREATE") {
       createAppointment(appointment, companyId);
     }
@@ -153,12 +148,11 @@ export function runConnection(imap: Imap, companyId: string) {
     }
   });
 
-  imap.once("end", () => {
+  imapInstance.once("end", () => {
     console.log(`IMAP connection closed for company: ${companyId}`);
     imapInstances.delete(companyId); // Remove instance when it disconnects
   });
 
-  imap.connect();
   return { message: "IMAP listener started" };
 }
 // Stop IMAP listener for a specific company

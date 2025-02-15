@@ -8,12 +8,12 @@ import TestEmailForm from "./test-send-email.form";
 import SettingsLayout from "~/pages/admin/settings/layout";
 import { useLanguage } from "~/context/language.context";
 
-export default function MailPage() {
+export default function OutcomeMailPage() {
   const { t } = useLanguage();
 
   return (
     <SettingsLayout>
-      <h2 className="text-2xl text-primary">{t.mail}</h2>
+      <h2 className="text-2xl text-primary">{t.OutcomingMail}</h2>
       <Container className="flex max-w-3xl flex-col items-stretch gap-10 py-10 ">
         <AdminNodemailerForm />
         <TestEmailForm />

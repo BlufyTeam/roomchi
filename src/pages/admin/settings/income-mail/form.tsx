@@ -156,6 +156,8 @@ export default function AdminIncomeMailForm() {
           if (getIsIncommingMailConnectionRunning?.data)
             await stopListeningIncommingMail.mutateAsync();
           else await startListeningIncommingMail.mutateAsync();
+
+          await utils.incomeMail.isIncommingMailConnectionRunning.invalidate();
         }}
       >
         {getIsIncommingMailConnectionRunning?.data

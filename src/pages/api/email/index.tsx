@@ -11,13 +11,20 @@ import { sendPlanNotificationEmail } from "~/server/helpers/plan-notify";
 import { createPlanSchema } from "~/server/validations/plan.validation";
 
 let isRunning = false;
-
+const imapConfig: Imap.Config = {
+  user: "meet@rouginedarou.com", // Your Gmail address
+  password: "MeEt123", // Your Gmail App Password
+  host: "mail.rouginedarou.com", // Gmail IMAP server
+  port: 993, // IMAP port (usually 993 for SSL)
+  tls: true, // Use TLS
+};
+const imap = new Imap(imapConfig);
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (!isRunning) {
-    keepConnectionAlive(async (appointment, action) => {
+    keepConnectionAlive(imap, async (appointment, action) => {
       if (action === "CREATE") {
         const session = await getServerAuthSession({ req, res });
         createAppointment(appointment, session.user.company.id);
