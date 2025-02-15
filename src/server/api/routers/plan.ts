@@ -87,7 +87,7 @@ export const planRouter = createTRPCRouter({
         momentTz.locale("fa"); // Set the locale to Persian (fa)
 
         // Get the current time in UTC and subtract 3 hours and 30 minutes (Tehran offset)
-        const now = momentTz(); // Subtract Tehran offset
+        const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
 
         // Parse the start and end times
         const start = momentTz(plan.start_datetime);
@@ -210,7 +210,7 @@ export const planRouter = createTRPCRouter({
         momentTz.locale("fa"); // Set the locale to Persian (fa)
 
         // Get the current time in UTC and subtract 3 hours and 30 minutes (Tehran offset)
-        const now = momentTz(); // Subtract Tehran offset
+        const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
 
         // Parse the start and end times
         const start = momentTz(plan.start_datetime);
