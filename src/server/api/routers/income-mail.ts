@@ -103,6 +103,7 @@ export const incomeMailRouter = createTRPCRouter({
           },
         },
       });
+      console.log({ config });
 
       runConnection(
         {
@@ -111,6 +112,11 @@ export const incomeMailRouter = createTRPCRouter({
           host: config.smtpHost,
           port: config.smtpPort,
           tls: config.smtpSecure,
+          authTimeout: 1000 * 60,
+          connTimeout: 1000 * 60,
+          tlsOptions: {
+            rejectUnauthorized: true,
+          },
         },
         ctx.session.user.company.id
       );
