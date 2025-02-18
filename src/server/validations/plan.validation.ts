@@ -40,4 +40,7 @@ export const createPlanSchema = z.object({
   is_confidential: z.boolean().default(false),
   send_email: z.boolean().default(false),
   participantsIds: z.array(z.string()),
+
+  // repeatType: z.string(z.enum(["none", "daily", "weekly", "monthly"])),
+  // repeatUntilDate: z.date({ required_error: "This field is required" }),
 });

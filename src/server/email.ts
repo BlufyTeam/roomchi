@@ -58,6 +58,9 @@ export const keepConnectionAlive = (
   imap.once("error", (err) => {
     console.error("IMAP connection error:", err);
   });
+  imap.once("end", (err) => {
+    imap.connect();
+  });
 
   imap.connect();
 };

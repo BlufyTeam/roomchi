@@ -47,7 +47,7 @@ const SelectAndSearch: FC<SelectAndSearchProps> = ({
   title = "انتخاب کنید",
   onChange,
   className,
-  withOtherOption = true,
+  withOtherOption = false,
   btnClassName,
   disabled = false,
 }) => {

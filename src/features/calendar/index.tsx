@@ -5,6 +5,7 @@ import { useState } from "react";
 import { InPageMenu } from "~/features/menu";
 import { LayoutGroup } from "framer-motion";
 import { useLanguage } from "~/context/language.context";
+import { cn } from "~/lib/utils";
 function getMonthDays(moment: Moment): Moment[] {
   let calendarTemp = [];
 
@@ -66,19 +67,21 @@ type Props = {
   ) => React.ReactNode | string | undefined;
   onMonthChange?: (startDate: Moment, endDate: Moment) => unknown;
   onClick?: (date: Moment) => unknown;
+  className?: string;
 };
 
 export default function Calendar({
   onDate,
   onMonthChange,
   onClick = () => {},
+  className = "",
 }: Props) {
   const { language } = useLanguage();
   const [calendar, setCalendar] = useState(
     getMonthDays(moment().utc().locale(language))
   );
   return (
-    <div className="grid  max-w-7xl  gap-10 px-2 py-10">
+    <div className={cn("grid  max-w-7xl  gap-10 px-2 py-10", className)}>
       <LayoutGroup id="months-InPageMenu">
         <InPageMenu
           className="mx-auto rounded-xl bg-secbuttn px-5 pb-1 pt-2"

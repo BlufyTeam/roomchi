@@ -14,7 +14,7 @@ import { Time } from "@internationalized/date";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { object } from "zod";
+import { object, z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import MultiSelector from "~/components/origin/multi-select";
 import { MyTimeField } from "~/components/origin/time-picker";
@@ -37,6 +37,9 @@ import ThreeDotsWave from "~/ui/loadings/three-dots-wave";
 import { api } from "~/utils/api";
 import { translations } from "~/utils/translations";
 import { delay } from "~/utils/util";
+import SelectAndSearch from "~/components/origin/select-and-search";
+import Calendar from "~/features/calendar";
+import { ResponsiveCalendar } from "~/features/calendar/responsive-calendar";
 
 const TextFieldWithLable = withLabel(TextField);
 
@@ -95,28 +98,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
 
     return setStep(stepNumber);
   }
-  const router = useRouter();
-  useEffect(() => {
-    if (step === icons.length - 2) {
-      new Promise(async (resolve) => {
-        try {
-          await createPlan.mutateAsync({
-            roomId: formik.values.roomId,
-            send_email: formik.values.send_email,
-            is_confidential: formik.values.is_confidential,
-            title: formik.values.title,
-            start_datetime: formik.values.start_datetime,
-            end_datetime: formik.values.end_datetime,
-            description: formik.values.description,
-            link: formik.values.link,
-            participantsIds: formik.values.participants.map((a) => a.value),
-          });
-          goTo(0);
-          formik.resetForm();
-        } catch {}
-      });
-    }
-  }, [step]);
+
   const formik = useFormik({
     initialValues: {
       room: undefined,
@@ -146,11 +128,37 @@ export function ReserveRoom({ date }: { date: Moment }) {
       description: "",
       participantsIds: [],
       participants: [],
+      // repeatType: "none",
+      // repeatUntilDate: moment().locale("fa").add(2, "M"),
     },
     validationSchema: toFormikValidationSchema(createPlanSchema),
     validateOnBlur: true,
     onSubmit: () => {},
   });
+
+  useEffect(() => {
+    if (step === icons.length - 2) {
+      new Promise(async (resolve) => {
+        try {
+          await createPlan.mutateAsync({
+            roomId: formik.values.roomId,
+            send_email: formik.values.send_email,
+            is_confidential: formik.values.is_confidential,
+            title: formik.values.title,
+            start_datetime: formik.values.start_datetime,
+            end_datetime: formik.values.end_datetime,
+            description: formik.values.description,
+            link: formik.values.link,
+            participantsIds: formik.values.participants.map((a) => a.value),
+            // repeatType: formik.values.repeatType,
+            // repeatUntilDate: formik.values.repeatUntilDate.toDate(),
+          });
+          goTo(0);
+          formik.resetForm();
+        } catch {}
+      });
+    }
+  }, [step]);
   return (
     <>
       <div className="flex w-full flex-col items-center justify-center font-iransans ">
@@ -225,18 +233,6 @@ export function ReserveRoom({ date }: { date: Moment }) {
                         );
                       }}
                     />
-                    {/* <PickTimeView
-                      value={moment(formik.values.start_datetime)}
-                      date={date}
-                      onChange={(time) => {
-                        formik.setValues((values) => {
-                          return {
-                            ...values,
-                            start_datetime: time.toDate(),
-                          };
-                        });
-                      }}
-                    /> */}
                   </div>
                   <div>
                     <h3 className="w-full py-5 text-center"> {t.endTime}</h3>
@@ -259,20 +255,42 @@ export function ReserveRoom({ date }: { date: Moment }) {
                         );
                       }}
                     />
-                    {/* <PickTimeView
-                      value={moment(formik.values.end_datetime)}
-                      date={date}
-                      onChange={(time) => {
-                        formik.setValues((values) => {
-                          return {
-                            ...values,
-                            end_datetime: time.toDate(),
-                          };
-                        });
-                      }}
-                    /> */}
                   </div>
                 </div>
+                {/* <SelectAndSearch
+                  title="تکرار خودکار جلسه"
+                  list={[
+                    {
+                      label: "بدون تکرار",
+                      value: "none",
+                    },
+                    {
+                      label: "روزانه",
+                      value: "daily",
+                    },
+                    {
+                      label: "هفتگی",
+                      value: "weekly",
+                    },
+                    {
+                      label: "ماهانه",
+                      value: "monthly",
+                    },
+                  ]}
+                  value={formik.values.repeatType}
+                  onChange={(value) => {
+                    formik.setFieldValue("repeatType", value);
+                  }}
+                /> */}
+
+                {/* {formik.values.repeatType !== "none" && (
+                  <ResponsiveCalendar
+                    onDayClick={(value) => {
+                      formik.setFieldValue("repeatUntilDate", value);
+                    }}
+                    selectedDate={moment(formik.values.repeatUntilDate)}
+                  />
+                )} */}
               </div>
               <Button
                 disabled={createPlan.isLoading}
@@ -280,7 +298,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 onClick={(room) => {
                   goTo(step + 1);
                 }}
-                className="bg-accent/20 text-accent"
+                className="w-full bg-accent/20 text-accent"
               >
                 {t.done}
               </Button>
@@ -445,4 +463,32 @@ export function ReserveRoom({ date }: { date: Moment }) {
       </div>
     </>
   );
+}
+{
+  /* <PickTimeView
+                      value={moment(formik.values.start_datetime)}
+                      date={date}
+                      onChange={(time) => {
+                        formik.setValues((values) => {
+                          return {
+                            ...values,
+                            start_datetime: time.toDate(),
+                          };
+                        });
+                      }}
+                    /> */
+}
+{
+  /* <PickTimeView
+                      value={moment(formik.values.end_datetime)}
+                      date={date}
+                      onChange={(time) => {
+                        formik.setValues((values) => {
+                          return {
+                            ...values,
+                            end_datetime: time.toDate(),
+                          };
+                        });
+                      }}
+                    /> */
 }
