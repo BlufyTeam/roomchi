@@ -41,6 +41,13 @@ export const createPlanSchema = z.object({
   send_email: z.boolean().default(false),
   participantsIds: z.array(z.string()),
 
-  // repeatType: z.string(z.enum(["none", "daily", "weekly", "monthly"])),
-  // repeatUntilDate: z.date({ required_error: "This field is required" }),
+  repeatType: z.enum(["none", "daily", "weekly", "monthly"]),
+  repeatUntilDate: z.string().nullish(),
 });
+// .refine(
+//   (data) => data.repeatType === "none" || data.repeatUntilDate !== undefined,
+//   {
+//     message: "repeatUntilDate is required when repeatType is not 'none'",
+//     path: ["repeatUntilDate"],
+//   }
+// );

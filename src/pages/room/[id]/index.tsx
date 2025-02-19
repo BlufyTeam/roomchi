@@ -18,7 +18,7 @@ export default function SingleRoomPage() {
     id: router.query.id?.toString() ?? "",
   });
   const todayDate = useMemo(() => new Date().toISOString(), []);
-  console.log({ date: moment(new Date().toLocaleDateString()).toDate() });
+  // console.log({ date: moment(new Date().toLocaleDateString()).toDate() });
   const getPlans = api.plan.getPlansByDateAndRoom.useQuery(
     {
       roomId: router.query.id as string,
@@ -27,6 +27,9 @@ export default function SingleRoomPage() {
     {
       enabled: session.status === "authenticated",
       refetchInterval: 60000, // 1 Minute
+      onSuccess: () => {
+        console.log("hi");
+      },
     }
   );
 

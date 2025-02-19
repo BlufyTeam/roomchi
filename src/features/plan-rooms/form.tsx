@@ -52,6 +52,28 @@ const icons = [
   <CheckIcon key={6} className="stroke-inherit" />,
 ];
 
+const getRepeatListLabel = (t, repeatType) => {
+  const repeatList = [
+    {
+      label: t.NoRepeat,
+      value: "none",
+    },
+    {
+      label: t.daily,
+      value: "daily",
+    },
+    {
+      label: t.weekly,
+      value: "weekly",
+    },
+    {
+      label: t.monthly,
+      value: "monthly",
+    },
+  ];
+  return repeatList.find((a) => a.value === repeatType).label;
+};
+
 export function ReserveRoom({ date }: { date: Moment }) {
   const { language, t } = useLanguage();
   const session = useSession();
@@ -128,8 +150,8 @@ export function ReserveRoom({ date }: { date: Moment }) {
       description: "",
       participantsIds: [],
       participants: [],
-      // repeatType: "none",
-      // repeatUntilDate: moment().locale("fa").add(2, "M"),
+      repeatType: "none",
+      repeatUntilDate: moment().locale("fa").add(2, "M").toISOString(),
     },
     validationSchema: toFormikValidationSchema(createPlanSchema),
     validateOnBlur: true,
@@ -150,8 +172,8 @@ export function ReserveRoom({ date }: { date: Moment }) {
             description: formik.values.description,
             link: formik.values.link,
             participantsIds: formik.values.participants.map((a) => a.value),
-            // repeatType: formik.values.repeatType,
-            // repeatUntilDate: formik.values.repeatUntilDate.toDate(),
+            repeatType: formik.values.repeatType as any,
+            repeatUntilDate: formik.values.repeatUntilDate,
           });
           goTo(0);
           formik.resetForm();
@@ -162,6 +184,17 @@ export function ReserveRoom({ date }: { date: Moment }) {
   return (
     <>
       <div className="flex w-full flex-col items-center justify-center font-iransans ">
+        {formik.values.repeatType !== "none" && (
+          <div className="flex  flex-col gap-2 text-center text-primary">
+            <span> {getRepeatListLabel(t, formik.values.repeatType)} </span>
+            <span>{t.RepeatUntilDate}</span>
+            <span>
+              {moment(formik.values.repeatUntilDate)
+                .locale(language)
+                .format("YYYY MMMM DD")}
+            </span>
+          </div>
+        )}
         <MultiStep
           isLoading={createPlan.isLoading}
           onStepClick={(stepNumber) => {
@@ -257,23 +290,23 @@ export function ReserveRoom({ date }: { date: Moment }) {
                     />
                   </div>
                 </div>
-                {/* <SelectAndSearch
-                  title="تکرار خودکار جلسه"
+                <SelectAndSearch
+                  title={t.AutoMeetingRepeat}
                   list={[
                     {
-                      label: "بدون تکرار",
+                      label: t.NoRepeat,
                       value: "none",
                     },
                     {
-                      label: "روزانه",
+                      label: t.daily,
                       value: "daily",
                     },
                     {
-                      label: "هفتگی",
+                      label: t.weekly,
                       value: "weekly",
                     },
                     {
-                      label: "ماهانه",
+                      label: t.monthly,
                       value: "monthly",
                     },
                   ]}
@@ -281,16 +314,22 @@ export function ReserveRoom({ date }: { date: Moment }) {
                   onChange={(value) => {
                     formik.setFieldValue("repeatType", value);
                   }}
-                /> */}
+                />
 
-                {/* {formik.values.repeatType !== "none" && (
-                  <ResponsiveCalendar
-                    onDayClick={(value) => {
-                      formik.setFieldValue("repeatUntilDate", value);
-                    }}
-                    selectedDate={moment(formik.values.repeatUntilDate)}
-                  />
-                )} */}
+                {formik.values.repeatType !== "none" && (
+                  <div className="flex w-full flex-col gap-2 text-center">
+                    <h4 className="text-primary">{t.ContinueUntil}</h4>
+                    <ResponsiveCalendar
+                      onDayClick={(value) => {
+                        formik.setFieldValue(
+                          "repeatUntilDate",
+                          value.toISOString()
+                        );
+                      }}
+                      selectedDate={moment(formik.values.repeatUntilDate)}
+                    />
+                  </div>
+                )}
               </div>
               <Button
                 disabled={createPlan.isLoading}
@@ -300,7 +339,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 }}
                 className="w-full bg-accent/20 text-accent"
               >
-                {t.done}
+                {t.next}
               </Button>
             </div>,
             <div
@@ -350,12 +389,12 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 onClick={async () => {
                   goTo(3);
                 }}
-                className="bg-accent/20 text-accent"
+                className="w-full bg-accent/20 text-accent"
               >
-                {t.done}{" "}
+                {t.next}{" "}
               </Button>
             </div>,
-            <div className="flex w-full flex-col items-center justify-center gap-5">
+            <div className="flex w-full max-w-sm flex-col items-center justify-center gap-5">
               {users.isLoading ? (
                 "در حال دریافت کاربران برای انتخاب"
               ) : (
@@ -415,9 +454,9 @@ export function ReserveRoom({ date }: { date: Moment }) {
                 onClick={async () => {
                   goTo(4);
                 }}
-                className="bg-accent/20 text-accent"
+                className="w-full max-w-sm bg-accent/20 text-accent"
               >
-                {t.next}{" "}
+                {t.done}{" "}
               </Button>
             </div>,
             <div
@@ -447,6 +486,21 @@ export function ReserveRoom({ date }: { date: Moment }) {
                   {t.withDescription}
                   {formik.values.description}
                 </p>
+              )}
+
+              {formik.values.repeatType !== "none" && (
+                <div className="flex  flex-col gap-2 text-center text-primary">
+                  <span>
+                    {" "}
+                    {getRepeatListLabel(t, formik.values.repeatType).label}
+                  </span>
+                  <span> {t.RepeatUntilDate}</span>
+                  <span>
+                    {moment(formik.values.repeatUntilDate)
+                      .locale(language)
+                      .format("YYYY MMMM DD")}
+                  </span>
+                </div>
               )}
             </div>,
             <div

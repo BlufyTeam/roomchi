@@ -124,6 +124,7 @@ export const planRouter = createTRPCRouter({
   getPlansBetWeenDates: protectedProcedure
     .input(planDateSchema)
     .query(({ ctx, input }) => {
+      console.log(input);
       return ctx.prisma.plan.findMany({
         where: {
           start_datetime: { gte: input?.start_datetime },
@@ -282,50 +283,84 @@ export const planRouter = createTRPCRouter({
         });
       }
 
-      const plan = await ctx.prisma.plan.create({
-        data: {
-          title: input.title,
-          userId: ctx.session.user.id,
-          roomId: input.roomId,
-          start_datetime: input.start_datetime,
-          description: input.description,
-          end_datetime: input.end_datetime,
-          is_confidential: input.is_confidential,
-          link: input?.link,
-          participants: {
-            create: input.participantsIds.map((participantId) => ({
-              user: {
-                connect: {
-                  id: participantId, // Replace with the participant's user ID
+      let currentStart = moment(input.start_datetime);
+      let currentEnd = moment(input.end_datetime);
+      let endDate = moment(input.repeatUntilDate);
+      let keepLoop = true;
+      console.log(
+        "is same or before? ",
+        currentStart.format("YYYY MM DD HH:mm"),
+        endDate.format("YYYY MM DD HH:mm"),
+        moment(currentStart).isSameOrBefore(endDate)
+      );
+
+      do {
+        console.log("creating...");
+        console.log(currentStart.format("YYYY MM DD HH:mm"));
+        const plan = await ctx.prisma.plan.create({
+          data: {
+            title: input.title,
+            userId: ctx.session.user.id,
+            roomId: input.roomId,
+            start_datetime: currentStart.toDate(),
+            end_datetime: currentEnd.toDate(),
+            description: input.description,
+            is_confidential: input.is_confidential,
+            link: input?.link,
+            participants: {
+              create: input.participantsIds.map((participantId) => ({
+                user: {
+                  connect: {
+                    id: participantId, // Replace with the participant's user ID
+                  },
                 },
-              },
-              hasAccepted: true,
-              assignedBy: ctx.session.user.id,
-            })),
-          },
-        },
-        include: {
-          room: true,
-          participants: {
-            include: {
-              user: true,
+                hasAccepted: true,
+                assignedBy: ctx.session.user.id,
+              })),
             },
           },
-        },
-      });
+          include: {
+            room: true,
+            participants: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        });
+
+        console.log({ plan });
+
+        switch (input.repeatType) {
+          case "daily":
+            currentStart.add(1, "day");
+            currentEnd.add(1, "day");
+            break;
+          case "weekly":
+            currentStart.add(1, "week");
+            currentEnd.add(1, "week");
+            break;
+          case "monthly":
+            currentStart.add(1, "month");
+            currentEnd.add(1, "month");
+            break;
+          case "none":
+            if (input.participantsIds.length > 0 && input.send_email)
+              await sendPlanNotificationEmail(
+                ctx,
+                plan,
+                "یک جلسه تشکل شد",
+                "جزئیات جلسه",
+                "CREATE",
+                ctx.session.user.company.id
+              );
+
+            keepLoop = false; // Break loop
+            return plan;
+        }
+      } while (moment(currentStart).isSameOrBefore(endDate) && keepLoop);
 
       // Notify the users about the new plan
-
-      if (input.participantsIds.length > 0 && input.send_email)
-        await sendPlanNotificationEmail(
-          ctx,
-          plan,
-          "یک جلسه تشکل شد",
-          "جزئیات جلسه",
-          "CREATE",
-          ctx.session.user.company.id
-        );
-      return plan;
     }),
   // updatePlan: AdminProcedure.input(updatePlanSchema).mutation(
   //   async ({ input, ctx }) => {
