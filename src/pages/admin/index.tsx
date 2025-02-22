@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { CalendarView } from "~/pages/admin/calendar-view";
+import CalendarView from "~/pages/admin/calendar-view";
 import AdminMainLayout from "~/pages/admin/layout";
 import AdminSkeleton from "~/pages/admin/loading";
 

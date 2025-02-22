@@ -19,7 +19,7 @@ import Button from "~/ui/buttons";
 import { cn } from "~/lib/utils";
 import SelectAndSearch from "~/components/origin/select-and-search";
 import { getMonthDays } from "~/utils/date";
-import { CalendarView } from "~/pages/user/calendar-view";
+import CalendarView from "~/pages/user/calendar-view";
 
 let calendarTemp = [];
 const today = moment(Date.now()).utc().locale("fa");
