@@ -44,7 +44,7 @@ const calendar: Moment[] = getMonthDays(moment());
 const dates = getMonthDays(calendar.at(15).add(0, "month"));
 const start_date = dates.at(0);
 const end_date = dates.at(-1);
-export function CalendarView() {
+export default function CalendarView() {
   const session = useSession();
   const { language, t } = useLanguage();
   const [selectedRoomId, setSelectedRoomId] = useState<string | undefined>(
