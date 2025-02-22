@@ -273,11 +273,8 @@ function RoomItem({
 
         <div className="flex items-center justify-between">
           {plan.room.price != 0 && <span>{plan.room.price} تومان</span>}
-
-          {userId === plan.userId && plan.status !== "Done" && (
-            <DeleteSession id={plan.id} />
-          )}
-
+          {/* userId === plan.userId && */}
+          {plan.status !== "Done" && <DeleteSession id={plan.id} />}
           {userId !== plan.userId &&
             plan.status === "Reserved" &&
             sessionData.user.role === "USER" &&
