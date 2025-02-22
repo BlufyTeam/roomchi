@@ -4,7 +4,6 @@ import { twMerge } from "tailwind-merge";
 import { Time } from "@internationalized/date";
 
 import Link from "next/link";
-import AdminMainLayout from "~/pages/admin/layout";
 import moment, { Moment } from "jalali-moment";
 import { api } from "~/utils/api";
 import { MegaphoneIcon } from "lucide-react";
@@ -12,36 +11,12 @@ import Calendar from "~/features/calendar";
 import Modal from "~/ui/modals";
 import { useRouter } from "next/router";
 import PlanRooms from "~/features/plan-rooms";
-import AdminSkeleton from "~/pages/admin/loading";
-import PickTimeView from "~/features/pick-time-view";
 import { useLanguage } from "~/context/language.context";
-import Button from "~/ui/buttons";
 import { cn } from "~/lib/utils";
 import SelectAndSearch from "~/components/origin/select-and-search";
 import { getMonthDays } from "~/utils/date";
-import ThreeDotsWave from "~/ui/loadings/three-dots-wave";
 
-let calendarTemp = [];
-const today = moment(Date.now()).utc().locale("fa");
-const startDay = today.clone().startOf("month").startOf("week");
-const endDay = today.clone().endOf("month").endOf("week");
-
-let date = startDay.clone().subtract(1, "day");
-
-while (date.isBefore(endDay, "day"))
-  calendarTemp.push({
-    days: Array(7)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .map(() => date.add(1, "day").clone()),
-  });
-const calendar: Moment[] = getMonthDays(moment());
-const dates = getMonthDays(calendar.at(15).add(0, "month"));
+const dates = getMonthDays(moment());
 const start_date = dates.at(0);
 const end_date = dates.at(-1);
 export default function CalendarView() {

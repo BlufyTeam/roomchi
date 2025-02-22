@@ -21,27 +21,6 @@ import SelectAndSearch from "~/components/origin/select-and-search";
 import { getMonthDays } from "~/utils/date";
 import CalendarView from "~/pages/user/calendar-view";
 
-let calendarTemp = [];
-const today = moment(Date.now()).utc().locale("fa");
-const startDay = today.clone().startOf("month").startOf("week");
-const endDay = today.clone().endOf("month").endOf("week");
-
-let date = startDay.clone().subtract(1, "day");
-
-while (date.isBefore(endDay, "day"))
-  calendarTemp.push({
-    days: Array(7)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .map(() => date.add(1, "day").clone()),
-  });
-const calendar: Moment[] = getMonthDays(moment());
-
 export default function AdminPage() {
   const session = useSession();
   const router = useRouter();

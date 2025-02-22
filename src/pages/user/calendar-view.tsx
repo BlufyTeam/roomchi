@@ -17,27 +17,7 @@ import { cn } from "~/lib/utils";
 import SelectAndSearch from "~/components/origin/select-and-search";
 import { getMonthDays } from "~/utils/date";
 
-let calendarTemp = [];
-const today = moment(Date.now()).utc().locale("fa");
-const startDay = today.clone().startOf("month").startOf("week");
-const endDay = today.clone().endOf("month").endOf("week");
-
-let date = startDay.clone().subtract(1, "day");
-
-while (date.isBefore(endDay, "day"))
-  calendarTemp.push({
-    days: Array(7)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .fill(0)
-      .map(() => date.add(1, "day").clone()),
-  });
-const calendar: Moment[] = getMonthDays(moment());
-const dates = getMonthDays(calendar.at(15).add(0, "month"));
+const dates = getMonthDays(moment());
 const start_date = dates.at(0);
 const end_date = dates.at(-1);
 export default function CalendarView() {
