@@ -107,6 +107,12 @@ export default function CalendarView() {
         )}
 
         <Calendar
+          onFirstCalender={(startDate, endDate) => {
+            setDate({
+              start_date: startDate.utc().toDate(),
+              end_date: endDate.utc().toDate(),
+            });
+          }}
           onMonthChange={(startDate, endDate) => {
             setDate({
               start_date: startDate.utc().toDate(),

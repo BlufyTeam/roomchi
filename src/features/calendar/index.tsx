@@ -1,7 +1,7 @@
 import moment, { Moment } from "jalali-moment";
 import { MegaphoneIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { InPageMenu } from "~/features/menu";
 import { LayoutGroup } from "framer-motion";
 import { useLanguage } from "~/context/language.context";
@@ -44,6 +44,7 @@ type Props = {
     monthNumber: number
   ) => React.ReactNode | string | undefined;
   onMonthChange?: (startDate: Moment, endDate: Moment) => unknown;
+  onFirstCalender?: (startDate: Moment, endDate: Moment) => unknown;
   onClick?: (date: Moment) => unknown;
   className?: string;
 };
@@ -51,6 +52,7 @@ type Props = {
 export default function Calendar({
   onDate,
   onMonthChange,
+  onFirstCalender = (a, b) => {},
   onClick = () => {},
   className = "",
 }: Props) {
@@ -58,6 +60,14 @@ export default function Calendar({
   const [calendar, setCalendar] = useState(
     getMonthDays(moment().utc().locale(language))
   );
+  useLayoutEffect(() => {
+    let newCalendar = undefined;
+    if (language === "en")
+      newCalendar = getMonthDays(moment().utc().locale(language));
+    if (language === "fa")
+      newCalendar = getMonthDays(moment().utc().locale(language));
+    onFirstCalender(newCalendar.at(0), newCalendar.at(newCalendar.length - 1));
+  }, []);
   return (
     <div className={cn("grid  max-w-7xl  gap-10 px-2 py-10", className)}>
       <LayoutGroup id="months-InPageMenu">

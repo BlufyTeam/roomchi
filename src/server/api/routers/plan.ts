@@ -124,7 +124,23 @@ export const planRouter = createTRPCRouter({
   getPlansBetWeenDates: protectedProcedure
     .input(planDateSchema)
     .query(({ ctx, input }) => {
-      console.log(input);
+      console.log({
+        start_datetime: moment(input.start_datetime)
+          .locale("fa")
+          .format("YYYY M DD"),
+        end_datetime: moment(input.end_datetime)
+          .locale("fa")
+          .format("YYYY M DD"),
+      });
+      console.log({
+        start_datetime: moment(input.start_datetime)
+          .locale("en")
+          .format("YYYY M DD"),
+        end_datetime: moment(input.end_datetime)
+          .locale("en")
+          .format("YYYY M DD"),
+      });
+
       return ctx.prisma.plan.findMany({
         where: {
           start_datetime: { gte: input?.start_datetime },
