@@ -273,6 +273,11 @@ async function createAppointment(appointment: Appointment, companyId) {
       },
     });
 
+    if (!room) {
+      console.log("Room does not exists");
+      return;
+    }
+
     const participants = await prisma.user.findMany({
       where: {
         email: {
