@@ -25,6 +25,11 @@ import { getServerAuthSession } from "~/server/auth";
 import { Appointment, keepConnectionAlive } from "~/server/email";
 import { sendPlanNotificationEmail } from "~/server/helpers/plan-notify";
 import { createPlanSchema } from "~/server/validations/plan.validation";
+import {
+  isConnectionRunning,
+  runConnection,
+  stopConnection,
+} from "~/server/imapManager";
 
 const emailSchema = z.object({
   id: z.string(),
@@ -144,45 +149,6 @@ export const incomeMailRouter = createTRPCRouter({
   ),
 });
 
-export function runConnection(imapConfig: Imap.Config, companyId: string) {
-  if (imapInstances.has(companyId)) {
-    console.log(`IMAP listener is already running for company: ${companyId}`);
-    return { message: "IMAP listener is already running" };
-  }
-  let imapInstance = new Imap(imapConfig);
-  imapInstances.set(companyId, imapInstance); // Store the instance
-
-  keepConnectionAlive(imapInstance, (appointment, action) => {
-    if (action === "CREATE") {
-      createAppointment(appointment, companyId);
-    }
-    if (action === "CANCELED") {
-      deleteAppointment(appointment);
-    }
-  });
-
-  imapInstance.once("end", () => {
-    console.log(`IMAP connection closed for company: ${companyId}`);
-    imapInstances.delete(companyId); // Remove instance when it disconnects
-  });
-
-  return { message: "IMAP listener started" };
-}
-// Stop IMAP listener for a specific company
-export function stopConnection(companyId: string) {
-  const imap = imapInstances.get(companyId);
-  if (!imap) {
-    return { message: "No IMAP listener is running for this company" };
-  }
-
-  imap.end(); // Gracefully close the connection
-  imapInstances.delete(companyId);
-  return { message: `IMAP listener stopped for company: ${companyId}` };
-}
-
-export function isConnectionRunning(companyId: string) {
-  return imapInstances.has(companyId);
-}
 type CreatePlanInput = z.infer<typeof createPlanSchema>;
 async function createPlan(input: CreatePlanInput, userId, companyId) {
   if (moment(input.end_datetime).isSameOrBefore(moment(input.start_datetime))) {
@@ -265,7 +231,7 @@ async function createPlan(input: CreatePlanInput, userId, companyId) {
   return plan;
 }
 
-async function createAppointment(appointment: Appointment, companyId) {
+export async function createAppointment(appointment: Appointment, companyId) {
   // TODO: create new plan
   console.log("Creating Appointment");
   try {
@@ -314,7 +280,7 @@ async function createAppointment(appointment: Appointment, companyId) {
   // console.log({ appointment: JSON.stringify(appointment, null, 2) });
 }
 
-async function deleteAppointment(appointment: Appointment) {
+export async function deleteAppointment(appointment: Appointment) {
   console.log("Deleting Appointment");
   await prisma.$transaction(async (tx) => {
     await prisma.participant.deleteMany({
