@@ -103,7 +103,7 @@ export const incomeMailRouter = createTRPCRouter({
           },
         },
       });
-      console.log({ config });
+      // console.log({ config });
 
       runConnection(
         {
@@ -254,7 +254,7 @@ async function createPlan(input: CreatePlanInput, userId, companyId) {
       "CREATE",
       companyId
     );
-  console.log("A PLAN CREATED ", plan);
+  // console.log("A PLAN CREATED ", plan);
   return plan;
 }
 
@@ -304,7 +304,7 @@ async function createAppointment(appointment: Appointment, companyId) {
     );
   } catch {}
 
-  console.log({ appointment: JSON.stringify(appointment, null, 2) });
+  // console.log({ appointment: JSON.stringify(appointment, null, 2) });
 }
 
 async function deleteAppointment(appointment: Appointment) {

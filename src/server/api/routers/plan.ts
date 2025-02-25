@@ -49,11 +49,11 @@ export const planRouter = createTRPCRouter({
   getPlansByDateAndRoom: protectedProcedure // will be tablet or roomProcedure in the future
     .input(planDateAndRoomSchema)
     .query(async ({ ctx, input }) => {
-      console.log(
-        "hee",
-        input.date,
-        moment(new Date(input.date)).locale("en").utc().startOf("day").toDate()
-      );
+      // console.log(
+      //   "hee",
+      //   input.date,
+      //   moment(new Date(input.date)).locale("en").utc().startOf("day").toDate()
+      // );
       const plans = await ctx.prisma.plan.findMany({
         where: {
           roomId: input.roomId,
@@ -94,21 +94,21 @@ export const planRouter = createTRPCRouter({
         const end = momentTz(plan.end_datetime);
 
         // Log the raw UTC timestamps for debugging
-        console.log({
-          nowUTC: now.toISOString(), // Raw UTC string for now
-          startUTC: start.toISOString(), // Raw UTC string for start
-          endUTC: end.toISOString(), // Raw UTC string for end
-        });
+        // console.log({
+        //   nowUTC: now.toISOString(), // Raw UTC string for now
+        //   startUTC: start.toISOString(), // Raw UTC string for start
+        //   endUTC: end.toISOString(), // Raw UTC string for end
+        // });
 
-        console.log({
-          i,
-          title: plan.title,
-          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now with manual subtraction
-          start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in local time
-          end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in local time
-          jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
-          IS: now.isBetween(start, end), // Check if now is between start and end
-        });
+        // console.log({
+        //   i,
+        //   title: plan.title,
+        //   now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now with manual subtraction
+        //   start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in local time
+        //   end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in local time
+        //   jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
+        //   IS: now.isBetween(start, end), // Check if now is between start and end
+        // });
 
         // Compare times
         if (now.isBetween(start, end)) status = "AlreadyStarted"; // If now is between start and end
@@ -124,22 +124,22 @@ export const planRouter = createTRPCRouter({
   getPlansBetWeenDates: protectedProcedure
     .input(planDateSchema)
     .query(({ ctx, input }) => {
-      console.log({
-        start_datetime: moment(input.start_datetime)
-          .locale("fa")
-          .format("YYYY M DD"),
-        end_datetime: moment(input.end_datetime)
-          .locale("fa")
-          .format("YYYY M DD"),
-      });
-      console.log({
-        start_datetime: moment(input.start_datetime)
-          .locale("en")
-          .format("YYYY M DD"),
-        end_datetime: moment(input.end_datetime)
-          .locale("en")
-          .format("YYYY M DD"),
-      });
+      // console.log({
+      //   start_datetime: moment(input.start_datetime)
+      //     .locale("fa")
+      //     .format("YYYY M DD"),
+      //   end_datetime: moment(input.end_datetime)
+      //     .locale("fa")
+      //     .format("YYYY M DD"),
+      // });
+      // console.log({
+      //   start_datetime: moment(input.start_datetime)
+      //     .locale("en")
+      //     .format("YYYY M DD"),
+      //   end_datetime: moment(input.end_datetime)
+      //     .locale("en")
+      //     .format("YYYY M DD"),
+      // });
 
       return ctx.prisma.plan.findMany({
         where: {
@@ -183,11 +183,11 @@ export const planRouter = createTRPCRouter({
         .utc()
         .toISOString(); // End of the next day in UTC
 
-      console.log({
-        input,
+      // console.log({
+      //   input,
 
-        lt,
-      });
+      //   lt,
+      // });
       const plans = await ctx.prisma.plan.findMany({
         where: {
           start_datetime: {
@@ -213,16 +213,16 @@ export const planRouter = createTRPCRouter({
         orderBy: { start_datetime: "asc" },
       });
 
-      console.log("Server's Time:", moment().format()); // UTC time
-      console.log(
-        "Local Time (Tehran):",
-        momentTz().tz("Asia/Tehran").format()
-      ); // Should show Tehran time
+      // console.log("Server's Time:", moment().format()); // UTC time
+      // console.log(
+      //   "Local Time (Tehran):",
+      //   momentTz().tz("Asia/Tehran").format()
+      // ); // Should show Tehran time
       return plans.map((plan, i) => {
         let status: RoomStatus = "Open"; // Default status
-        console.log({ input });
-        console.log({ start: plan.start_datetime });
-        console.log({ end: plan.end_datetime });
+        // console.log({ input });
+        // console.log({ start: plan.start_datetime });
+        // console.log({ end: plan.end_datetime });
 
         momentTz.locale("fa"); // Set the locale to Persian (fa)
 
@@ -234,21 +234,21 @@ export const planRouter = createTRPCRouter({
         const end = momentTz(plan.end_datetime);
 
         // Log the raw UTC timestamps for debugging
-        console.log({
-          nowUTC: now.toISOString(), // Raw UTC string for now
-          startUTC: start.toISOString(), // Raw UTC string for start
-          endUTC: end.toISOString(), // Raw UTC string for end
-        });
+        // console.log({
+        //   nowUTC: now.toISOString(), // Raw UTC string for now
+        //   startUTC: start.toISOString(), // Raw UTC string for start
+        //   endUTC: end.toISOString(), // Raw UTC string for end
+        // });
 
-        console.log({
-          i,
-          title: plan.title,
-          now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now with manual subtraction
-          start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in local time
-          end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in local time
-          jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
-          IS: now.isBetween(start, end), // Check if now is between start and end
-        });
+        // console.log({
+        //   i,
+        //   title: plan.title,
+        //   now: now.format("YYYY-MM-DD | HH:mm:ss"), // Now with manual subtraction
+        //   start: start.format("YYYY-MM-DD | HH:mm:ss"), // Start time in local time
+        //   end: end.format("YYYY-MM-DD | HH:mm:ss"), // End time in local time
+        //   jalaliNow: now.format("YYYY/MM/DD | HH:mm:ss"), // Jalali date in local time
+        //   IS: now.isBetween(start, end), // Check if now is between start and end
+        // });
 
         // Compare times
         if (now.isBetween(start, end)) status = "AlreadyStarted"; // If now is between start and end
@@ -303,16 +303,16 @@ export const planRouter = createTRPCRouter({
       let currentEnd = moment(input.end_datetime);
       let endDate = moment(input.repeatUntilDate);
       let keepLoop = true;
-      console.log(
-        "is same or before? ",
-        currentStart.format("YYYY MM DD HH:mm"),
-        endDate.format("YYYY MM DD HH:mm"),
-        moment(currentStart).isSameOrBefore(endDate)
-      );
+      // console.log(
+      //   "is same or before? ",
+      //   currentStart.format("YYYY MM DD HH:mm"),
+      //   endDate.format("YYYY MM DD HH:mm"),
+      //   moment(currentStart).isSameOrBefore(endDate)
+      // );
 
       do {
-        console.log("creating...");
-        console.log(currentStart.format("YYYY MM DD HH:mm"));
+        // console.log("creating...");
+        // console.log(currentStart.format("YYYY MM DD HH:mm"));
         const plan = await ctx.prisma.plan.create({
           data: {
             title: input.title,
@@ -345,7 +345,7 @@ export const planRouter = createTRPCRouter({
           },
         });
 
-        console.log({ plan });
+        // console.log({ plan });
 
         switch (input.repeatType) {
           case "daily":

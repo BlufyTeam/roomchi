@@ -38,9 +38,7 @@ export default function SingleRoomPage() {
     {
       enabled: session.status === "authenticated",
       refetchInterval: 60000, // 1 Minute
-      onSuccess: () => {
-        console.log("hi");
-      },
+      onSuccess: () => {},
     }
   );
 
