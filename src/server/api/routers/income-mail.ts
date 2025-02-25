@@ -112,10 +112,17 @@ export const incomeMailRouter = createTRPCRouter({
           host: config.smtpHost,
           port: config.smtpPort,
           tls: config.smtpSecure,
+
           authTimeout: 1000 * 60,
           connTimeout: 1000 * 60,
           tlsOptions: {
             rejectUnauthorized: true,
+          },
+
+          keepalive: {
+            interval: 10000, // Send a NOOP command every 10 seconds
+            idleInterval: 300000, // IDLE command every 5 minutes
+            forceNoop: true, // Ensures NOOP is sent even when IDLE is supported
           },
         },
         ctx.session.user.company.id
