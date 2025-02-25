@@ -54,20 +54,10 @@ export const keepConnectionAlive = (
       });
     });
   });
-
-  imap.once("error", (err) => {
-    console.error("IMAP connection error:", err);
-    imap.connect();
-  });
-  imap.once("end", (err) => {
-    imap.connect();
-  });
-
-  imap.connect();
 };
 
 // Fetch the most recent email whenever a new email arrives
-const fetchLatestEmail = (
+export const fetchLatestEmail = (
   imap: Imap,
   onAppointment: (
     appointment: Appointment,
