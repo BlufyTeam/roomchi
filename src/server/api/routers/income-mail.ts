@@ -166,14 +166,18 @@ export function runConnection(imapConfig: Imap.Config, companyId: string) {
   imapInstance.once("end", () => {
     console.log(`IMAP connection closed for company: ${companyId}`);
     imapInstance.end();
-    imapInstance.connect(); // Start IMAP connection
+    setTimeout(() => {
+      imapInstance.connect();
+    }, 2000);
     // imapInstances.delete(companyId); // Remove instance on disconnect
   });
 
   imapInstance.once("error", (err) => {
     console.error("IMAP connection error:", err);
     imapInstance.end();
-    imapInstance.connect();
+    setTimeout(() => {
+      imapInstance.connect();
+    }, 2000);
   });
   imapInstance.connect(); // Start IMAP connection
 
