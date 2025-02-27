@@ -34,6 +34,7 @@
     "cmdk": "^0.2.0",
     "formik": "^2.4.0",
     "framer-motion": "^10.12.16",
+    "ical-generator": "^8.1.1",
     "ical.js": "^2.1.0",
     "imap": "^0.8.19",
     "jalali-moment": "^3.3.11",

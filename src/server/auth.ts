@@ -49,23 +49,23 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        if (user && user.password === credentials.password) {
-          return user;
-        } else {
-          // TODO: get config from database | find users admin then get its config
+        if (user.password)
+          if (user && user.password === credentials.password) return user;
+
+        if (user.user_type === "DOMAIN") {
           const acUser = await verifyUserPassword(
             "RougineDarou",
             "192.168.100.11",
             "helpdesk",
             "ani4N6-u}jxY",
-            credentials.username.toLowerCase(),
+            user.username,
+            user.name,
             credentials.password
           );
-          if (acUser) {
-            return user;
-          }
-          return null;
+          if (acUser) return user;
         }
+
+        return null;
       },
     }),
   ],

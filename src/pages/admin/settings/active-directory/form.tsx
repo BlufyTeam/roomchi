@@ -100,7 +100,10 @@ export default function ActiveDirectoryForm() {
           label="Login Name"
           name="loginName"
           id="loginName"
-          {...formik.getFieldProps("loginName")}
+          value={formik.values.loginName.toString()}
+          onValueChange={(value) => {
+            formik.setFieldValue("loginName", value);
+          }}
         />
         <InputError message={formik.errors.loginName} />
       </div>
@@ -110,7 +113,10 @@ export default function ActiveDirectoryForm() {
           name="password"
           id="password"
           type="password"
-          {...formik.getFieldProps("password")}
+          value={formik.values.password.toString()}
+          onValueChange={(value) => {
+            formik.setFieldValue("password", value);
+          }}
         />
         <InputError message={formik.errors.password} />
       </div>

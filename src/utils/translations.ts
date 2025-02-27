@@ -182,8 +182,12 @@ export const translations = {
 
     FilterRoom: "Filter room",
     ContinueUntil: "Continue Until",
+    refresh: "Refresh",
+    user_type: "User type",
   },
   fa: {
+    user_type: "نوع کاربر",
+    refresh: "رفرش",
     ContinueUntil: "ادامه تا",
     FilterRoom: "فیلتر اتاق",
     AutoMeetingRepeat: "تکرار خودکار جلسه",

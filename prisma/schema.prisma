@@ -118,8 +118,9 @@ model User {
   name         String?
   email        String?       @unique
   username     String        @unique
-  password     String
+  password     String?
   description  String?
+  user_type    String?       @default("LOCAL")
   is_active    Boolean       @default(true)
   image_url    String?
   company      Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)

@@ -76,10 +76,10 @@ export function verifyUserPassword(
   loginName,
   password,
   username,
+  displaName,
   userPassword
 ) {
   const serverUrl = `ldap://${domainController}`;
-
   const bindDN = loginName;
   const bindPassword = password;
   const userSearchBase = `OU=Rouginedarou,OU=Client Users,DC=${domainName},DC=com`;
@@ -94,55 +94,153 @@ export function verifyUserPassword(
     attributes: ["displayName", "sAMAccountName"],
   };
 
-  try {
+  return new Promise((resolve, reject) => {
     // Bind to the LDAP server
-    client.bindSync(bindDN, bindPassword);
-    console.log("Successfully connected to the Active Directory");
-
-    const searchResponse = client.searchSync(userSearchBase, searchOptions);
-    let userExists = false;
-
-    // Check for user in search results
-    for (const entry of searchResponse.entries) {
-      const attributes = entry.attributes;
-      const sAMAccountNameAttribute = attributes.find(
-        (attribute) => attribute.type === "sAMAccountName"
-      );
-
-      let userDN = null;
-      if (sAMAccountNameAttribute) {
-        const values = Array.isArray(sAMAccountNameAttribute.values)
-          ? sAMAccountNameAttribute.values
-          : [sAMAccountNameAttribute.values];
-        userDN = values.join(", ");
+    client.bind(bindDN, bindPassword, (error) => {
+      if (error) {
+        console.error("Failed to bind:", error);
+        reject(error);
+        return;
       }
 
-      if (userDN) {
-        userExists = true;
-        try {
-          client.bindSync(userDN, userPassword);
-          console.log("User authenticated successfully");
-          client.unbind();
-          return true; // Password correct
-        } catch (bindError) {
-          console.log("Incorrect password");
-          client.unbind();
-          return false; // Incorrect password
+      console.log("Successfully connected to the Active Directory");
+
+      client.search(
+        userSearchBase,
+        searchOptions,
+        (searchError, searchResponse) => {
+          if (searchError) {
+            console.log("Search failed: ", searchError);
+            reject(searchError);
+            return;
+          }
+
+          let userExists = false;
+          searchResponse.on("searchEntry", (entry) => {
+            const attributes = entry.attributes;
+            const sAMAccountNameAttribute = attributes.find(
+              (attribute) => attribute.type === "sAMAccountName"
+            );
+
+            let userDN = null;
+            if (sAMAccountNameAttribute) {
+              const values = Array.isArray(sAMAccountNameAttribute.values)
+                ? sAMAccountNameAttribute.values
+                : [sAMAccountNameAttribute.values];
+              userDN = values.join(", ");
+            }
+
+            if (userDN) {
+              console.log({ displaName, userPassword });
+              userExists = true;
+              // Bind to the user DN to verify the password
+              client.bind(displaName, userPassword, (bindError) => {
+                if (bindError) {
+                  console.log("Incorrect password");
+                  client.unbind();
+                  reject(false); // Incorrect password
+                } else {
+                  console.log("User authenticated successfully");
+                  client.unbind();
+                  resolve(true); // Password correct
+                }
+              });
+            }
+          });
+
+          searchResponse.on("end", () => {
+            if (!userExists) {
+              console.log("User does not exist");
+              client.unbind();
+              resolve(false); // User not found
+            }
+          });
+
+          searchResponse.on("error", (searchError) => {
+            console.log("Search Error: ", searchError);
+            reject(searchError);
+          });
         }
-      }
-    }
-
-    if (!userExists) {
-      console.log("User does not exist");
-      client.unbind();
-      return false; // User not found
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    client.unbind();
-    return false; // Error occurred
-  }
+      );
+    });
+  });
 }
+
+// export function verifyUserPassword(
+//   domainName,
+//   domainController,
+//   loginName,
+//   password,
+//   username,
+//   userPassword
+// ) {
+//   const serverUrl = `ldap://${domainController}`;
+
+//   const bindDN = loginName;
+//   const bindPassword = password;
+//   const userSearchBase = `OU=Rouginedarou,OU=Client Users,DC=${domainName},DC=com`;
+
+//   const client = ldap.createClient({
+//     url: serverUrl,
+//   });
+
+//   const searchOptions = {
+//     filter: `(sAMAccountName=${username})`, // Use the provided username for the filter
+//     scope: "sub",
+//     attributes: ["displayName", "sAMAccountName"],
+//   };
+
+//   try {
+//     // Bind to the LDAP server
+//     client.bind(bindDN, bindPassword);
+//     console.log("Successfully connected to the Active Directory");
+
+//     const searchResponse = client.search(userSearchBase, searchOptions);
+//     let userExists = false;
+
+//     console.log({ searchResponse });
+
+//     // Check for user in search results
+//     for (const entry of searchResponse.entries) {
+//       const attributes = entry.attributes;
+//       const sAMAccountNameAttribute = attributes.find(
+//         (attribute) => attribute.type === "sAMAccountName"
+//       );
+
+//       let userDN = null;
+//       if (sAMAccountNameAttribute) {
+//         const values = Array.isArray(sAMAccountNameAttribute.values)
+//           ? sAMAccountNameAttribute.values
+//           : [sAMAccountNameAttribute.values];
+//         userDN = values.join(", ");
+//       }
+
+//       if (userDN) {
+//         userExists = true;
+//         try {
+//           client.bindSync(userDN, userPassword);
+//           console.log("User authenticated successfully");
+//           client.unbind();
+//           return true; // Password correct
+//         } catch (bindError) {
+//           console.log("Incorrect password");
+//           client.unbind();
+//           return false; // Incorrect password
+//         }
+//       }
+//     }
+
+//     if (!userExists) {
+//       console.log("User does not exist");
+//       client.unbind();
+//       return false; // User not found
+//     }
+//   } catch (error) {
+//     console.error("Error:", error);
+//     client.unbind();
+//     return false; // Error occurred
+//   }
+// }
 
 type TreeViewEntry = {
   dn: string;

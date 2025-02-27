@@ -173,8 +173,10 @@ export function UserForm({
             />
             <InputError message={formik.errors.username} />
           </div>
+
           <div className="relative">
             <PasswordField
+              fieldDisabled={user?.user_type === "DOMAIN"}
               label={t.password}
               name="password"
               id="password"
@@ -182,7 +184,9 @@ export function UserForm({
               {...formik.getFieldProps("password")}
             />
 
-            <InputError message={formik.errors.password} />
+            {user?.user_type === "LOCAL" && (
+              <InputError message={formik.errors.password} />
+            )}
           </div>
         </div>
 

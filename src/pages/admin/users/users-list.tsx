@@ -139,6 +139,18 @@ export default function UsersList() {
           },
         },
         {
+          Header: t.user_type,
+          accessor: "user_type",
+          Cell: ({ row }) => {
+            const user: User = row.original;
+            return (
+              <div className="text-atysa-900 w-full cursor-pointer  rounded-full px-2 py-2  ">
+                {user.user_type}
+              </div>
+            );
+          },
+        },
+        {
           Header: t.options,
           accessor: "",
           Cell: ({ row }) => {

@@ -6,6 +6,7 @@ import {
   adminAndSuperAdminProcedure,
 } from "~/server/api/trpc";
 import {
+  createAcUserSchema,
   createUserSchema,
   updateUserSchema,
   userIdSchema,
@@ -16,7 +17,24 @@ export const userRouter = createTRPCRouter({
   getUser: adminAndSuperAdminProcedure.query(({ ctx }) => {
     return ctx.session.user;
   }),
-
+  createMultipleAcUsers: adminAndSuperAdminProcedure
+    .input(createAcUserSchema)
+    .mutation(async ({ input, ctx }) => {
+      return input.map(async (user) => {
+        console.log({ input });
+        await ctx.prisma.user.create({
+          data: {
+            name: user.display_name,
+            email: user.email,
+            username: user.username.toLowerCase(),
+            password: null,
+            user_type: "DOMAIN",
+            role: "USER",
+            companyId: ctx.session.user.company.id,
+          },
+        });
+      });
+    }),
   createUser: adminAndSuperAdminProcedure
     .input(createUserSchema)
     .mutation(async ({ input, ctx }) => {

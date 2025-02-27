@@ -3,6 +3,8 @@ import moment from "jalali-moment";
 import momentTz from "moment-timezone";
 import { tree } from "next/dist/build/templates/app-page";
 import { z } from "zod";
+import { createTransport } from "nodemailer";
+
 import {
   createTRPCRouter,
   publicProcedure,
@@ -20,6 +22,7 @@ import {
   planDeleteSchema,
 } from "~/server/validations/plan.validation";
 import { RoomStatus } from "~/types";
+import ical from "ical-generator";
 
 export const planRouter = createTRPCRouter({
   getPlansByRoomId: protectedProcedure
@@ -346,6 +349,74 @@ export const planRouter = createTRPCRouter({
         });
 
         // console.log({ plan });
+
+        const participants = await ctx.prisma.user.findMany({
+          where: {
+            id: {
+              in: input.participantsIds,
+            },
+          },
+        });
+        const room = await ctx.prisma.room.findFirst({
+          where: {
+            id: input.roomId,
+          },
+        });
+
+        const calendar = ical({
+          events: [
+            {
+              start: currentStart.toDate(),
+              end: currentEnd.toDate(),
+              summary: input.title,
+              description: input.description,
+              location: room.title,
+              organizer: {
+                name: ctx.session.user.company.name,
+                email: ctx.session.user.email,
+              },
+
+              attendees: participants.map((user) => {
+                return {
+                  email: user.email,
+                  name: user.name,
+                  rsvp: true,
+                };
+              }),
+            },
+          ],
+          name: input.title,
+        });
+
+        const config = await ctx.prisma.mailConfig.findFirst({
+          where: {
+            company: {
+              id: ctx.session.user.company.id,
+            },
+          },
+        });
+        const transporter = createTransport({
+          host: config.smtpHost, // SmarterMail SMTP Host
+          port: config.smtpPort, // SmarterMail Port
+          secure: config.smtpSecure,
+          auth: {
+            user: config.smtpUser,
+            pass: config.smtpPass,
+          },
+        });
+
+        const message = {
+          from: `${ctx.session.user.company.name} ${ctx.session.user.email}`,
+          to: participants.map((a) => a.email).join(","),
+          subject: input.title,
+          text: input.description,
+          icalEvent: {
+            method: "REQUEST",
+            content: calendar.toString(),
+          },
+        };
+
+        await transporter.sendMail(message);
 
         switch (input.repeatType) {
           case "daily":

@@ -1,6 +1,6 @@
 import Imap from "imap";
 import ICAL from "ical.js";
-
+import { createTransport } from "nodemailer";
 import { simpleParser } from "mailparser";
 import { z } from "zod";
 import { getNodemailerTransport } from "~/lib/mail/nodemailer-config";
@@ -25,6 +25,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { Appointment, keepConnectionAlive } from "~/server/email";
 import { sendPlanNotificationEmail } from "~/server/helpers/plan-notify";
 import { createPlanSchema } from "~/server/validations/plan.validation";
+import ical from "ical-generator";
 
 const emailSchema = z.object({
   id: z.string(),
@@ -95,6 +96,13 @@ export const incomeMailRouter = createTRPCRouter({
     }),
   runIncommingEmailListener: adminAndSuperAdminProcedure.mutation(
     async ({ ctx, input }) => {
+      const data = {
+        subject: "Meeting Appointment",
+        start: moment().toDate(),
+        end: moment().add(1, "h").toDate(),
+        description: "Meeting to discuss project requirements.",
+      };
+
       const config = await ctx.prisma.incomeMailConfig.findFirst({
         where: {
           company: {
@@ -103,7 +111,6 @@ export const incomeMailRouter = createTRPCRouter({
         },
       });
       // console.log({ config });
-
       runConnection(
         {
           user: config.smtpUser,
@@ -111,13 +118,11 @@ export const incomeMailRouter = createTRPCRouter({
           host: config.smtpHost,
           port: config.smtpPort,
           tls: config.smtpSecure,
-
           authTimeout: 1000 * 60,
           connTimeout: 1000 * 60,
           tlsOptions: {
             rejectUnauthorized: true,
           },
-
           keepalive: {
             interval: 10000, // Send a NOOP command every 10 seconds
             idleInterval: 300000, // IDLE command every 5 minutes
@@ -165,19 +170,15 @@ export function runConnection(imapConfig: Imap.Config, companyId: string) {
 
   imapInstance.once("end", () => {
     console.log(`IMAP connection closed for company: ${companyId}`);
-    imapInstance.end();
-    setTimeout(() => {
-      imapInstance.connect();
-    }, 2000);
+
+    imapInstance.connect(); // Start IMAP connection
     // imapInstances.delete(companyId); // Remove instance on disconnect
   });
 
   imapInstance.once("error", (err) => {
     console.error("IMAP connection error:", err);
-    imapInstance.end();
-    setTimeout(() => {
-      imapInstance.connect();
-    }, 2000);
+
+    imapInstance.connect();
   });
   imapInstance.connect(); // Start IMAP connection
 
