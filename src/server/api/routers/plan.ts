@@ -276,26 +276,16 @@ export const planRouter = createTRPCRouter({
         });
       }
 
-      // Check for overlapping plans
-      const conflictingPlans = await ctx.prisma.plan.findMany({
+      // Check for overlapping plans efficiently
+      const conflictCount = await ctx.prisma.plan.count({
         where: {
           roomId: input.roomId,
-          AND: [
-            {
-              start_datetime: {
-                lt: input.end_datetime, // Existing plan starts before the new plan ends
-              },
-            },
-            {
-              end_datetime: {
-                gt: input.start_datetime, // Existing plan ends after the new plan starts
-              },
-            },
-          ],
+          start_datetime: { lt: input.end_datetime },
+          end_datetime: { gt: input.start_datetime },
         },
       });
 
-      if (conflictingPlans.length > 0) {
+      if (conflictCount > 0) {
         throw new TRPCError({
           code: "CONFLICT",
           message: "جلسه ای در این بازه زمانی از قبل وجود دارد.",
@@ -304,119 +294,27 @@ export const planRouter = createTRPCRouter({
 
       let currentStart = moment(input.start_datetime);
       let currentEnd = moment(input.end_datetime);
-      let endDate = moment(input.repeatUntilDate);
-      let keepLoop = true;
-      // console.log(
-      //   "is same or before? ",
-      //   currentStart.format("YYYY MM DD HH:mm"),
-      //   endDate.format("YYYY MM DD HH:mm"),
-      //   moment(currentStart).isSameOrBefore(endDate)
-      // );
+      const endDate = moment(input.repeatUntilDate);
+      const plansToCreate = [];
 
-      do {
-        // console.log("creating...");
-        // console.log(currentStart.format("YYYY MM DD HH:mm"));
-        const plan = await ctx.prisma.plan.create({
-          data: {
-            title: input.title,
-            userId: ctx.session.user.id,
-            roomId: input.roomId,
-            start_datetime: currentStart.toDate(),
-            end_datetime: currentEnd.toDate(),
-            description: input.description,
-            is_confidential: input.is_confidential,
-            link: input?.link,
-            participants: {
-              create: input.participantsIds.map((participantId) => ({
-                user: {
-                  connect: {
-                    id: participantId, // Replace with the participant's user ID
-                  },
-                },
-                hasAccepted: true,
-                assignedBy: ctx.session.user.id,
-              })),
-            },
-          },
-          include: {
-            room: true,
-            participants: {
-              include: {
-                user: true,
-              },
-            },
+      while (moment(currentStart).isSameOrBefore(endDate)) {
+        plansToCreate.push({
+          title: input.title,
+          userId: ctx.session.user.id,
+          roomId: input.roomId,
+          start_datetime: currentStart.toDate(),
+          end_datetime: currentEnd.toDate(),
+          description: input.description,
+          is_confidential: input.is_confidential,
+          link: input?.link,
+          participants: {
+            create: input.participantsIds.map((participantId) => ({
+              user: { connect: { id: participantId } },
+              hasAccepted: true,
+              assignedBy: ctx.session.user.id,
+            })),
           },
         });
-
-        // console.log({ plan });
-
-        const participants = await ctx.prisma.user.findMany({
-          where: {
-            id: {
-              in: input.participantsIds,
-            },
-          },
-        });
-        const room = await ctx.prisma.room.findFirst({
-          where: {
-            id: input.roomId,
-          },
-        });
-
-        const calendar = ical({
-          events: [
-            {
-              start: currentStart.toDate(),
-              end: currentEnd.toDate(),
-              summary: input.title,
-              description: input.description,
-              location: room.title,
-              organizer: {
-                name: ctx.session.user.company.name,
-                email: ctx.session.user.email,
-              },
-
-              attendees: participants.map((user) => {
-                return {
-                  email: user.email,
-                  name: user.name,
-                  rsvp: true,
-                };
-              }),
-            },
-          ],
-          name: input.title,
-        });
-
-        const config = await ctx.prisma.mailConfig.findFirst({
-          where: {
-            company: {
-              id: ctx.session.user.company.id,
-            },
-          },
-        });
-        const transporter = createTransport({
-          host: config.smtpHost, // SmarterMail SMTP Host
-          port: config.smtpPort, // SmarterMail Port
-          secure: config.smtpSecure,
-          auth: {
-            user: config.smtpUser,
-            pass: config.smtpPass,
-          },
-        });
-
-        const message = {
-          from: `${ctx.session.user.company.name} ${ctx.session.user.email}`,
-          to: participants.map((a) => a.email).join(","),
-          subject: input.title,
-          text: input.description,
-          icalEvent: {
-            method: "REQUEST",
-            content: calendar.toString(),
-          },
-        };
-
-        await transporter.sendMail(message);
 
         switch (input.repeatType) {
           case "daily":
@@ -432,22 +330,21 @@ export const planRouter = createTRPCRouter({
             currentEnd.add(1, "month");
             break;
           case "none":
-            if (input.participantsIds.length > 0 && input.send_email)
-              await sendPlanNotificationEmail(
-                ctx,
-                plan,
-                "یک جلسه تشکل شد",
-                "جزئیات جلسه",
-                "CREATE",
-                ctx.session.user.company.id
-              );
-
-            keepLoop = false; // Break loop
-            return plan;
+            break;
         }
-      } while (moment(currentStart).isSameOrBefore(endDate) && keepLoop);
 
-      // Notify the users about the new plan
+        if (input.repeatType === "none") break;
+      }
+
+      // Create all plans in one transaction
+      const createdPlans = await ctx.prisma.$transaction(
+        plansToCreate.map((plan) => ctx.prisma.plan.create({ data: plan }))
+      );
+
+      // Send Outlook calendar invitation once after all plans are created
+      await sendOutlookCalendarInvite(ctx, input, createdPlans);
+
+      return createdPlans;
     }),
   // updatePlan: AdminProcedure.input(updatePlanSchema).mutation(
   //   async ({ input, ctx }) => {
@@ -551,3 +448,64 @@ export const planRouter = createTRPCRouter({
       });
     }),
 });
+
+async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
+  if (!createdPlans.length) return;
+
+  const [participants, room, config] = await Promise.all([
+    ctx.prisma.user.findMany({ where: { id: { in: input.participantsIds } } }),
+    ctx.prisma.room.findFirst({ where: { id: input.roomId } }),
+    ctx.prisma.mailConfig.findFirst({
+      where: { companyId: ctx.session.user.company.id },
+    }),
+  ]);
+
+  if (!room || !config) return;
+
+  const calendar = ical({
+    events: createdPlans.map((plan) => ({
+      start: plan.start_datetime,
+      end: plan.end_datetime,
+      summary: input.title,
+      description: input.description,
+      location: room.title,
+      organizer: {
+        name: ctx.session.user.company.name,
+        email: ctx.session.user.email,
+      },
+      attendees: participants.map((user) => ({
+        email: user.email,
+        name: user.name,
+        rsvp: true,
+      })),
+      // repeating: {
+      //   freq: input.repeatType.toUpperCase(), // DAILY, WEEKLY, MONTHLY
+      //   until: moment(input.repeatUntilDate).toDate(),
+      // },
+    })),
+    name: input.title,
+  });
+
+  const transporter = createTransport({
+    host: config.smtpHost,
+    port: config.smtpPort,
+    secure: config.smtpSecure,
+    auth: {
+      user: config.smtpUser,
+      pass: config.smtpPass,
+    },
+  });
+
+  const message = {
+    from: `${ctx.session.user.company.name} <${ctx.session.user.email}>`,
+    to: participants.map((a) => a.email).join(","),
+    subject: input.title,
+    text: input.description,
+    icalEvent: {
+      method: "REQUEST",
+      content: calendar.toString(),
+    },
+  };
+
+  await transporter.sendMail(message);
+}
