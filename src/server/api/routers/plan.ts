@@ -341,8 +341,10 @@ export const planRouter = createTRPCRouter({
         plansToCreate.map((plan) => ctx.prisma.plan.create({ data: plan }))
       );
 
-      // Send Outlook calendar invitation once after all plans are created
-      await sendOutlookCalendarInvite(ctx, input, createdPlans);
+      if (input.send_email) {
+        // Send Outlook calendar invitation once after all plans are created
+        await sendOutlookCalendarInvite(ctx, input, createdPlans);
+      }
 
       return createdPlans;
     }),
@@ -478,10 +480,12 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
         name: user.name,
         rsvp: true,
       })),
-      repeating: {
-        freq: input.repeatType.toUpperCase(), // DAILY, WEEKLY, MONTHLY
-        until: moment(input.repeatUntilDate).toDate(),
-      },
+      ...(input.repeatType !== "none" && {
+        repeating: {
+          freq: input.repeatType.toUpperCase(), // DAILY, WEEKLY, MONTHLY
+          until: moment(input.repeatUntilDate).toDate(),
+        },
+      }),
     })),
     name: input.title,
   });
