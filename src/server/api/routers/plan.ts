@@ -478,10 +478,10 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
         name: user.name,
         rsvp: true,
       })),
-      // repeating: {
-      //   freq: input.repeatType.toUpperCase(), // DAILY, WEEKLY, MONTHLY
-      //   until: moment(input.repeatUntilDate).toDate(),
-      // },
+      repeating: {
+        freq: input.repeatType.toUpperCase(), // DAILY, WEEKLY, MONTHLY
+        until: moment(input.repeatUntilDate).toDate(),
+      },
     })),
     name: input.title,
   });
