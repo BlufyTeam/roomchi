@@ -77,7 +77,7 @@ export const translations = {
     titleIsRequired: "Title Is Required",
     fieldRequired: "This field is required",
     login: "Login",
-    inProgress: "In Progess",
+    inProgress: "In Progress",
     backToCalendar: "Back To Calendar",
     reserveError: "Room Reservation Error",
     timeError: "Room Time Error",
