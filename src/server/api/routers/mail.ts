@@ -43,7 +43,6 @@ const emailSchema = z.object({
 });
 
 // Define a Zod schema for the output of the query
-const emailsOutputSchema = z.array(emailSchema);
 export const mailRouter = createTRPCRouter({
   getAdminConfig: adminAndSuperAdminProcedure.query(async ({ input, ctx }) => {
     const config = await ctx.prisma.mailConfig.findFirst({
@@ -78,6 +77,7 @@ export const mailRouter = createTRPCRouter({
             smtpPort: input.smtpPort,
             smtpSecure: input.smtpSecure,
             smtpUser: input.smtpUser,
+            sender_name: input.sender_name,
             company: {
               connect: {
                 id: ctx.session.user.company.id,

@@ -156,17 +156,18 @@ model VerificationToken {
 }
 
 model MailConfig {
-  id         String   @id @default(cuid())
-  smtpHost   String
-  smtpPort   Int
-  smtpSecure Boolean
-  smtpUser   String
-  smtpPass   String
-  emailFrom  String
-  company    Company  @relation(fields: [companyId], references: [id])
-  companyId  String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id          String   @id @default(cuid())
+  smtpHost    String
+  smtpPort    Int
+  smtpSecure  Boolean
+  smtpUser    String
+  smtpPass    String
+  emailFrom   String
+  sender_name String?
+  company     Company  @relation(fields: [companyId], references: [id])
+  companyId   String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
 
   @@map("mail_configs")
 }

@@ -7,6 +7,7 @@ export const nodemailerConfigSchema = z.object({
   smtpUser: z.string(),
   smtpPass: z.string(),
   emailFrom: z.string(),
+  sender_name: z.string().nullish(),
 });
 
 export const incomeMailConfigSchema = z.object({

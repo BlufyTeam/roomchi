@@ -52,6 +52,7 @@ export default function AdminNodemailerForm() {
       smtpUser: "",
       smtpPass: "",
       emailFrom: "",
+      sender_name: "",
     },
     validationSchema: toFormikValidationSchema(nodemailerConfigSchema),
     validateOnBlur: true,
@@ -133,6 +134,15 @@ export default function AdminNodemailerForm() {
           {...formik.getFieldProps("emailFrom")}
         />
         <InputError message={formik.errors.emailFrom} />
+      </div>
+      <div className="w-full">
+        <TextFieldWithLabel
+          label="Sender Name"
+          name="sender_name"
+          id="sender_name"
+          {...formik.getFieldProps("sender_name")}
+        />
+        <InputError message={formik.errors.sender_name} />
       </div>
       <Button
         disabled={updateConfig.isLoading || !formik.isValid}

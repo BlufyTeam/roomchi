@@ -464,6 +464,7 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
 
   if (!room || !config) return;
 
+  const senderName = config.sender_name;
   const calendar = ical({
     events: createdPlans.map((plan) => ({
       start: plan.start_datetime,
@@ -472,7 +473,7 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
       description: input.description,
       location: room.title,
       organizer: {
-        name: ctx.session.user.company.name,
+        name: senderName,
         email: ctx.session.user.email,
       },
       attendees: participants.map((user) => ({
@@ -491,6 +492,23 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
     name: input.title,
   });
 
+  // Convert the calendar to string first
+  let icsContent = calendar.toString();
+
+  // Manually add VALARM for notifications (to the first event)
+  const alarm = `
+      BEGIN:VALARM
+      ACTION:DISPLAY
+      DESCRIPTION:Reminder
+      TRIGGER:-PT15M
+      END:VALARM
+      `;
+
+  // You need to add the VALARM block to the content of each event.
+  // This will find and inject the alarm for the first event, but you can modify it to handle multiple events.
+
+  icsContent = icsContent.replace("BEGIN:VEVENT", `BEGIN:VEVENT${alarm}`);
+
   const transporter = createTransport({
     host: config.smtpHost,
     port: config.smtpPort,
@@ -501,9 +519,8 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
     },
   });
 
-  console.log(calendar.toString());
   const message = {
-    from: `${ctx.session.user.company.name} <${ctx.session.user.email}>`,
+    from: `${senderName} <${ctx.session.user.email}>`,
     to: participants.map((a) => a.email).join(","),
     subject: input.title,
     text: input.description,
@@ -515,94 +532,50 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
   await transporter.sendMail(message);
 }
 
-export default async function sendOutlookCalendarInvite2(
-  ctx,
-  input,
-  createdPlans
-) {
-  if (!createdPlans.length) return;
+// async function deleteOutlookCalendarInvite(ctx, input, createdPlans) {
+//   if (!createdPlans.length) return;
 
-  // Get necessary data from the database
-  const [participants, room, config] = await Promise.all([
-    ctx.prisma.user.findMany({ where: { id: { in: input.participantsIds } } }),
-    ctx.prisma.room.findFirst({ where: { id: input.roomId } }),
-    ctx.prisma.mailConfig.findFirst({
-      where: { companyId: ctx.session.user.company.id },
-    }),
-  ]);
+//   const [participants, config] = await Promise.all([
+//     ctx.prisma.user.findMany({ where: { id: { in: input.participantsIds } } }),
+//     ctx.prisma.mailConfig.findFirst({
+//       where: { companyId: ctx.session.user.company.id },
+//     }),
+//   ]);
 
-  if (!room || !config) return;
+//   if (!config  !participants.length) return;
 
-  // Prepare ICS calendar content
-  const eventUid = `event-${new Date().getTime()}`; // Unique event identifier
-  const eventStart = moment(createdPlans[0].start_datetime).format(
-    "YYYYMMDDTHHmmssZ"
-  );
-  const eventEnd = moment(createdPlans[0].end_datetime).format(
-    "YYYYMMDDTHHmmssZ"
-  );
-  const eventSummary = input.title || "Meeting";
-  const eventDescription = input.description || "No description";
-  const eventLocation = room.title || "Location not set";
+//   // Minimal iCal event with METHOD:CANCEL and STATUS:CANCELLED
+//   const calendar = ical({
+//     events: createdPlans.map((plan) => ({
+//       uid: plan.uid  ${plan.start_datetime.toISOString()}@${ctx.session.user.company.id},
+//       start: plan.start_datetime,
+//       end: plan.end_datetime,
+//       summary: input.title,
+//       status: 'CANCELLED',
+//     })),
+//     method: 'CANCEL',
+//   });
 
-  const icsContent = `
-BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//sebbo.net//ical-generator//EN
-METHOD:REQUEST
-BEGIN:VEVENT
-UID:${eventUid}
-DTSTAMP:${moment().format("YYYYMMDDTHHmmssZ")}
-DTSTART:${eventStart}
-DTEND:${eventEnd}
-SUMMARY:${eventSummary}
-DESCRIPTION:${eventDescription}
-LOCATION:${eventLocation}
-ORGANIZER;CN=${ctx.session.user.company.name}:mailto:${ctx.session.user.email}
-${participants
-  .map((user) => `ATTENDEE;CN=${user.name};RSVP=TRUE:mailto:${user.email}`)
-  .join("\n")}
-STATUS:CONFIRMED
-SEQUENCE:0
-TRANSP:OPAQUE
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Reminder
-TRIGGER:-PT15M
-END:VALARM
-END:VEVENT
-END:VCALENDAR
-    `;
+//   const transporter = createTransport({
+//     host: config.smtpHost,
+//     port: config.smtpPort,
+//     secure: config.smtpSecure,
+//     auth: {
+//       user: config.smtpUser,
+//       pass: config.smtpPass,
+//     },
+//   });
 
-  // Encode the ICS content as Base64
-  // const icsBase64 = Buffer.from(icsContent).toString("base64");
+//   const message = {
+//     from: ${ctx.session.user.company.name} <${ctx.session.user.email}>,
+//     to: participants.map((a) => a.email).join(","),
+//     subject: Cancellation: ${input.title},
+//     text: The event "${input.title}" has been cancelled.,
+//     icalEvent: {
+//       method: "CANCEL",
+//       content: calendar.toString(),
+//     },
+//   };
 
-  // Setup the email transporter with SMTP configuration
-  const transporter = createTransport({
-    host: config.smtpHost,
-    port: config.smtpPort,
-    secure: config.smtpSecure,
-    auth: {
-      user: config.smtpUser,
-      pass: config.smtpPass,
-    },
-  });
-
-  // Setup the email message with the calendar invite
-  const message = {
-    from: `${ctx.session.user.company.name} <${ctx.session.user.email}>`,
-    to: participants.map((a) => a.email).join(","),
-    subject: input.title,
-    text: input.description,
-    html: `<p>${input.description}</p>`, // HTML fallback
-    icalEvent: {
-      method: "REQUEST",
-      content: icsContent,
-    },
-  };
-
-  // Send the email with the calendar invite
-  await transporter.sendMail(message);
-
-  console.log("Meeting invitation sent successfully");
-}
+//   await transporter.sendMail(message);
+// }

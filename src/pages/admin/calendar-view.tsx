@@ -168,11 +168,11 @@ export default function CalendarView() {
                       )}
                     >
                       <MegaphoneIcon className="" />
-                      {plans.map((plan, i) => {
+                      {plans.slice(0, 2).map((plan, i) => {
                         return (
                           <div
                             key={i}
-                            className="hidden items-center justify-center gap-2 text-accent md:flex "
+                            className="hidden items-center justify-center gap-2 text-accent md:flex"
                           >
                             <span className=" group-hover:text-secondary">
                               {plan.is_confidential
@@ -185,6 +185,11 @@ export default function CalendarView() {
                           </div>
                         );
                       })}
+                      {plans.length > 2 && (
+                        <span className="text-sm text-primary">
+                          +{plans.length - 2}
+                        </span>
+                      )}
                     </div>
                   </>
                 )}
