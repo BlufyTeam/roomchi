@@ -38,7 +38,7 @@ export const createPlanSchema = z.object({
   description: z.string().optional(),
   link: z.string().nullish().optional(),
   is_confidential: z.boolean().default(false),
-  send_email: z.boolean().default(false),
+  send_email: z.boolean().default(true),
   participantsIds: z.array(z.string()),
 
   repeatType: z.enum(["none", "daily", "weekly", "monthly"]),

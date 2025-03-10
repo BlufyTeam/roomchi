@@ -124,7 +124,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
   const formik = useFormik({
     initialValues: {
       room: undefined,
-      send_email: false,
+      send_email: true,
       is_confidential: false,
       title: "",
       link: "",
@@ -151,7 +151,7 @@ export function ReserveRoom({ date }: { date: Moment }) {
       participantsIds: [],
       participants: [],
       repeatType: "none",
-      repeatUntilDate: moment().locale("fa").add(2, "M").toISOString(),
+      repeatUntilDate: moment().locale("fa").add(1, "w").toISOString(),
     },
     validationSchema: toFormikValidationSchema(createPlanSchema),
     validateOnBlur: true,
