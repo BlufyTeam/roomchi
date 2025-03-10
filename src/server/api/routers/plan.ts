@@ -22,7 +22,7 @@ import {
   planDeleteSchema,
 } from "~/server/validations/plan.validation";
 import { RoomStatus } from "~/types";
-import ical from "ical-generator";
+import ical, { ICalCalendarMethod } from "ical-generator";
 
 export const planRouter = createTRPCRouter({
   getPlansByRoomId: protectedProcedure
@@ -487,6 +487,7 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
         },
       }),
     })),
+    method: ICalCalendarMethod.REQUEST,
     name: input.title,
   });
 
@@ -500,16 +501,108 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
     },
   });
 
+  console.log(calendar.toString());
   const message = {
     from: `${ctx.session.user.company.name} <${ctx.session.user.email}>`,
     to: participants.map((a) => a.email).join(","),
     subject: input.title,
     text: input.description,
     icalEvent: {
-      method: "REQUEST",
       content: calendar.toString(),
     },
   };
 
   await transporter.sendMail(message);
+}
+
+export default async function sendOutlookCalendarInvite2(
+  ctx,
+  input,
+  createdPlans
+) {
+  if (!createdPlans.length) return;
+
+  // Get necessary data from the database
+  const [participants, room, config] = await Promise.all([
+    ctx.prisma.user.findMany({ where: { id: { in: input.participantsIds } } }),
+    ctx.prisma.room.findFirst({ where: { id: input.roomId } }),
+    ctx.prisma.mailConfig.findFirst({
+      where: { companyId: ctx.session.user.company.id },
+    }),
+  ]);
+
+  if (!room || !config) return;
+
+  // Prepare ICS calendar content
+  const eventUid = `event-${new Date().getTime()}`; // Unique event identifier
+  const eventStart = moment(createdPlans[0].start_datetime).format(
+    "YYYYMMDDTHHmmssZ"
+  );
+  const eventEnd = moment(createdPlans[0].end_datetime).format(
+    "YYYYMMDDTHHmmssZ"
+  );
+  const eventSummary = input.title || "Meeting";
+  const eventDescription = input.description || "No description";
+  const eventLocation = room.title || "Location not set";
+
+  const icsContent = `
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//sebbo.net//ical-generator//EN
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:${eventUid}
+DTSTAMP:${moment().format("YYYYMMDDTHHmmssZ")}
+DTSTART:${eventStart}
+DTEND:${eventEnd}
+SUMMARY:${eventSummary}
+DESCRIPTION:${eventDescription}
+LOCATION:${eventLocation}
+ORGANIZER;CN=${ctx.session.user.company.name}:mailto:${ctx.session.user.email}
+${participants
+  .map((user) => `ATTENDEE;CN=${user.name};RSVP=TRUE:mailto:${user.email}`)
+  .join("\n")}
+STATUS:CONFIRMED
+SEQUENCE:0
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
+    `;
+
+  // Encode the ICS content as Base64
+  // const icsBase64 = Buffer.from(icsContent).toString("base64");
+
+  // Setup the email transporter with SMTP configuration
+  const transporter = createTransport({
+    host: config.smtpHost,
+    port: config.smtpPort,
+    secure: config.smtpSecure,
+    auth: {
+      user: config.smtpUser,
+      pass: config.smtpPass,
+    },
+  });
+
+  // Setup the email message with the calendar invite
+  const message = {
+    from: `${ctx.session.user.company.name} <${ctx.session.user.email}>`,
+    to: participants.map((a) => a.email).join(","),
+    subject: input.title,
+    text: input.description,
+    html: `<p>${input.description}</p>`, // HTML fallback
+    icalEvent: {
+      method: "REQUEST",
+      content: icsContent,
+    },
+  };
+
+  // Send the email with the calendar invite
+  await transporter.sendMail(message);
+
+  console.log("Meeting invitation sent successfully");
 }
