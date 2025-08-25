@@ -172,7 +172,7 @@ export default function CalendarView() {
                   <>
                     <div className="flex flex-col items-center justify-center gap-2 px-2  text-sm  group-enabled:text-accent  group-enabled:group-hover:text-secbuttn ">
                       <MegaphoneIcon className="" />
-                      {plans.map((plan, i) => {
+                      {plans.slice(0, 2).map((plan, i) => {
                         return (
                           <div
                             key={i}
@@ -189,6 +189,11 @@ export default function CalendarView() {
                           </div>
                         );
                       })}
+                      {plans.length > 2 && (
+                        <span className="text-sm text-primary">
+                          +{plans.length - 2}
+                        </span>
+                      )}
                     </div>
                   </>
                 )}

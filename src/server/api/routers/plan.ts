@@ -22,7 +22,7 @@ import {
   planDeleteSchema,
 } from "~/server/validations/plan.validation";
 import { RoomStatus } from "~/types";
-import ical from "ical-generator";
+import ical, { ICalCalendarMethod } from "ical-generator";
 
 export const planRouter = createTRPCRouter({
   getPlansByRoomId: protectedProcedure
@@ -90,7 +90,8 @@ export const planRouter = createTRPCRouter({
         momentTz.locale("fa"); // Set the locale to Persian (fa)
 
         // Get the current time in UTC and subtract 3 hours and 30 minutes (Tehran offset)
-        const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
+        // const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
+        const now = momentTz(); // Subtract Tehran offset
 
         // Parse the start and end times
         const start = momentTz(plan.start_datetime);
@@ -230,7 +231,8 @@ export const planRouter = createTRPCRouter({
         momentTz.locale("fa"); // Set the locale to Persian (fa)
 
         // Get the current time in UTC and subtract 3 hours and 30 minutes (Tehran offset)
-        const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
+        // const now = momentTz().subtract(3, "hours").subtract(30, "minutes"); // Subtract Tehran offset
+        const now = momentTz(); // Subtract Tehran offset
 
         // Parse the start and end times
         const start = momentTz(plan.start_datetime);
@@ -464,6 +466,7 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
 
   if (!room || !config) return;
 
+  const senderName = config.sender_name;
   const calendar = ical({
     events: createdPlans.map((plan) => ({
       start: plan.start_datetime,
@@ -472,7 +475,7 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
       description: input.description,
       location: room.title,
       organizer: {
-        name: ctx.session.user.company.name,
+        name: senderName,
         email: ctx.session.user.email,
       },
       attendees: participants.map((user) => ({
@@ -487,8 +490,26 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
         },
       }),
     })),
+    method: ICalCalendarMethod.REQUEST,
     name: input.title,
   });
+
+  // Convert the calendar to string first
+  let icsContent = calendar.toString();
+
+  // Manually add VALARM for notifications (to the first event)
+  const alarm = `
+      BEGIN:VALARM
+      ACTION:DISPLAY
+      DESCRIPTION:Reminder
+      TRIGGER:-PT15M
+      END:VALARM
+      `;
+
+  // You need to add the VALARM block to the content of each event.
+  // This will find and inject the alarm for the first event, but you can modify it to handle multiple events.
+
+  icsContent = icsContent.replace("BEGIN:VEVENT", `BEGIN:VEVENT${alarm}`);
 
   const transporter = createTransport({
     host: config.smtpHost,
@@ -501,15 +522,62 @@ async function sendOutlookCalendarInvite(ctx, input, createdPlans) {
   });
 
   const message = {
-    from: `${ctx.session.user.company.name} <${ctx.session.user.email}>`,
+    from: `${senderName} <${ctx.session.user.email}>`,
     to: participants.map((a) => a.email).join(","),
     subject: input.title,
     text: input.description,
     icalEvent: {
-      method: "REQUEST",
       content: calendar.toString(),
     },
   };
 
   await transporter.sendMail(message);
 }
+
+// async function deleteOutlookCalendarInvite(ctx, input, createdPlans) {
+//   if (!createdPlans.length) return;
+
+//   const [participants, config] = await Promise.all([
+//     ctx.prisma.user.findMany({ where: { id: { in: input.participantsIds } } }),
+//     ctx.prisma.mailConfig.findFirst({
+//       where: { companyId: ctx.session.user.company.id },
+//     }),
+//   ]);
+
+//   if (!config  !participants.length) return;
+
+//   // Minimal iCal event with METHOD:CANCEL and STATUS:CANCELLED
+//   const calendar = ical({
+//     events: createdPlans.map((plan) => ({
+//       uid: plan.uid  ${plan.start_datetime.toISOString()}@${ctx.session.user.company.id},
+//       start: plan.start_datetime,
+//       end: plan.end_datetime,
+//       summary: input.title,
+//       status: 'CANCELLED',
+//     })),
+//     method: 'CANCEL',
+//   });
+
+//   const transporter = createTransport({
+//     host: config.smtpHost,
+//     port: config.smtpPort,
+//     secure: config.smtpSecure,
+//     auth: {
+//       user: config.smtpUser,
+//       pass: config.smtpPass,
+//     },
+//   });
+
+//   const message = {
+//     from: ${ctx.session.user.company.name} <${ctx.session.user.email}>,
+//     to: participants.map((a) => a.email).join(","),
+//     subject: Cancellation: ${input.title},
+//     text: The event "${input.title}" has been cancelled.,
+//     icalEvent: {
+//       method: "CANCEL",
+//       content: calendar.toString(),
+//     },
+//   };
+
+//   await transporter.sendMail(message);
+// }
